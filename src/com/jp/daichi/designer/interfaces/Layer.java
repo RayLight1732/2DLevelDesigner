@@ -1,22 +1,34 @@
 package com.jp.daichi.designer.interfaces;
 
+import java.awt.*;
 import java.util.List;
 
 /**
  * 描画用レイヤー
  */
-public interface Layer {
-    /**
-     * Z座標を取得
-     * @return Z座標
-     */
-    int getZ();
+public interface Layer extends ObservedObject {
+
+
 
     /**
-     * このレイヤーに登録されているオブジェクトのリストを取得
-     * @return このレイヤーに登録されているオブジェクトのリスト
+     * このレイヤーに登録されているオブジェクトのリストのコピーを取得
+     * ソートされている必要がある
+     * @return このレイヤーに登録されているオブジェクトのリストのコピー
      */
     List<DesignerObject> getObjects();
+
+    /**
+     * デザイナーオブジェクトをこのレイヤーに追加する
+     * @param designerObject 追加するデザイナーオブジェクト
+     */
+    void add(DesignerObject designerObject);
+
+    /**
+     * デザイナーオブジェクトをこのレイヤーから削除する
+     * @param designerObject 削除するデザイナーオブジェクト
+     * @return 削除するに成功したかどうか
+     */
+    boolean remove(DesignerObject designerObject);
 
     /**
      * 描画されるかどうか
@@ -41,4 +53,10 @@ public interface Layer {
      * @param name レイヤー名
      */
     void setName(String name);
+
+    /**
+     * 描画を行う
+     * @param g グラフィックオブジェクト
+     */
+    void draw(Graphics2D g);
 }

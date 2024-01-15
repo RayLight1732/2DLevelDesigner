@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * 画像表示用のオブジェクトを表すクラス
  */
-public interface ImageObject extends SelectableObject {
+public interface ImageObject extends DesignerObject {
     /**
      * 画像を取得
      * @return 画像

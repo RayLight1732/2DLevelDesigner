@@ -6,7 +6,7 @@ import java.awt.event.MouseAdapter;
 /**
  * デザイナー用のオブジェクト
  */
-public interface DesignerObject {
+public interface DesignerObject extends Comparable<DesignerObject>,ObservedObject {
     /**
      * 座標を取得
      * @return 座標
@@ -20,17 +20,16 @@ public interface DesignerObject {
     void setPosition(Point point);
 
     /**
-     * サイズを表すインスタンスのコピーを取得
-     * @return 領域
+     * サイズを取得
+     * @return サイズ
      */
-    Dimension getDimension();
+    SignedDimension getDimension();
 
     /**
-     * 領域を設定
-     * インスタンスはコピーされたうえで設定される
-     * @param dimension 領域
+     * サイズを設定
+     * @param dimension サイズ
      */
-    void setDimension(Dimension dimension);
+    void setDimension(SignedDimension dimension);
 
     /**
      * 描画の優先度を取得
@@ -68,4 +67,37 @@ public interface DesignerObject {
      * @param g グラフィックオブジェクト
      */
     void draw(Graphics2D g);
+
+
+    Canvas getCanvas();
+
+    /**
+     * このオブジェクトを選択できるかどうか
+     * @return 選択できるかどうか
+     */
+    boolean isSelectable();
+
+    /**
+     * Z座標(奥行)を取得する
+     * @return Z座標
+     */
+    double getZ();
+
+    /**
+     * Z座標(奥行)を指定する
+     * @param z Z座標
+     */
+    void setZ(double z);
+
+    /**
+     * 名前を取得する
+     * @return 名前
+     */
+    String getName();
+
+    /**
+     * 名前を設定する
+     * @param name 名前
+     */
+    void setName(String name);
 }

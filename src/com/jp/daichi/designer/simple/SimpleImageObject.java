@@ -1,7 +1,11 @@
 package com.jp.daichi.designer.simple;
 
+import com.jp.daichi.designer.Utils;
+import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.ImageObject;
 import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.SignedDimension;
+import com.jp.daichi.designer.simple.editor.UpdateAction;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -19,24 +23,28 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
 
     /**
      * イメージオブジェクトのインスタンスを作成する
-     * @param point 座標
-     * @param dimension 表示領域(コピーされて使用される)
+     * @param name このオブジェクトの名前
+     * @param canvas キャンバス
+     * @param center 中心座標
+     * @param dimension 表示領域
      * @param image 画像
      */
-    public SimpleImageObject(Point point,Dimension dimension,BufferedImage image) {
-        this(point,new Dimension(dimension),image,Point.ZERO,new Dimension(image.getWidth(),image.getHeight()));
+    public SimpleImageObject(String name,Canvas canvas,Point center,SignedDimension dimension,BufferedImage image) {
+        this(name,canvas,center,dimension,image,Point.ZERO,new Dimension(image.getWidth(),image.getHeight()));
     }
 
     /**
      * イメージオブジェクトのインスタンスを作成する
-     * @param point 座標
-     * @param dimension 表示領域(コピーされて使用される)
+     * @param name このオブジェクトの名前
+     * @param canvas キャンバス
+     * @param center 中心座標
+     * @param dimension 表示領域
      * @param image 画像
      * @param uvPoint UV座標
      * @param uvDimension 表示領域(コピーされて使用される) dimensionと値が異なる場合、縦横比を維持しないで最大まで拡大、縮小される
      */
-    public SimpleImageObject(Point point, Dimension dimension,BufferedImage image,Point uvPoint,Dimension uvDimension) {
-        super(point, dimension);
+    public SimpleImageObject(String name,Canvas canvas, Point center, SignedDimension dimension, BufferedImage image, Point uvPoint, Dimension uvDimension) {
+        super(name,canvas,center, dimension);
         this.image = image;
         this.uvPoint = uvPoint;
         this.uvDimension = new Dimension(uvDimension);
@@ -49,7 +57,13 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
 
     @Override
     public void draw(Graphics2D g) {
-
+        double x = getPosition().x();
+        double y = getPosition().y();
+        double w = getDimension().width();
+        double h = getDimension().height();
+        g.drawImage(image,
+                Utils.round(x),Utils.round(y),Utils.round(x+w),Utils.round(y+h),
+                Utils.round(uvPoint.x()),Utils.round(uvPoint.y()),Utils.round(uvPoint.x()+uvDimension.width), Utils.round(uvPoint.y()+uvDimension.height),null);
     }
 
     @Override
@@ -65,6 +79,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     @Override
     public void setUV(Point point) {
         this.uvPoint = point;
+        getUpdateObserver().update(this, UpdateAction.CHANGE_UV);
     }
 
     @Override
@@ -75,6 +90,12 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     @Override
     public void setUVDimension(Dimension dimension) {
         this.uvDimension = new Dimension(dimension);
+        getUpdateObserver().update(this,UpdateAction.CHANGE_UV);
+    }
+
+    @Override
+    public void setVisible(boolean isVisible) {
+        super.setVisible(isVisible);
     }
 
     @Override
@@ -82,18 +103,5 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
         return isVisible();
     }
 
-    @Override
-    public boolean isSelected() {
-        return isSelected;
-    }
 
-    @Override
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    @Override
-    public void onDragged(Point to) {
-        setPosition(to);
-    }
 }
