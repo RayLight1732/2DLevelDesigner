@@ -42,6 +42,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
 
     @Override
     public boolean addSelectedObject(DesignerObject designerObject) {
+
         if (getSelectedObjectCount() == 0) {
             selectedObjects.add(designerObject);
             setZ(designerObject.getZ());
@@ -102,10 +103,10 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
         double height = dimension.height();
         for (DesignerObject designerObject: selectedObjects) {
             Point vec = designerObject.getPosition().subtract(getPosition());
-            designerObject.setPosition(new Point(point.x()+vec.x()* width/getDimension().width(),point.y()+vec.y()*height/getDimension().height()));
+            designerObject.setPosition( new Point(point.x()+vec.x()* width/getDimension().width(),point.y()+vec.y()*height/getDimension().height()));
+
             double widthRatio = designerObject.getDimension().width()/getDimension().width();
             double heightRatio = designerObject.getDimension().height()/getDimension().height();
-            System.out.println(widthRatio+","+heightRatio);
             designerObject.setDimension(new SignedDimension(widthRatio*width,heightRatio*height));
         }
         super.setPosition(point);
@@ -122,15 +123,19 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
             double minX = Double.MAX_VALUE;
             double minY = Double.MAX_VALUE;
             for (DesignerObject designerObject : selectedObjects) {
+
                 double x1 = designerObject.getPosition().x();
                 double y1 = designerObject.getPosition().y();
                 double x2 = x1+designerObject.getDimension().width();
                 double y2 = y1+designerObject.getDimension().height();
+
                 maxX = Math.max(maxX, Math.max(x1,x2));
                 maxY = Math.max(maxY, Math.max(y1,y2));
                 minX = Math.min(minX, Math.min(x1,x2));
                 minY = Math.min(minY, Math.min(y1,y2));
+
             }
+
             super.setPosition(new Point(minX,minY));
             setDimension(new SignedDimension(maxX - minX, maxY - minY));
         }

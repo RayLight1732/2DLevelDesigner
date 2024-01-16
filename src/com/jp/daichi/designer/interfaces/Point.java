@@ -2,6 +2,7 @@ package com.jp.daichi.designer.interfaces;
 
 import com.jp.daichi.designer.Utils;
 
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 public record Point(double x, double y) implements Serializable {
@@ -10,6 +11,10 @@ public record Point(double x, double y) implements Serializable {
 
     public static Point convert(java.awt.Point point) {
         return new Point(point.x,point.y);
+    }
+
+    public static Point convert(Point2D point2D) {
+        return new Point(point2D.getX(), point2D.getY());
     }
 
     /**
@@ -33,5 +38,6 @@ public record Point(double x, double y) implements Serializable {
     public java.awt.Point convert() {
         return new java.awt.Point(Utils.round(x),Utils.round(y));
     }
+
 
 }

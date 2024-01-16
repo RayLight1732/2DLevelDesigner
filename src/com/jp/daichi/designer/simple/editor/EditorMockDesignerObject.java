@@ -36,7 +36,7 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
     public JComponent getView() {
         JPanel positionPanel = createPositionPanel();
         JPanel priorityPanel = createPriorityPanel();
-        JPanel panel = new MyJPanel() {
+        JPanel panel = new ObserverJPanel() {
             private JPanel positionPanel_ = positionPanel;
             private JPanel priorityPanel_ = priorityPanel;
             @Override
@@ -64,59 +64,32 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
         return panel;
     }
 
-    private static final int columns = 10;
 
     private JPanel createPositionPanel() {
         JPanel parent = new JPanel();
         parent.setLayout(new BoxLayout(parent, BoxLayout.X_AXIS));
         parent.add(new JLabel("Position"));
+        parent.add(Box.createHorizontalStrut(4));
         parent.add(Box.createGlue());
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS) {
-            @Override
-            public void layoutContainer(Container target) {
-                super.layoutContainer(target);
-                if (target.getComponents().length >= 1) {
-                    Component component = target.getComponents()[target.getComponents().length-1];
-                    Insets insets = target.getInsets();
-                    if (getAxis() == BoxLayout.X_AXIS) {
-                        if (component.getLocationOnScreen().x+component.getSize().width != target.getLocationOnScreen().x+target.getSize().width-insets.right) {
-                            component.setSize(new Dimension(target.getLocationOnScreen().x+target.getSize().width-insets.right-component.getLocationOnScreen().x,component.getSize().height));
-                        }
-                    } else if (getAxis() == BoxLayout.Y_AXIS) {
-                        if (component.getLocationOnScreen().y+component.getSize().height != target.getLocationOnScreen().y+target.getSize().height-insets.bottom) {
-                            component.setSize(new Dimension(component.getSize().width,target.getLocationOnScreen().y+target.getSize().height-insets.bottom-component.getLocationOnScreen().y));
-                        }
-                    }
-                }
-            }
-        });
+        panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new JLabel("X"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(initCoordinateTextField(getPosition().x(), value -> setPosition(new Point(value, getPosition().y()))));
+        panel.add(ViewUtils.createNumberTextField(getPosition().x(), value -> setPosition(new Point(value.doubleValue(), getPosition().y()))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new JLabel("Y"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(initCoordinateTextField(getPosition().y(), value -> setPosition(new Point(getPosition().x(), value))));
+        panel.add(ViewUtils.createNumberTextField(getPosition().y(), value -> setPosition(new Point(getPosition().x(), value.doubleValue()))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new JLabel("Z"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(initCoordinateTextField(getZ(), this::setZ));
+        panel.add(ViewUtils.createNumberTextField(getZ(), value -> setZ(value.doubleValue())));
 
         parent.add(panel);
         return parent;
     }
 
-    private JTextField initCoordinateTextField(double value, ValueSetter<Double> setter) {
-        DecimalFormat format = new DecimalFormat();
-        format.setGroupingUsed(false);
-        JFormattedTextField textField = new MyFormattedTextField(format, value);
-        textField.setColumns(columns);
-        textField.setMaximumSize(textField.getPreferredSize());
-        init(textField,(ValueSetter<Number>)newValue->setter.set(newValue.doubleValue()));
-        return textField;
-    }
 
     private JPanel createPriorityPanel() {
         JPanel panel = new JPanel();
@@ -125,31 +98,13 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
         panel.add(Box.createGlue());
         NumberFormat format = NumberFormat.getIntegerInstance();
         format.setGroupingUsed(false);
-        JFormattedTextField textField = new MyFormattedTextField(format, getPriority());
+        JTextField textField = ViewUtils.createNumberTextField(getPriority(),value -> setPriority(value.intValue()));
         textField.setColumns(20);
-        textField.setMaximumSize(textField.getPreferredSize());
-        init(textField,(ValueSetter<Number>) value-> setPriority(value.intValue()));
         panel.add(textField);
         return panel;
     }
 
-    private <T> void init(JFormattedTextField textField,ValueSetter<T> setter) {
-        textField.addActionListener(e -> setter.set((T)textField.getValue()));
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                EventQueue.invokeLater(()-> setter.set((T)textField.getValue()));
-            }
-        });
-    }
 
-    private interface ValueSetter<T> {
-        void set(T value);
-    }
-
-    private static abstract class MyJPanel extends JPanel implements ObserverComponent {
-
-    }
 
 
 

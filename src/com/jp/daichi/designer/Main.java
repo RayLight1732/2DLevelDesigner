@@ -5,21 +5,27 @@ import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.simple.SelectAndMoveTool;
 import com.jp.daichi.designer.simple.SimpleLayer;
+import com.jp.daichi.designer.simple.SimpleMaterial;
+import com.jp.daichi.designer.simple.SimpleMaterialManager;
 import com.jp.daichi.designer.simple.editor.*;
 import com.jp.daichi.designer.test.MockCanvas;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.UUID;
 
 
 public class Main {
     public static void main(String[] args) {
         UpdateObserver observer = new UpdateObserver();
-        MockCanvas mockCanvas = new MockCanvas();
+        MockCanvas mockCanvas = new MockCanvas(new SimpleMaterialManager());
         Layer layer = new SimpleLayer("test");
         mockCanvas.addLayer(layer);
+
+
+        mockCanvas.getMaterialManager().registerMaterial(new SimpleMaterial("Test0000000000000000000", UUID.randomUUID()));
 
         Tool tool = new SelectAndMoveTool(mockCanvas);
 
@@ -37,12 +43,19 @@ public class Main {
         layer.add(new EditorMockDesignerObject("Object2",mockCanvas,new Point(250,200),new SignedDimension(50,50)));
 
         InspectorView inspectorView = new InspectorView();
-        JSplitPane split0 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,inspectorView,new LayerView(mockCanvas,inspectorView));
-        split0.setDividerSize(2);
-        split0.setDividerLocation(200);
-        split0.setBorder(null);
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true, jPanel,split0);
+        JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,inspectorView,new LayerViewer(mockCanvas,inspectorView));
+        right.setDividerSize(2);
+        right.setResizeWeight(0.5);
+        right.setDividerLocation(200);
+        right.setBorder(null);
+        JSplitPane left = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jPanel,new MaterialViewer(mockCanvas.getMaterialManager(),inspectorView));
+        left.setDividerSize(2);
+        left.setResizeWeight(0.5);
+        left.setDividerLocation(200);
+        left.setBorder(null);
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true, left,right);
         split.setDividerSize(2);
+        split.setResizeWeight(0.5);
         split.setBorder(null);
         split.setDividerLocation(200);
 
@@ -56,7 +69,7 @@ public class Main {
 
         frame.setVisible(true);
 
-        mockCanvas.setViewPort(new Rectangle(0,0,jPanel.getWidth(),jPanel.getHeight()));
+        mockCanvas.setViewPort(new Rectangle(0,0,300,300));
 
         frame.addMouseWheelListener(e -> {
             mockCanvas.getViewPort().x += e.getPreciseWheelRotation()*10;
@@ -84,6 +97,12 @@ public class Main {
             addMouseListener(tool.getMouseAdapter());
             addMouseMotionListener(tool.getMouseAdapter());
             addMouseWheelListener(tool.getMouseAdapter());
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    canvas.updateTransform(getWidth(),getHeight());
+                }
+            });
             setBackground(Color.GRAY);
         }
         @Override

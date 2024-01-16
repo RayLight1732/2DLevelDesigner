@@ -11,9 +11,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LayerView extends JScrollPane {
+public class LayerViewer extends JScrollPane {
 
-    public LayerView(Canvas canvas,InspectorView inspectorView) {
+    public LayerViewer(Canvas canvas, InspectorView inspectorView) {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -3,6 +3,7 @@ package com.jp.daichi.designer.interfaces;
 import java.awt.*;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * デザイナーのキャンバス
@@ -103,4 +104,18 @@ public interface Canvas {
      * @return 空間内の座標
      */
     Point convertFromScreenPosition(Point point,double z);
+
+    /**
+     * 縦、横の幅を設定し、それ用にTransformを更新する
+     * このTransformは主にconvertFromScreenPositionやconvertToScreenPositionに用いられる
+     * @param width 幅
+     * @param height 高さ
+     */
+    void updateTransform(int width,int height);
+
+    /**
+     * マテリアルマネージャーを取得する
+     * @return マテリアルマネージャー
+     */
+    MaterialManager getMaterialManager();
 }

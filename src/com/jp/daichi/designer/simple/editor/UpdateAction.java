@@ -11,6 +11,11 @@ public class UpdateAction {
     public static final UpdateAction CHANGE_PRIORITY = new UpdateAction("ChangePriority");
     public static final UpdateAction CHANGE_UV = new UpdateAction("ChangeUV");
     public static final UpdateAction CHANGE_NAME = new UpdateAction("ChangeName");
+
+    public static final UpdateAction CHANGE_IMAGE = new UpdateAction("ChangeImage");
+    public static final UpdateAction CHANGE_MATERIAL = new UpdateAction("ChangeMaterial");
+    public static final UpdateAction ADD_MATERIAL = new UpdateAction("AddMaterial");
+    public static final UpdateAction REMOVE_MATERIAL = new UpdateAction("RemoveMaterial");
     private final String name;
     public UpdateAction(String name) {
         this.name = name;
