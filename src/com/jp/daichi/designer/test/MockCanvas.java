@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * テスト用キャンバス
  */
-public class MockCanvas implements Canvas {
+public class MockCanvas  implements Canvas {
 
     private final Frame frame = new SimpleFrame(this);
     private final List<Layer> layers = new ArrayList<>();

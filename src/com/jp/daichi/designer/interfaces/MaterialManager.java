@@ -3,7 +3,7 @@ package com.jp.daichi.designer.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-public interface MaterialManager {
+public interface MaterialManager extends ObservedObject {
     /**
      * マテリアルを取得する
      * @param uuid UUID
@@ -13,10 +13,11 @@ public interface MaterialManager {
 
     /**
      * マテリアルを登録する
-     * @param material マテリアル
-     * @return 登録に成功したらtrue
+     * 名前はかぶっていた場合変更されることがある
+     * @param name 名前
+     * @return 新しいマテリアルのインスタンス
      */
-    boolean registerMaterial(Material material);
+    Material addMaterial(String name);
 
     /**
      * マテリアルの登録を解除する

@@ -9,11 +9,10 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class SimpleLayer implements Layer {
+public class SimpleLayer extends SimpleObservedObject implements Layer {
 
     private String name;
     private boolean isVisible = true;
-    protected UpdateObserver observer;
     protected final List<DesignerObject> designerObjects = new ArrayList<>();
 
     public SimpleLayer(String name) {
@@ -28,15 +27,15 @@ public class SimpleLayer implements Layer {
     @Override
     public void add(DesignerObject designerObject) {
         designerObjects.add(designerObject);
-        designerObject.setUpdateObserver(observer);
+        designerObject.setUpdateObserver(getUpdateObserver());
         Collections.sort(designerObjects);
-        observer.update(this, UpdateAction.ADD);
+        sendUpdate(UpdateAction.ADD);
     }
 
     @Override
     public boolean remove(DesignerObject designerObject) {
         boolean result = designerObjects.remove(designerObject);
-        observer.update(this,UpdateAction.REMOVE);
+        sendUpdate(UpdateAction.REMOVE);
         return result;
     }
 
@@ -48,7 +47,7 @@ public class SimpleLayer implements Layer {
     @Override
     public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
-        observer.update(this,UpdateAction.CHANGE_VISIBLY);
+        sendUpdate(UpdateAction.CHANGE_VISIBLY);
     }
 
     @Override
@@ -59,17 +58,12 @@ public class SimpleLayer implements Layer {
     @Override
     public void setName(String name) {
         this.name = name;
-        observer.update(this,UpdateAction.CHANGE_NAME);
-    }
-
-    @Override
-    public UpdateObserver getUpdateObserver() {
-        return observer;
+        sendUpdate(UpdateAction.CHANGE_NAME);
     }
 
     @Override
     public void setUpdateObserver(UpdateObserver observer) {
-        this.observer = observer;
+        super.setUpdateObserver(observer);
         for (DesignerObject designerObject:designerObjects) {
             designerObject.setUpdateObserver(observer);
         }

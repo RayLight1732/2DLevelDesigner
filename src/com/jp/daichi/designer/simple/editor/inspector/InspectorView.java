@@ -1,6 +1,7 @@
-package com.jp.daichi.designer.simple.editor;
+package com.jp.daichi.designer.simple.editor.inspector;
 
 import com.jp.daichi.designer.interfaces.ObservedObject;
+import com.jp.daichi.designer.simple.editor.Viewable;
 
 import javax.swing.*;
 import java.awt.*;

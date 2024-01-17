@@ -4,6 +4,7 @@ import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.ObservedObject;
+import com.jp.daichi.designer.simple.editor.inspector.InspectorView;
 
 import javax.swing.*;
 import javax.swing.border.Border;

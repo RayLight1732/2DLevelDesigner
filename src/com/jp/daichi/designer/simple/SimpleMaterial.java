@@ -10,12 +10,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
 
-public class SimpleMaterial implements Material {
+public class SimpleMaterial extends SimpleObservedObject implements Material {
 
     private BufferedImage image;
     private Point uvPoint = new Point(0,0);
     private SignedDimension uvDimension = new SignedDimension(0,0);
-    private UpdateObserver observer;
     private String name;
     private final UUID uuid;
 
@@ -32,7 +31,7 @@ public class SimpleMaterial implements Material {
     @Override
     public void setName(String name) {
         this.name = name;
-        getUpdateObserver().update(this,UpdateAction.CHANGE_NAME);
+        sendUpdate(UpdateAction.CHANGE_NAME);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class SimpleMaterial implements Material {
     @Override
     public void setImage(BufferedImage image) {
         this.image = image;
-        observer.update(this,UpdateAction.CHANGE_IMAGE);
+        sendUpdate(UpdateAction.CHANGE_IMAGE);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class SimpleMaterial implements Material {
     @Override
     public void setUV(Point point) {
         this.uvPoint = point;
-        getUpdateObserver().update(this, UpdateAction.CHANGE_UV);
+        sendUpdate(UpdateAction.CHANGE_UV);
     }
 
     @Override
@@ -70,16 +69,7 @@ public class SimpleMaterial implements Material {
     @Override
     public void setUVDimension(SignedDimension dimension) {
         this.uvDimension = dimension;
-        getUpdateObserver().update(this,UpdateAction.CHANGE_UV);
+        sendUpdate(UpdateAction.CHANGE_UV);
     }
 
-    @Override
-    public UpdateObserver getUpdateObserver() {
-        return observer;
-    }
-
-    @Override
-    public void setUpdateObserver(UpdateObserver observer) {
-        this.observer = observer;
-    }
 }

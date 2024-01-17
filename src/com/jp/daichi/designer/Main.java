@@ -5,27 +5,58 @@ import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.simple.SelectAndMoveTool;
 import com.jp.daichi.designer.simple.SimpleLayer;
-import com.jp.daichi.designer.simple.SimpleMaterial;
 import com.jp.daichi.designer.simple.SimpleMaterialManager;
 import com.jp.daichi.designer.simple.editor.*;
+import com.jp.daichi.designer.simple.editor.inspector.EditorMockDesignerObject;
+import com.jp.daichi.designer.simple.editor.inspector.InspectorView;
 import com.jp.daichi.designer.test.MockCanvas;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.UUID;
 
 
 public class Main {
+    //TODO
+    //やらなければならないこと
+    //オブジェクト新規作成ウィンドウ
+    //  名前だけで、あとはインスペクタからやる
+    //マテリアル選択ウィンドウ
+    //マテリアルで画像が選択できるようにする
+    //  画像選択ウィンドウ
+    //  UV選択ウィンドウ
+    //履歴を保存できるようにする
+    //全体の背景を設定できるようにする
+    //  マテリアルの画像選択UIを使いまわせる?
+    //新規作成画面を作る
+    //  Viewport,Pov,横幅,縦幅,背景画像
+    //  ツールバーからもいじれるように
+    //横、縦にスクロールできるようにする
+    //ゲームに組み込む用の実装
+    //  gradle?
+    //  出力
+    //
+    //できるといいこと
+    //縦横比をUVとそろえる
+    //ドラッグアンドドロップでマテリアル適用
+    //マテリアル一覧で余白の均等分割
+    //マテリアルの検索ウィンドウ
+    //インスペクタを開かなくてもリネームできるようにする
+    //ヒエラルキーを選択したら画面上でも選択されるようにする
+    //満点
+    //サーバーで同期する
+    //来週以降？
+
     public static void main(String[] args) {
         UpdateObserver observer = new UpdateObserver();
         MockCanvas mockCanvas = new MockCanvas(new SimpleMaterialManager());
         Layer layer = new SimpleLayer("test");
         mockCanvas.addLayer(layer);
+        mockCanvas.getMaterialManager().setUpdateObserver(observer);
 
 
-        mockCanvas.getMaterialManager().registerMaterial(new SimpleMaterial("Test0000000000000000000", UUID.randomUUID()));
+        mockCanvas.getMaterialManager().addMaterial("Test0000000000000000000");
 
         Tool tool = new SelectAndMoveTool(mockCanvas);
 
@@ -43,6 +74,7 @@ public class Main {
         layer.add(new EditorMockDesignerObject("Object2",mockCanvas,new Point(250,200),new SignedDimension(50,50)));
 
         InspectorView inspectorView = new InspectorView();
+        WindowManager windowManager = new WindowManager(frame,inspectorView);
         JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,inspectorView,new LayerViewer(mockCanvas,inspectorView));
         right.setDividerSize(2);
         right.setResizeWeight(0.5);
@@ -75,6 +107,10 @@ public class Main {
             mockCanvas.getViewPort().x += e.getPreciseWheelRotation()*10;
             observer.update(null,null);
         });
+
+        for (int i = 0;i < 100;i++) {
+            mockCanvas.getMaterialManager().addMaterial("material"+i);
+        }
     }
 
     private static void sendUpdateToChild(Container container, ObservedObject target, UpdateAction action) {

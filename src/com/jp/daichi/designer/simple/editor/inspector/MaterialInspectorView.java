@@ -1,9 +1,10 @@
-package com.jp.daichi.designer.simple.editor;
+package com.jp.daichi.designer.simple.editor.inspector;
 
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.ObservedObject;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
+import com.jp.daichi.designer.simple.editor.*;
 
 import javax.swing.*;
 

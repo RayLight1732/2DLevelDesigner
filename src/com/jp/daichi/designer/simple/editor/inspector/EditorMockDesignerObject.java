@@ -1,19 +1,11 @@
-package com.jp.daichi.designer.simple.editor;
+package com.jp.daichi.designer.simple.editor.inspector;
 
-import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.ObservedObject;
-import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.interfaces.SignedDimension;
+import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.simple.editor.*;
 import com.jp.daichi.designer.test.MockDesignerObject;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 /**
  * エディター上のデザイナーオブジェクトのモック
@@ -36,23 +28,7 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
     public JComponent getView() {
         JPanel positionPanel = createPositionPanel();
         JPanel priorityPanel = createPriorityPanel();
-        JPanel panel = new ObserverJPanel() {
-            private JPanel positionPanel_ = positionPanel;
-            private JPanel priorityPanel_ = priorityPanel;
-            @Override
-            public void update(ObservedObject target, UpdateAction action) {
-                if (target == EditorMockDesignerObject.this) {
-                    int index1 = getComponentZOrder(positionPanel_);
-                    int index2 = getComponentZOrder(priorityPanel_);
-                    remove(positionPanel_);
-                    remove(priorityPanel_);
-                    positionPanel_ = createPositionPanel();
-                    priorityPanel_ = createPriorityPanel();
-                    add(positionPanel_, index1);
-                    add(priorityPanel_, index2);
-                }
-            }
-        };
+        JPanel panel = createObserverJPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(10, ViewUtils.LEFT_PADDING, 4, 4));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         JTextField textField = new JTextField(getName());
@@ -64,6 +40,9 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
         return panel;
     }
 
+    protected ObserverJPanel createObserverJPanel() {
+        return new DesignerObjectObserverPanel(this,this::createPositionPanel,this::createPriorityPanel);
+    }
 
     private JPanel createPositionPanel() {
         JPanel parent = new JPanel();
@@ -103,7 +82,6 @@ public class EditorMockDesignerObject extends MockDesignerObject implements View
         panel.add(textField);
         return panel;
     }
-
 
 
 

@@ -11,12 +11,11 @@ import java.awt.event.MouseAdapter;
 /**
  * 選択、移動を行うツール
  */
-public class SelectAndMoveTool implements Tool  {
+public class SelectAndMoveTool extends SimpleObservedObject implements Tool  {
 
     private static final Color selectRectColor = new Color(65,105,255,100);
     private final MouseAdapter mouseAdapter;
 
-    private UpdateObserver updateObserver;
     /**
      * 新しいインスタンスを作成する
      * @param canvas キャンバス
@@ -39,18 +38,8 @@ public class SelectAndMoveTool implements Tool  {
         }
     }
 
-    @Override
-    public UpdateObserver getUpdateObserver() {
-        return updateObserver;
-    }
-
-    @Override
-    public void setUpdateObserver(UpdateObserver updateObserver) {
-        this.updateObserver = updateObserver;
-    }
-
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
-        updateObserver.update(this, UpdateAction.CHANGE_RECTANGLE);
+        sendUpdate(UpdateAction.CHANGE_RECTANGLE);
     }
 }
