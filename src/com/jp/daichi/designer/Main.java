@@ -4,12 +4,14 @@ import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.simple.SelectAndMoveTool;
+import com.jp.daichi.designer.simple.SimpleImageObject;
 import com.jp.daichi.designer.simple.SimpleLayer;
 import com.jp.daichi.designer.simple.SimpleMaterialManager;
 import com.jp.daichi.designer.simple.editor.*;
-import com.jp.daichi.designer.simple.editor.inspector.EditorMockDesignerObject;
 import com.jp.daichi.designer.simple.editor.inspector.InspectorView;
+import com.jp.daichi.designer.simple.editor.inspector.SimpleInspectorManager;
 import com.jp.daichi.designer.test.MockCanvas;
+import com.jp.daichi.designer.test.MockDesignerObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +24,8 @@ public class Main {
     //やらなければならないこと
     //オブジェクト新規作成ウィンドウ
     //  名前だけで、あとはインスペクタからやる
-    //マテリアル選択ウィンドウ
-    //マテリアルで画像が選択できるようにする
-    //  画像選択ウィンドウ
+    //マテリアルで画像が選択できるようにする△
+    //  画像選択ウィンドウ〇
     //  UV選択ウィンドウ
     //履歴を保存できるようにする
     //全体の背景を設定できるようにする
@@ -38,6 +39,7 @@ public class Main {
     //  出力
     //
     //できるといいこと
+    //マテリアルをドロップダウンで選択できるようにする
     //縦横比をUVとそろえる
     //ドラッグアンドドロップでマテリアル適用
     //マテリアル一覧で余白の均等分割
@@ -48,10 +50,10 @@ public class Main {
     //サーバーで同期する
     //来週以降？
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         UpdateObserver observer = new UpdateObserver();
-        MockCanvas mockCanvas = new MockCanvas(new SimpleMaterialManager());
-        Layer layer = new SimpleLayer("test");
+        MockCanvas mockCanvas = new MockCanvas(new EditorMaterialManager());
+        Layer layer = new SimpleLayer("Image");
         mockCanvas.addLayer(layer);
         mockCanvas.getMaterialManager().setUpdateObserver(observer);
 
@@ -61,6 +63,9 @@ public class Main {
         Tool tool = new SelectAndMoveTool(mockCanvas);
 
         JFrame frame = new JFrame("2D Level Designer");
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        SwingUtilities.updateComponentTreeUI(frame);
+
         frame.setSize(500,500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new MyJPanel(mockCanvas,tool);
@@ -68,19 +73,23 @@ public class Main {
 
         mockCanvas.setUpdateObserver(observer);
         tool.setUpdateObserver(observer);
-        DesignerObject designerObject = new EditorMockDesignerObject("Object1",mockCanvas,new Point(250,100),new SignedDimension(100,100));
+        DesignerObject designerObject =new MockDesignerObject("Object1",mockCanvas,new Point(250,100),new SignedDimension(100,100));
+        ImageObject imageObject = new SimpleImageObject("ImageObject",mockCanvas,new Point(0,0),new SignedDimension(100,100));
         layer.add(designerObject);
+        layer.add(imageObject);
         designerObject.setZ(1000);
-        layer.add(new EditorMockDesignerObject("Object2",mockCanvas,new Point(250,200),new SignedDimension(50,50)));
+        layer.add(new MockDesignerObject("Object2",mockCanvas,new Point(250,200),new SignedDimension(50,50)));
 
         InspectorView inspectorView = new InspectorView();
-        WindowManager windowManager = new WindowManager(frame,inspectorView);
-        JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,inspectorView,new LayerViewer(mockCanvas,inspectorView));
+        SimpleInspectorManager simpleInspectorManager = new SimpleInspectorManager();
+        WindowManager windowManager = new WindowManager(frame,inspectorView,simpleInspectorManager);
+        simpleInspectorManager.setWindowManager(windowManager);
+        JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,inspectorView,new LayerViewer(mockCanvas,windowManager));
         right.setDividerSize(2);
         right.setResizeWeight(0.5);
         right.setDividerLocation(200);
         right.setBorder(null);
-        JSplitPane left = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jPanel,new MaterialViewer(mockCanvas.getMaterialManager(),inspectorView));
+        JSplitPane left = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jPanel,new MaterialViewer(mockCanvas.getMaterialManager(),windowManager));
         left.setDividerSize(2);
         left.setResizeWeight(0.5);
         left.setDividerLocation(200);

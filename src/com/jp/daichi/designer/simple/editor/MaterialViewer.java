@@ -1,7 +1,7 @@
 package com.jp.daichi.designer.simple.editor;
 
 import com.jp.daichi.designer.interfaces.*;
-import com.jp.daichi.designer.simple.editor.inspector.MaterialInspectorView;
+import com.jp.daichi.designer.simple.editor.inspector.ImageObjectInspectorView;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MaterialViewer extends JScrollPane {
 
@@ -84,13 +85,14 @@ public class MaterialViewer extends JScrollPane {
         public void update(ObservedObject target, UpdateAction action) {
             if (target instanceof MaterialManager) {
                 if (action == UpdateAction.ADD_MATERIAL) {
-                    int zOrder = 0;
-                    for (Material material : materialManager.getMaterials()) {
+                    List<Material> sorted = materialManager.getMaterials().stream().sorted().toList();
+                    for (int i = 0;i < sorted.size();i++) {
+                        Material material = sorted.get(i);
                         Component component = getComponent(material);
                         if (component == null) {
-                            add(new MaterialPreviewPanel(material), zOrder);
+                            add(new MaterialPreviewPanel(material), i);
                         } else {
-                            zOrder = getComponentZOrder(component);
+                            setComponentZOrder(component,i);
                         }
                     }
                 } else if (action == UpdateAction.REMOVE_MATERIAL) {
@@ -104,15 +106,16 @@ public class MaterialViewer extends JScrollPane {
                         }
                     }
                 }
-            } else if (target instanceof Material targetMaterial) {
-                for (Component component : getComponents()) {
-                    if (component instanceof MaterialPreviewPanel materialPreviewPanel) {
-                        if (targetMaterial == materialPreviewPanel.material) {
-                            int zOrder = getComponentZOrder(component);
-                            remove(component);
-                            add(new MaterialPreviewPanel(targetMaterial), zOrder);
-                            break;
-                        }
+            } else if (target instanceof Material) {
+                List<Material> sorted = materialManager.getMaterials().stream().sorted().toList();
+                for (int i = 0;i < sorted.size();i++) {
+                    Material material = sorted.get(i);
+                    Component component = getComponent(material);
+                    if (component instanceof MaterialPreviewPanel materialPreviewPanel && materialPreviewPanel.material == target) {
+                        remove(materialPreviewPanel);
+                        add(new MaterialPreviewPanel(materialPreviewPanel.material),i);
+                    } else {
+                        setComponentZOrder(component, i);
                     }
                 }
             }
@@ -148,7 +151,7 @@ public class MaterialViewer extends JScrollPane {
             imageLabel.setMinimumSize(previewImageSize);
             imageLabel.setMaximumSize(previewImageSize);
             if (material.getImage() != null) {
-                imageLabel.setIcon(new ImageIcon(material.getImage()));
+                imageLabel.setIcon(new ImageIcon(material.getImage().getScaledInstance(previewImageSize.width,previewImageSize.height,Image.SCALE_SMOOTH)));//TODO 中央に配置する
             } else {
                 imageLabel.setBackground(ViewUtils.MATERIAL_ERROR_COLOR);
             }
@@ -160,35 +163,37 @@ public class MaterialViewer extends JScrollPane {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
-                        windowManager.getInspectorView().setView(new MaterialInspectorView(material));
+                        windowManager.inspectorView().setView(windowManager.inspectorManager().createInspectorView(material));
                     } else if (SwingUtilities.isRightMouseButton(e)) {
                         popup.show(e.getComponent(),e.getX(),e.getY());
-                        System.out.println(e.getComponent().getLocation()+","+e.getX()+","+e.getY());
                     }
                 }
 
                 @Override
                 public void mouseDragged(MouseEvent e) {
-                    //参考:https://ateraimemo.com/Swing/DraggablePopupMenu.html
-
                     if (SwingUtilities.isLeftMouseButton(e)) {
                         if (draggedMaterial == null) {
                             draggedMaterial = new DragPopup(new MaterialPreviewPanel(material));
                             draggedMaterial.setBorder(BorderFactory.createEmptyBorder());
                         }
-                        draggedMaterial.show(e.getComponent(),e.getX()-1,e.getY()-1);
-                        Point converted = SwingUtilities.convertPoint(e.getComponent(),e.getPoint(),windowManager.getInspectorView());
-                        Component component = SwingUtilities.getDeepestComponentAt(windowManager.getInspectorView(),converted.x,converted.y);
-                        if (component instanceof JComponent jComponent) {
+                        draggedMaterial.show(e.getComponent(), e.getX() - 1, e.getY() - 1);
+                        if (getPropertyAt(e.getComponent(),windowManager.inspectorView(),ImageObjectInspectorView.materialPanelClientPropertyKey,e.getPoint())==null) {
+                            windowManager.frame().setCursor(ViewUtils.NO_DRAG);
+                        } else {
+                            windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         }
                     }
                 }
-
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (draggedMaterial != null) {
+                        windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         draggedMaterial.setVisible(false);
                         draggedMaterial = null;
+                        Object property = getPropertyAt(e.getComponent(),windowManager.inspectorView(), ImageObjectInspectorView.materialPanelClientPropertyKey,e.getPoint());
+                        if (property instanceof ImageObject imageObject) {
+                            imageObject.setMaterialUUID(material.getUUID());
+                        }
                     }
                 }
             };
@@ -202,6 +207,24 @@ public class MaterialViewer extends JScrollPane {
             JMenuItem item = new JMenuItem("Delete");
             item.addActionListener(e-> materialManager.removeMaterial(material));
             popup.add(item);
+        }
+
+        private Object getPropertyAt(Component source,Container container,Object key,Point point) {
+            for (Component component:container.getComponents()) {
+                if (component instanceof JComponent jComponent) {
+                    Object result = jComponent.getClientProperty(key);
+                    if (result != null && !jComponent.contains(SwingUtilities.convertPoint(source,point,jComponent))) {
+                        result = null;
+                    }
+                    if (result == null) {
+                        result = getPropertyAt(source,jComponent,key,point);
+                    }
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+            return null;
         }
     }
 
@@ -353,4 +376,6 @@ public class MaterialViewer extends JScrollPane {
             dim.height += rowHeight;
         }
     }
+
+
 }

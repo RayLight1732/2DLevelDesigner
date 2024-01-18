@@ -1,13 +1,11 @@
 package com.jp.daichi.designer;
 
+import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Frame;
 import com.jp.daichi.designer.interfaces.Point;
 
 import java.awt.*;
-
-import com.jp.daichi.designer.interfaces.Direction;
 
 /**
  * 処理に役立つメソッドを集めたユーティリティクラス
@@ -138,5 +136,9 @@ public class Utils {
 
     public static int round(double d) {
         return (int)Math.round(d);
+    }
+
+    public static Material getMaterial(ImageObject imageObject) {
+        return imageObject.getCanvas().getMaterialManager().getMaterial(imageObject.getMaterialUUID());
     }
 }

@@ -2,7 +2,6 @@ package com.jp.daichi.designer.simple;
 
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.MaterialManager;
-import com.jp.daichi.designer.interfaces.UpdateObserver;
 import com.jp.daichi.designer.simple.editor.UpdateAction;
 
 import java.util.ArrayList;
@@ -11,10 +10,13 @@ import java.util.UUID;
 
 public class SimpleMaterialManager extends SimpleObservedObject implements MaterialManager {
 
-    private final List<Material> materials = new ArrayList<>();
+    protected final List<Material> materials = new ArrayList<>();
 
     @Override
     public Material getMaterial(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
         for (Material material:materials) {
             if (material.getUUID().compareTo(uuid) == 0) {
                 return material;
@@ -27,12 +29,13 @@ public class SimpleMaterialManager extends SimpleObservedObject implements Mater
     public Material addMaterial(String name) {
         String resolvedName = resolveName(name);
         Material material = new SimpleMaterial(resolvedName,UUID.randomUUID());
+        material.setUpdateObserver(getUpdateObserver());
         materials.add(material);
         sendUpdate(UpdateAction.ADD_MATERIAL);
         return material;
     }
 
-    private String resolveName(String name) {
+    protected String resolveName(String name) {
         int suffixNumber = 0;
         while (checkDuplication(name,suffixNumber)) {
             suffixNumber++;
@@ -40,7 +43,7 @@ public class SimpleMaterialManager extends SimpleObservedObject implements Mater
         return createSuffixedName(name,suffixNumber);
     }
 
-    private boolean checkDuplication(String name,int suffixNumber) {
+    protected boolean checkDuplication(String name,int suffixNumber) {
         String newName = createSuffixedName(name,suffixNumber);
         for (Material material:materials) {
             if (material.getName().equals(newName)) {

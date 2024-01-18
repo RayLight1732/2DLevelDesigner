@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * イメージオブジェクト用のマテリアルデータ
  */
-public interface Material extends ObservedObject {
+public interface Material extends ObservedObject,Comparable<Material> {
 
     /**
      * このマテリアルの名前を取得する

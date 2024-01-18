@@ -36,20 +36,29 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = Utils.getRectangleOnScreen(getCanvas(),this);
-        try{
+        Rectangle rectangle = Utils.getRectangleOnScreen(getCanvas(), this);
+        try {
             Material material = getCanvas().getMaterialManager().getMaterial(getMaterialUUID());
-            double uvX = material.getUV().x();
-            double uvY= material.getUV().y();
-            double uvWidth = material.getUVDimension().width();
-            double uvHeight = material.getUVDimension().height();
-            g.drawImage(material.getImage(),
-                    rectangle.x,rectangle.y,rectangle.width,rectangle.height,
-                    Utils.round(uvX), Utils.round(uvY), Utils.round(uvX+uvWidth), Utils.round(uvY+uvHeight), null);
+            if (material == null || material.getImage() == null) {
+                drawMissing(g,rectangle);
+            } else {
+                double uvX = material.getUV().x();
+                double uvY = material.getUV().y();
+                double uvWidth = material.getUVDimension().width();
+                double uvHeight = material.getUVDimension().height();
+                System.out.println(uvWidth+","+uvHeight);
+                g.drawImage(material.getImage(),
+                        rectangle.x, rectangle.y,rectangle.x+ rectangle.width,rectangle.y+rectangle.height,
+                        Utils.round(uvX), Utils.round(uvY), Utils.round(uvX + uvWidth), Utils.round(uvY + uvHeight), null);
+            }
         } catch (NullPointerException exception) {
-            g.setColor(ViewUtils.MATERIAL_ERROR_COLOR);
-            g.fill(rectangle);
+            drawMissing(g, rectangle);
         }
+    }
+
+    private void drawMissing(Graphics2D g,Rectangle rectangle) {
+        g.setColor(ViewUtils.MATERIAL_ERROR_COLOR);
+        g.fill(rectangle);
     }
 
 

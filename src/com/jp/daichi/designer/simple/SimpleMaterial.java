@@ -46,6 +46,7 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
 
     @Override
     public void setImage(BufferedImage image) {
+        System.out.println("set image");
         this.image = image;
         sendUpdate(UpdateAction.CHANGE_IMAGE);
     }
@@ -72,4 +73,8 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
         sendUpdate(UpdateAction.CHANGE_UV);
     }
 
+    @Override
+    public int compareTo(Material o) {
+        return getName().compareTo(o.getName());
+    }
 }

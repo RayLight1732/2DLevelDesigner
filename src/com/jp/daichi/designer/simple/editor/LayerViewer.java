@@ -4,7 +4,6 @@ import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.ObservedObject;
-import com.jp.daichi.designer.simple.editor.inspector.InspectorView;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,7 +13,9 @@ import java.awt.event.MouseEvent;
 
 public class LayerViewer extends JScrollPane {
 
-    public LayerViewer(Canvas canvas, InspectorView inspectorView) {
+    private final WindowManager windowManager;
+    public LayerViewer(Canvas canvas, WindowManager windowManager) {
+        this.windowManager = windowManager;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -28,7 +29,7 @@ public class LayerViewer extends JScrollPane {
         accordion.setBorder(BorderFactory.createEmptyBorder(10, ViewUtils.LEFT_PADDING, 5, 5));
 
         for (Layer layer:canvas.getLayers()) {
-            JPanel p = new LayerPanel(layer,inspectorView);
+            JPanel p = new LayerPanel(layer);
             accordion.add(p);
             accordion.add(Box.createVerticalStrut(5));
         }
@@ -119,13 +120,11 @@ public class LayerViewer extends JScrollPane {
         public abstract String getTitle();
     }
 
-    private static class LayerPanel extends AAccordionPanel {
+    private class LayerPanel extends AAccordionPanel {
         private static final Border border = BorderFactory.createEmptyBorder(0, 10, 0, 0);
         private final Layer layer;
-        private final InspectorView inspectorView;
-        public LayerPanel(Layer layer,InspectorView inspectorView) {
+        public LayerPanel(Layer layer) {
             this.layer = layer;
-            this.inspectorView = inspectorView;
             initContentPanel();
         }
 
@@ -164,8 +163,9 @@ public class LayerViewer extends JScrollPane {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (designerObject instanceof Viewable viewable) {
-                        inspectorView.setView(viewable);
+                    JComponent inspectorView = windowManager.inspectorManager().createInspectorView(designerObject);
+                    if (inspectorView != null) {
+                        windowManager.inspectorView().setView(inspectorView);
                     }
                 }
             });
