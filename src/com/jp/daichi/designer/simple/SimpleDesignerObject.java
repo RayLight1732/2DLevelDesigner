@@ -6,6 +6,7 @@ import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.simple.editor.UpdateAction;
 
 import java.awt.*;
+import java.util.UUID;
 
 
 /**
@@ -14,37 +15,39 @@ import java.awt.*;
 public abstract class SimpleDesignerObject extends SimpleObservedObject implements DesignerObject {
 
     private final Canvas canvas;
-    private Point center;
+    private Point position;
     private SignedDimension dimension;
     private int priority = 0;
     private boolean isVisible = true;
 
     private double z = 0;
     private String name;
+    private final UUID uuid;
 
     /**
      * デザイナーオブジェクトのインスタンスを作成する
      * @param name このオブジェクトの名前
      * @param canvas キャンバス
-     * @param center 中心座標
+     * @param position 座標
      * @param dimension 表示領域
      */
-    public SimpleDesignerObject(String name,Canvas canvas, Point center, SignedDimension dimension) {
+    public SimpleDesignerObject(String name,UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
         this.name = name;
+        this.uuid = uuid;
         this.canvas = canvas;
-        this.center = center;
+        this.position = position;
         this.dimension = dimension;
     }
 
     @Override
     public Point getPosition() {
-        return center;
+        return position;
     }
 
     @Override
     public void setPosition(Point point) {
-        if (this.center == null || point == null || point.x() != this.center.x() || point.y() != this.center.y()) {
-            this.center = point;
+        if (this.position == null || point == null || point.x() != this.position.x() || point.y() != this.position.y()) {
+            this.position = point;
             sendUpdate(UpdateAction.CHANGE_RECTANGLE);
         }
     }
@@ -125,5 +128,10 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     public void setName(String name) {
         this.name = name;
         sendUpdate(UpdateAction.CHANGE_NAME);
+    }
+
+    @Override
+    public UUID getUUID() {
+        return uuid;
     }
 }

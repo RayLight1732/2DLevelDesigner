@@ -1,5 +1,9 @@
 package com.jp.daichi.designer.interfaces;
 
+import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
+import com.jp.daichi.designer.interfaces.manager.LayerManager;
+import com.jp.daichi.designer.interfaces.manager.MaterialManager;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Set;
@@ -10,25 +14,24 @@ import java.util.UUID;
  */
 public interface Canvas {
     /**
-     * レイヤーのリストのコピーを返す
-     * @return レイヤーのリストのコピー
+     * レイヤーのUUIDのリストのコピーを返す
+     * @return レイヤーのUUIDのリストのコピー
      */
-    List<Layer> getLayers();
+    List<UUID> getLayers();
 
     /**
      * レイヤーを削除する
-     * @param layer 対象のレイヤー
+     * @param layerUUID 対象のレイヤーのUUID
      * @return 削除に成功したかどうか
      */
-    boolean removeLayer(Layer layer);
+    boolean removeLayer(UUID layerUUID);
 
     /**
      * レイヤーを追加する
-     * 名前が重複している場合、失敗
-     * @param layer 対象のレイヤー
+     * @param layerUUID 対象のレイヤーのUUID
      * @return 追加に成功したかどうか
      */
-    boolean addLayer(Layer layer);
+    boolean addLayer(UUID layerUUID);
 
     /**
      * 選択用の枠線を取得する
@@ -118,4 +121,16 @@ public interface Canvas {
      * @return マテリアルマネージャー
      */
     MaterialManager getMaterialManager();
+
+    /**
+     * レイヤーマネージャーを取得する
+     * @return レイヤーマネージャー
+     */
+    LayerManager getLayerManager();
+
+    /**
+     * デザイナーオブジェクトマネージャーを取得する
+     * @return デザイナーオブジェクトマネージャー
+     */
+    DesignerObjectManager getDesignerObjectManager();
 }

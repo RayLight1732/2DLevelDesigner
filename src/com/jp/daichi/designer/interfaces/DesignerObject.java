@@ -1,7 +1,11 @@
 package com.jp.daichi.designer.interfaces;
 
+import com.jp.daichi.designer.interfaces.editor.PermanentObject;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * デザイナー用のオブジェクト
@@ -100,4 +104,11 @@ public interface DesignerObject extends Comparable<DesignerObject>,ObservedObjec
      * @param name 名前
      */
     void setName(String name);
+
+    /**
+     * このオブジェクトのUUIDを取得する
+     * @return UUID
+     */
+    UUID getUUID();
+
 }

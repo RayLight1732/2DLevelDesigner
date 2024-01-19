@@ -5,6 +5,9 @@ import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Frame;
 import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
+import com.jp.daichi.designer.interfaces.manager.LayerManager;
+import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 import com.jp.daichi.designer.simple.SimpleFrame;
 import com.jp.daichi.designer.simple.editor.ViewUtils;
 
@@ -21,30 +24,37 @@ import java.util.List;
 public class MockCanvas  implements Canvas {
 
     private final Frame frame = new SimpleFrame(this);
-    private final List<Layer> layers = new ArrayList<>();
+    private final List<UUID> layers = new ArrayList<>();
     private final MaterialManager materialManager;
+    private final LayerManager layerManager;
+    private final DesignerObjectManager designerObjectManager;
+    private UpdateObserver updateObserver;
 
-    public MockCanvas(MaterialManager materialManager) {
+    public MockCanvas(MaterialManager materialManager,LayerManager layerManager,DesignerObjectManager designerObjectManager) {
         this.materialManager = materialManager;
+        this.layerManager = layerManager;
+        this.designerObjectManager = designerObjectManager;
     }
 
     @Override
-    public List<Layer> getLayers() {
+    public List<UUID> getLayers() {
         return new ArrayList<>(layers);
     }
 
     @Override
-    public boolean removeLayer(Layer layer) {
-        return layers.remove(layer);
+    public boolean removeLayer(UUID layerUUID) {
+        return layers.remove(layerUUID);
     }
 
     @Override
-    public boolean addLayer(Layer layer) {
-        boolean result = layers.add(layer);
-        if (result) {
-            layer.setUpdateObserver(frame.getUpdateObserver());
+    public boolean addLayer(UUID layerUUID) {
+        if (layers.contains(layerUUID)) {
+            return false;
+        } else {
+            layers.add(layerUUID);
+            getLayerManager().getInstance(layerUUID).setUpdateObserver(frame.getUpdateObserver());
+            return true;
         }
-        return result;
     }
 
     @Override
@@ -54,10 +64,12 @@ public class MockCanvas  implements Canvas {
 
     @Override
     public DesignerObject getDesignerObject(Point point) {
-        for (Layer layer:layers) {
-            if (layer.isVisible()) {
-                for (DesignerObject designerObject : layer.getObjects()) {
-                    if (designerObject.isVisible() && Utils.getRectangleOnScreen(this,designerObject).contains(point.convert())) {
+        for (UUID layerUUID:layers) {
+            Layer layer = layerManager.getInstance(layerUUID);
+            if (layer != null) {
+                for (UUID objectUUID:layer.getObjects()) {
+                    DesignerObject designerObject = designerObjectManager.getInstance(objectUUID);
+                    if (designerObject != null && designerObject.isVisible() && Utils.getRectangleOnScreen(this,designerObject).contains(point.convert())) {
                         return designerObject;
                     }
                 }
@@ -69,10 +81,12 @@ public class MockCanvas  implements Canvas {
     @Override
     public Set<DesignerObject> getDesignerObjects(Rectangle rectangle) {
         Set<DesignerObject> result = new HashSet<>();
-        for (Layer layer:layers) {
-            if (layer.isVisible()) {
-                for (DesignerObject designerObject:layer.getObjects()) {
-                    if (designerObject.isVisible() && Utils.getRectangleOnScreen(this,designerObject).intersects(rectangle)) {
+        for (UUID layerUUID:layers) {
+            Layer layer = getLayerManager().getInstance(layerUUID);
+            if (layer != null) {
+                for (UUID objectUUID:layer.getObjects()) {
+                    DesignerObject designerObject = getDesignerObjectManager().getInstance(objectUUID);
+                    if (designerObject != null && designerObject.isVisible() && Utils.getRectangleOnScreen(this,designerObject).intersects(rectangle)) {
                         result.add(designerObject);
                     }
                 }
@@ -109,15 +123,26 @@ public class MockCanvas  implements Canvas {
     }
 
     @Override
+    public LayerManager getLayerManager() {
+        return layerManager;
+    }
+
+    @Override
+    public DesignerObjectManager getDesignerObjectManager() {
+        return designerObjectManager;
+    }
+
+    @Override
     public void draw(Graphics2D g,int width,int height) {
         updateTransform(width,height);
         int newWidth = Utils.round(getViewPort().width*scale);
         int newHeight = Utils.round(getViewPort().height*scale);
         g.setColor(Color.BLACK);
         g.fillRect(drawX,drawY,newWidth,newHeight);
-        for (Layer layer:layers) {
+        for (UUID layerUUID:layers) {
+            Layer layer = layerManager.getInstance(layerUUID);
             if (layer.isVisible()) {
-                layer.draw(g);
+                layer.draw(g,getDesignerObjectManager());
             }
         }
         g.setColor(ViewUtils.BACKGROUND_COLOR);
@@ -133,10 +158,11 @@ public class MockCanvas  implements Canvas {
 
     @Override
     public void setUpdateObserver(UpdateObserver updateObserver) {
-        for (Layer layer:layers) {
-            layer.setUpdateObserver(updateObserver);
-        }
+        this.updateObserver = updateObserver;
         frame.setUpdateObserver(updateObserver);
+        getLayerManager().setUpdateObserver(updateObserver);
+        getMaterialManager().setUpdateObserver(updateObserver);
+        getDesignerObjectManager().setUpdateObserver(updateObserver);
     }
 
     private Rectangle rectangle = new Rectangle(0,0,1920,1080);

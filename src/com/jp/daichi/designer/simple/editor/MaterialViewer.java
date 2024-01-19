@@ -1,6 +1,7 @@
 package com.jp.daichi.designer.simple.editor;
 
 import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 import com.jp.daichi.designer.simple.editor.inspector.ImageObjectInspectorView;
 
 import javax.swing.*;
@@ -12,7 +13,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MaterialViewer extends JScrollPane {
 

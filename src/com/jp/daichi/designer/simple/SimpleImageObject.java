@@ -21,12 +21,13 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     /**
      * イメージオブジェクトのインスタンスを作成する
      * @param name このオブジェクトの名前
+     * @param uuid UUID
      * @param canvas キャンバス
-     * @param center 座標
+     * @param position 座標
      * @param dimension 表示領域
      **/
-    public SimpleImageObject(String name,Canvas canvas, Point center, SignedDimension dimension) {
-        super(name,canvas,center, dimension);
+    public SimpleImageObject(String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
+        super(name,uuid,canvas,position, dimension);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     public void draw(Graphics2D g) {
         Rectangle rectangle = Utils.getRectangleOnScreen(getCanvas(), this);
         try {
-            Material material = getCanvas().getMaterialManager().getMaterial(getMaterialUUID());
+            Material material = getCanvas().getMaterialManager().getInstance(getMaterialUUID());
             if (material == null || material.getImage() == null) {
                 drawMissing(g,rectangle);
             } else {

@@ -3,6 +3,7 @@ package com.jp.daichi.designer.simple;
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.UpdateObserver;
+import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.simple.editor.UpdateAction;
 
 import java.awt.*;
@@ -13,27 +14,28 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
 
     private String name;
     private boolean isVisible = true;
-    protected final List<DesignerObject> designerObjects = new ArrayList<>();
+    private final UUID uuid;
+    protected final List<UUID> designerObjects = new ArrayList<>();
 
-    public SimpleLayer(String name) {
+    public SimpleLayer(String name,UUID uuid) {
         this.name = name;
+        this.uuid = uuid;
     }
 
     @Override
-    public List<DesignerObject> getObjects() {
+    public List<UUID> getObjects() {
         return new ArrayList<>(designerObjects);
     }
 
     @Override
-    public void add(DesignerObject designerObject) {
-        designerObjects.add(designerObject);
-        designerObject.setUpdateObserver(getUpdateObserver());
+    public void add(UUID designerObjectUUID) {
+        designerObjects.add(designerObjectUUID);
         Collections.sort(designerObjects);
         sendUpdate(UpdateAction.ADD);
     }
 
     @Override
-    public boolean remove(DesignerObject designerObject) {
+    public boolean remove(UUID designerObject) {
         boolean result = designerObjects.remove(designerObject);
         sendUpdate(UpdateAction.REMOVE);
         return result;
@@ -62,17 +64,14 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
     }
 
     @Override
-    public void setUpdateObserver(UpdateObserver observer) {
-        super.setUpdateObserver(observer);
-        for (DesignerObject designerObject:designerObjects) {
-            designerObject.setUpdateObserver(observer);
+    public void draw(Graphics2D g,DesignerObjectManager designerObjectManager) {
+        if (isVisible()) {
+            designerObjects.stream().map(designerObjectManager::getDesignerObject).filter(DesignerObject::isVisible).sorted(Comparator.reverseOrder()).forEach(it ->it.draw(g));
         }
     }
 
     @Override
-    public void draw(Graphics2D g) {
-        if (isVisible()) {
-            designerObjects.stream().filter(DesignerObject::isVisible).sorted(Comparator.reverseOrder()).forEach(it ->it.draw(g));
-        }
+    public UUID getUUID() {
+        return uuid;
     }
 }

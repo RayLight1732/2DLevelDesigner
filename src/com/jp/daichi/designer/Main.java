@@ -6,10 +6,10 @@ import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.simple.SelectAndMoveTool;
 import com.jp.daichi.designer.simple.SimpleImageObject;
 import com.jp.daichi.designer.simple.SimpleLayer;
-import com.jp.daichi.designer.simple.SimpleMaterialManager;
 import com.jp.daichi.designer.simple.editor.*;
 import com.jp.daichi.designer.simple.editor.inspector.InspectorView;
 import com.jp.daichi.designer.simple.editor.inspector.SimpleInspectorManager;
+import com.jp.daichi.designer.simple.editor.manager.EditorMaterialManager;
 import com.jp.daichi.designer.test.MockCanvas;
 import com.jp.daichi.designer.test.MockDesignerObject;
 

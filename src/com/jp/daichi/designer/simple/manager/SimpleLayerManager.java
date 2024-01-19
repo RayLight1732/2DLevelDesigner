@@ -1,0 +1,25 @@
+package com.jp.daichi.designer.simple.manager;
+
+import com.jp.daichi.designer.interfaces.Layer;
+import com.jp.daichi.designer.interfaces.UpdateObserver;
+import com.jp.daichi.designer.interfaces.manager.LayerManager;
+
+import java.util.UUID;
+
+public abstract class SimpleLayerManager extends AManager<Layer> implements LayerManager {
+
+    @Override
+    protected String getName(Layer target) {
+        return target.getName();
+    }
+
+    @Override
+    protected UUID getUUID(Layer target) {
+        return target.getUUID();
+    }
+
+    @Override
+    protected void setObserverObject(Layer target, UpdateObserver observer) {
+        target.setUpdateObserver(observer);
+    }
+}

@@ -1,7 +1,10 @@
 package com.jp.daichi.designer.interfaces;
 
+import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
+
 import java.awt.*;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 描画用レイヤー
@@ -11,24 +14,24 @@ public interface Layer extends ObservedObject {
 
 
     /**
-     * このレイヤーに登録されているオブジェクトのリストのコピーを取得
+     * このレイヤーに登録されているオブジェクトのUUIDのリストのコピーを取得
      * ソートされている必要がある
      * @return このレイヤーに登録されているオブジェクトのリストのコピー
      */
-    List<DesignerObject> getObjects();
+    List<UUID> getObjects();
 
     /**
      * デザイナーオブジェクトをこのレイヤーに追加する
-     * @param designerObject 追加するデザイナーオブジェクト
+     * @param designerObjectUUID 追加するデザイナーオブジェクトのUUID
      */
-    void add(DesignerObject designerObject);
+    void add(UUID designerObjectUUID);
 
     /**
      * デザイナーオブジェクトをこのレイヤーから削除する
-     * @param designerObject 削除するデザイナーオブジェクト
+     * @param designerObjectUUID 削除するデザイナーオブジェクトのUUID
      * @return 削除するに成功したかどうか
      */
-    boolean remove(DesignerObject designerObject);
+    boolean remove(UUID designerObjectUUID);
 
     /**
      * 描画されるかどうか
@@ -57,6 +60,13 @@ public interface Layer extends ObservedObject {
     /**
      * 描画を行う
      * @param g グラフィックオブジェクト
+     * @param designerObjectManager デザイナーオブジェクトマネージャー
      */
-    void draw(Graphics2D g);
+    void draw(Graphics2D g,DesignerObjectManager designerObjectManager);
+
+    /**
+     * このレイヤーのUUIDを取得する
+     * @return UUID
+     */
+    UUID getUUID();
 }

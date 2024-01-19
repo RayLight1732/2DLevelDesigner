@@ -46,7 +46,6 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
 
     @Override
     public void setImage(BufferedImage image) {
-        System.out.println("set image");
         this.image = image;
         sendUpdate(UpdateAction.CHANGE_IMAGE);
     }

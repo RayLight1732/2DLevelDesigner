@@ -16,6 +16,9 @@ public class UpdateAction {
     public static final UpdateAction CHANGE_MATERIAL = new UpdateAction("ChangeMaterial");
     public static final UpdateAction ADD_MATERIAL = new UpdateAction("AddMaterial");
     public static final UpdateAction REMOVE_MATERIAL = new UpdateAction("RemoveMaterial");
+
+    public static final UpdateAction CHANGE_IMAGE_FILE = new UpdateAction("ChangeImageFile");
+
     private final String name;
     public UpdateAction(String name) {
         this.name = name;
