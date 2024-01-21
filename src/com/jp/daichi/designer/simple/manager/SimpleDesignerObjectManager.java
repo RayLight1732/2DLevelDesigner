@@ -20,7 +20,7 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
     }
 
     @Override
-    protected void setObserverObject(DesignerObject target, UpdateObserver observer) {
-        target.setUpdateObserver(observer);
+    protected String getDefaultName() {
+        return "NewObject";
     }
 }

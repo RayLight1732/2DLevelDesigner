@@ -5,6 +5,7 @@ import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 /**
  * デザイナーのキャンバス
  */
-public interface Canvas {
+public interface Canvas extends ObservedObject {
     /**
      * レイヤーのUUIDのリストのコピーを返す
      * @return レイヤーのUUIDのリストのコピー
@@ -72,13 +73,13 @@ public interface Canvas {
      * 描画領域を設定する
      * @param rectangle 描画領域
      */
-    void setViewPort(Rectangle rectangle);
+    void setViewport(Rectangle rectangle);
 
     /**
      * 描画領域を取得する
      * @return 描画領域
      */
-    Rectangle getViewPort();
+    Rectangle getViewport();
 
     /**
      * 視野角を設定する
@@ -109,6 +110,15 @@ public interface Canvas {
     Point convertFromScreenPosition(Point point,double z);
 
     /**
+     * スクリーン上の座標を空間内の座標に変換する
+     * @param point 点
+     * @param z z座標
+     * @param inViewport 与えられた点がビューポートを基準としているか、UIを基準としているか
+     * @return 空間内の座標
+     */
+    Point convertFromScreenPosition(Point point,double z,boolean inViewport);
+
+    /**
      * 縦、横の幅を設定し、それ用にTransformを更新する
      * このTransformは主にconvertFromScreenPositionやconvertToScreenPositionに用いられる
      * @param width 幅
@@ -133,4 +143,40 @@ public interface Canvas {
      * @return デザイナーオブジェクトマネージャー
      */
     DesignerObjectManager getDesignerObjectManager();
+
+    /**
+     * 背景画像を取得する
+     * @return 背景画像
+     */
+    BufferedImage getBackgroundImage();
+
+    /**
+     * 背景画像を設定する
+     * @param backgroundImage 背景画像
+     */
+    void setBackgroundImage(BufferedImage backgroundImage);
+
+    /**
+     * 霧の色を取得する
+     * @return 霧の色
+     */
+    Color getFogColor();
+
+    /**
+     * 霧の色を設定する
+     * @param color 霧の色
+     */
+    void setFogColor(Color color);
+
+    /**
+     * 霧の強さを取得する
+     * @return 霧の強さ
+     */
+    double getFogStrength();
+
+    /**
+     * 霧の強さを設定する
+     * @param fogStrength 霧の強さ
+     */
+    void setFogStrength(double fogStrength);
 }

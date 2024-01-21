@@ -4,7 +4,7 @@ import com.jp.daichi.designer.interfaces.ObservedObject;
 import com.jp.daichi.designer.interfaces.UpdateObserver;
 import com.jp.daichi.designer.interfaces.manager.IManager;
 import com.jp.daichi.designer.simple.SimpleObservedObject;
-import com.jp.daichi.designer.simple.editor.UpdateAction;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +17,15 @@ import java.util.UUID;
 public abstract class AManager<T extends ObservedObject> extends SimpleObservedObject implements IManager<T> {
     protected final List<T> instances = new ArrayList<>();
 
-    @Override
-    public T createInstance(String name) {
-        T instance = createManagedObjectInstance(resolveName(name));
-        if (instance != null) {
-            setObserverObject(instance, getUpdateObserver());
-            instances.add(instance);
-            instance.setUpdateObserver(getUpdateObserver());
-            sendUpdate(UpdateAction.ADD);
-            return instance;
-        } else {
-            return null;
-        }
+
+    /**
+     * インスタンスの追加を行うと同時に、このマネージャーに設定されているオブザーバーを対象のインスタンスに設定し、さらにオブザーバーに通知を行う
+     * @param instance 追加するインスタンス
+     */
+    protected void addInstance(T instance) {
+        instances.add(instance);
+        instance.setUpdateObserver(getUpdateObserver());
+        sendUpdate(UpdateAction.ADD);
     }
 
     @Override
@@ -61,19 +58,33 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
         }
     }
 
-    protected String resolveName(String name) {
+    @Override
+    public String resolveName(UUID uuid,String name) {
+        if (name.isEmpty()) {
+            name = getDefaultName();
+        }
         int suffixNumber = 0;
-        while (checkDuplication(name,suffixNumber)) {
+        while (isDuplicate(uuid,name,suffixNumber)) {
             suffixNumber++;
         }
         return createSuffixedName(name,suffixNumber);
     }
 
-    protected boolean checkDuplication(String name,int suffixNumber) {
+    /**
+     * 名前が重複しているかどうか
+     * @param uuid UUID
+     * @param name 名前
+     * @param suffixNumber 接尾子
+     * @return 重複しているならtrue
+     */
+    protected boolean isDuplicate(UUID uuid, String name, int suffixNumber) {
         String newName = createSuffixedName(name,suffixNumber);
         for (T instance:instances) {
             if (getName(instance).equals(newName)) {
-                return true;
+                if (uuid != null && getUUID(instance).compareTo(uuid) == 0) {
+                } else {
+                    return true;
+                }
             }
         }
         return false;
@@ -87,14 +98,11 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
         }
     }
 
-    protected abstract T createManagedObjectInstance(String resolvedName);
-
     protected abstract String getName(T target);
 
     protected abstract UUID getUUID(T target);
 
-    protected abstract void setObserverObject(T target, UpdateObserver observer);
-
+    protected abstract String getDefaultName();
 
     @Override
     public List<T> getAllInstances() {

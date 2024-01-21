@@ -3,9 +3,9 @@ package com.jp.daichi.designer.simple;
 import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.simple.editor.UpdateAction;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 
-import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.UUID;
 
 
@@ -23,17 +23,22 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     private double z = 0;
     private String name;
     private final UUID uuid;
+    private final DesignerObjectType type;
 
     /**
      * デザイナーオブジェクトのインスタンスを作成する
      * @param name このオブジェクトの名前
+     * @param uuid UUID
+     * @param type タイプ
      * @param canvas キャンバス
      * @param position 座標
      * @param dimension 表示領域
+     *
      */
-    public SimpleDesignerObject(String name,UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
+    public SimpleDesignerObject(String name,UUID uuid,DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension) {
         this.name = name;
         this.uuid = uuid;
+        this.type = type;
         this.canvas = canvas;
         this.position = position;
         this.dimension = dimension;
@@ -113,10 +118,14 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     public int compareTo(DesignerObject o) {
         double d = getZ()- o.getZ();
         if (d == 0) {
-            return getPriority()-o.getPriority();
-        } else {
-            return (int) Math.signum(d);
+            d = getPriority()-o.getPriority();
+            if (d == 0) {
+                return getName().compareTo(o.getName());
+            }
         }
+
+        return (int) Math.signum(d);
+
     }
 
     @Override
@@ -126,12 +135,28 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
 
     @Override
     public void setName(String name) {
-        this.name = name;
-        sendUpdate(UpdateAction.CHANGE_NAME);
+        if (!name.equals(this.name)) {
+            this.name = canvas.getDesignerObjectManager().resolveName(getUUID(),name);
+            sendUpdate(UpdateAction.CHANGE_NAME);
+        }
     }
 
     @Override
     public UUID getUUID() {
         return uuid;
+    }
+
+    @Override
+    public Rectangle2D getRectangle() {
+        double x1 = position.x();
+        double y1 = position.y();
+        double x2 = x1+dimension.width();
+        double y2 = y1+dimension.height();
+        return new Rectangle2D.Double(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x1-x2),Math.abs(y1-y2));
+    }
+
+    @Override
+    public DesignerObjectType getType() {
+        return type;
     }
 }

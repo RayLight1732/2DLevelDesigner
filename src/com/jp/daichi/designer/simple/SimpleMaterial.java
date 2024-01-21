@@ -3,10 +3,9 @@ package com.jp.daichi.designer.simple;
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
-import com.jp.daichi.designer.interfaces.UpdateObserver;
-import com.jp.daichi.designer.simple.editor.UpdateAction;
+import com.jp.daichi.designer.interfaces.manager.MaterialManager;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
 
@@ -17,10 +16,12 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
     private SignedDimension uvDimension = new SignedDimension(0,0);
     private String name;
     private final UUID uuid;
+    private final MaterialManager materialManager;
 
-    public SimpleMaterial(String name,UUID uuid) {
+    public SimpleMaterial(String name, UUID uuid, MaterialManager materialManager) {
         this.name = name;
         this.uuid = uuid;
+        this.materialManager = materialManager;
     }
 
     @Override
@@ -30,8 +31,10 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
 
     @Override
     public void setName(String name) {
-        this.name = name;
-        sendUpdate(UpdateAction.CHANGE_NAME);
+        if (!this.name.equals(name)) {
+            this.name = materialManager.resolveName(getUUID(),name);
+            sendUpdate(UpdateAction.CHANGE_NAME);
+        }
     }
 
     @Override

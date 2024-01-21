@@ -33,8 +33,6 @@ public class SelectToolMouseAdapter extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         firstMousePosition = Point.convert(e.getPoint());
-        firstFramePosition = canvas.getFrame().getPosition();
-        firstDimension = canvas.getFrame().getDimension();
         if (e.getButton() == MouseEvent.BUTTON1) {//右クリック
             direction = Utils.getSizeChangeAnchor(canvas.getFrame(), firstMousePosition);
             if (direction == Direction.NONE) {//どこのアンカーも指していない時
@@ -53,24 +51,45 @@ public class SelectToolMouseAdapter extends MouseAdapter {
             } else {
                 selected = true;
             }
+
+            if (selected) {
+                firstFramePosition = canvas.getFrame().getPosition();
+                firstDimension = canvas.getFrame().getDimension();
+            }
         }
     }
 
+    boolean isDrag = false;
+
     @Override
     public void mouseDragged(MouseEvent e) {
+        processMouseMove(e,false);
+    }
+    private void processMouseMove(MouseEvent e,boolean end) {
         Point point = Point.convert(e.getPoint());
         if (SwingUtilities.isLeftMouseButton(e)) {
             if (selected) {
+                if (end) {
+                    isDrag = false;
+                } else if (!isDrag) {
+                    tool.startDrag();
+                    isDrag = true;
+                }
                 Point converted = canvas.convertFromScreenPosition(point,canvas.getFrame().getZ());
                 Point pressPointConverted = canvas.convertFromScreenPosition(firstMousePosition,canvas.getFrame().getZ());
                 double deltaX = converted.x()-pressPointConverted.x();
                 double deltaY = converted.y()-pressPointConverted.y();
 
                 if (direction == Direction.NONE || direction == Direction.CENTER) {
+                    /*
                     Point old = canvas.getFrame().getPosition();
-                    canvas.getFrame().setPosition(new Point(old.x()+deltaX,old.y()+deltaY));
+                    canvas.getFrame().setPosition(new Point(old.x() + deltaX, old.y() + deltaY));
                     firstMousePosition = point;
-                    firstFramePosition = canvas.getFrame().getPosition();
+                    firstFramePosition = canvas.getFrame().getPosition();*/
+                    if (end) {
+                        tool.endDrag(firstFramePosition,firstDimension,true);
+                    }
+                    canvas.getFrame().setPosition(new Point(firstFramePosition.x() + deltaX, firstFramePosition.y() + deltaY));
                 } else {
                     double x = firstFramePosition.x();
                     double y = firstFramePosition.y();
@@ -118,6 +137,9 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                     if (northEast != null && southWest != null) {
                         Point newPoint = new Point(northEast.x(),northEast.y());
                         SignedDimension newDimension = new SignedDimension(southWest.x()-northEast.x(),southWest.y()-northEast.y());
+                        if (end) {
+                            tool.endDrag(firstFramePosition,firstDimension,false);
+                        }
                         canvas.getFrame().setPositionAndDimension(newPoint,newDimension);
                     }
                 }
@@ -160,7 +182,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             if (selected) {
-
+                processMouseMove(e,true);
             } else {
                 canvas.getFrame().clearSelectedObject();
                 canvas.getFrame().addAll(canvas.getDesignerObjects(createRectangle(firstMousePosition,Point.convert(e.getPoint()))));

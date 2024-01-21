@@ -1,7 +1,6 @@
 package com.jp.daichi.designer.simple.manager;
 
 import com.jp.daichi.designer.interfaces.Layer;
-import com.jp.daichi.designer.interfaces.UpdateObserver;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 
 import java.util.UUID;
@@ -19,7 +18,7 @@ public abstract class SimpleLayerManager extends AManager<Layer> implements Laye
     }
 
     @Override
-    protected void setObserverObject(Layer target, UpdateObserver observer) {
-        target.setUpdateObserver(observer);
+    protected String getDefaultName() {
+        return "NewLayer";
     }
 }

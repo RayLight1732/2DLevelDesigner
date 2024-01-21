@@ -12,4 +12,11 @@ public interface InspectorManager {
      * @return Inspector画面 存在しない場合はnull
      */
     JComponent createInspectorView(Object object);
+
+    /**
+     * 対象のオブジェクトが現在インスペクターに表示されているかどうかを取得する
+     * @param object 対象のオブジェクト
+     * @return 対象のオブジェクトが現在インスペクターに表示されているかどうか
+     */
+    boolean isShowed(Object object);
 }

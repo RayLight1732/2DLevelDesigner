@@ -2,7 +2,7 @@ package com.jp.daichi.designer.simple;
 
 import com.jp.daichi.designer.interfaces.ObservedObject;
 import com.jp.daichi.designer.interfaces.UpdateObserver;
-import com.jp.daichi.designer.simple.editor.UpdateAction;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 
 public abstract class SimpleObservedObject implements ObservedObject {
     private UpdateObserver observer;

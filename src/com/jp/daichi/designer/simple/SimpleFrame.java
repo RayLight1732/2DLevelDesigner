@@ -19,7 +19,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
      * @param canvas キャンバス
      */
     public SimpleFrame(Canvas canvas) {
-        super("Frame",canvas,null,null);
+        super("Frame",UUID.randomUUID(),null,canvas,null,null);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
     @Override
     public void draw(Graphics2D g) {
         if (getSelectedObjectCount() != 0) {
-            //updateRectangle();
+            updateRectangle();
             Utils.drawSelectedFrame(g,this);
         }
     }

@@ -1,5 +1,6 @@
 package com.jp.daichi.designer.interfaces.editor;
 
+import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
@@ -20,11 +21,11 @@ public interface HistoryStaff extends Serializable {
     /**
      * この履歴に登録されている内容を打ち消す操作を行う
      */
-    void undo(DesignerObjectManager designerObjectManager, LayerManager layerManager, MaterialManager materialManager);
+    void undo(Canvas canvas);
 
     /**
      * この履歴に登録されている内容を再び行う
      */
-    void redo(DesignerObjectManager designerObjectManager, LayerManager layerManager,MaterialManager materialManager);
+    void redo(Canvas canvas);
 
 }

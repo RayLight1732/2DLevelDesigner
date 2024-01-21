@@ -4,6 +4,7 @@ import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.UUID;
 
@@ -110,5 +111,17 @@ public interface DesignerObject extends Comparable<DesignerObject>,ObservedObjec
      * @return UUID
      */
     UUID getUUID();
+
+    /**
+     * このオブジェクトが存在する領域を取得する
+     * @return 領域
+     */
+    Rectangle2D getRectangle();
+
+    /**
+     * デザイナーオブジェクトのタイプを取得する
+     * @return デザイナーオブジェクトのタイプ
+     */
+    DesignerObjectType getType();
 
 }

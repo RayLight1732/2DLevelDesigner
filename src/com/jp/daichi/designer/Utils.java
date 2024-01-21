@@ -139,6 +139,6 @@ public class Utils {
     }
 
     public static Material getMaterial(ImageObject imageObject) {
-        return imageObject.getCanvas().getMaterialManager().getMaterial(imageObject.getMaterialUUID());
+        return imageObject.getCanvas().getMaterialManager().getInstance(imageObject.getMaterialUUID());
     }
 }

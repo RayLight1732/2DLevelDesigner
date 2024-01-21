@@ -18,13 +18,6 @@ public interface IManager<T> extends ObservedObject {
      */
     T getInstance(UUID uuid);
 
-    /**
-     * インスタンスを登録する
-     * 名前がかぶっていた場合変更されることがある
-     * @param name 名前
-     * @return 新しいインスタンス
-     */
-    T createInstance(String name);
 
     /**
      * インスタンスの登録を解除する
@@ -46,4 +39,12 @@ public interface IManager<T> extends ObservedObject {
      */
     //TODO UUIDの重複があった場合
     T deserializeManagedObject(Map<String,Object> map);
+
+    /**
+     * 名前の重複や空白の名前が生じないように名前を変更する
+     * @param uuid 対象のUUID nullでないとき、重複している対象のuuidが、このuuidと一致したら元の名前を返す
+     * @param name 元の名前
+     * @return 名前の重複や空白の名前が生じないように変更された名前
+     */
+    String resolveName(UUID uuid,String name);
 }

@@ -3,9 +3,13 @@ package com.jp.daichi.designer.interfaces;
 import com.jp.daichi.designer.Utils;
 
 import java.awt.geom.Point2D;
+import java.io.Serial;
 import java.io.Serializable;
 
 public record Point(double x, double y) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public static final Point ZERO = new Point(0, 0);
 

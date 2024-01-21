@@ -4,8 +4,8 @@ import com.jp.daichi.designer.Utils;
 import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.simple.editor.UpdateAction;
-import com.jp.daichi.designer.simple.editor.ViewUtils;
+import com.jp.daichi.designer.interfaces.UpdateAction;
+import com.jp.daichi.designer.editor.ViewUtils;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -27,7 +27,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
      * @param dimension 表示領域
      **/
     public SimpleImageObject(String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
-        super(name,uuid,canvas,position, dimension);
+        super(name,uuid,DesignerObjectType.IMAGE,canvas,position, dimension);
     }
 
     @Override
@@ -47,7 +47,6 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
                 double uvY = material.getUV().y();
                 double uvWidth = material.getUVDimension().width();
                 double uvHeight = material.getUVDimension().height();
-                System.out.println(uvWidth+","+uvHeight);
                 g.drawImage(material.getImage(),
                         rectangle.x, rectangle.y,rectangle.x+ rectangle.width,rectangle.y+rectangle.height,
                         Utils.round(uvX), Utils.round(uvY), Utils.round(uvX + uvWidth), Utils.round(uvY + uvHeight), null);
@@ -78,7 +77,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     @Override
     public void setMaterialUUID(UUID uuid) {
         this.materialUUID = uuid;
-        getUpdateObserver().update(this,UpdateAction.CHANGE_MATERIAL);
+        sendUpdate(UpdateAction.CHANGE_MATERIAL);
     }
 
     public UUID getMaterialUUID() {

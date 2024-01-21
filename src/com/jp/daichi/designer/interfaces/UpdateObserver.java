@@ -1,7 +1,5 @@
 package com.jp.daichi.designer.interfaces;
 
-import com.jp.daichi.designer.simple.editor.UpdateAction;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;

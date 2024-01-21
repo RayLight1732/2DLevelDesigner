@@ -69,4 +69,10 @@ public interface Layer extends ObservedObject {
      * @return UUID
      */
     UUID getUUID();
+
+    /**
+     * このレイヤーが管理するデザイナーオブジェクトのタイプを取得する
+     * @return デザイナーオブジェクトのタイプ
+     */
+    DesignerObjectType getObjectType();
 }
