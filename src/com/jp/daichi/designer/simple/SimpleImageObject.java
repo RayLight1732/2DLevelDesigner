@@ -16,18 +16,36 @@ import java.util.UUID;
  */
 public class SimpleImageObject extends SimpleDesignerObject implements ImageObject {
 
+    public static final String MATERIAL_UUID = "MaterialUUID";
+
     private UUID materialUUID;
 
     /**
      * イメージオブジェクトのインスタンスを作成する
-     * @param name このオブジェクトの名前
-     * @param uuid UUID
-     * @param canvas キャンバス
-     * @param position 座標
+     *
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param canvas    キャンバス
+     * @param position  座標
      * @param dimension 表示領域
      **/
-    public SimpleImageObject(String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
-        super(name,uuid,DesignerObjectType.IMAGE,canvas,position, dimension);
+    public SimpleImageObject(String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
+        super(name, uuid, DesignerObjectType.IMAGE, canvas, position, dimension);
+    }
+
+    /**
+     * イメージオブジェクトのインスタンスを作成する
+     *
+     * @param name         このオブジェクトの名前
+     * @param uuid         UUID
+     * @param materialUUID マテリアルUUID
+     * @param canvas       キャンバス
+     * @param position     座標
+     * @param dimension    表示領域
+     **/
+    public SimpleImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension) {
+        this(name, uuid, canvas, position, dimension);
+        this.materialUUID = materialUUID;
     }
 
     @Override
@@ -41,14 +59,14 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
         try {
             Material material = getCanvas().getMaterialManager().getInstance(getMaterialUUID());
             if (material == null || material.getImage() == null) {
-                drawMissing(g,rectangle);
+                drawMissing(g, rectangle);
             } else {
                 double uvX = material.getUV().x();
                 double uvY = material.getUV().y();
                 double uvWidth = material.getUVDimension().width();
                 double uvHeight = material.getUVDimension().height();
                 g.drawImage(material.getImage(),
-                        rectangle.x, rectangle.y,rectangle.x+ rectangle.width,rectangle.y+rectangle.height,
+                        rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height,
                         Utils.round(uvX), Utils.round(uvY), Utils.round(uvX + uvWidth), Utils.round(uvY + uvHeight), null);
             }
         } catch (NullPointerException exception) {
@@ -56,11 +74,10 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
         }
     }
 
-    private void drawMissing(Graphics2D g,Rectangle rectangle) {
+    private void drawMissing(Graphics2D g, Rectangle rectangle) {
         g.setColor(ViewUtils.MATERIAL_ERROR_COLOR);
         g.fill(rectangle);
     }
-
 
 
     @Override

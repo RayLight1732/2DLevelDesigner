@@ -4,9 +4,7 @@ import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
+import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.simple.SimpleImageObject;
 import com.jp.daichi.designer.editor.history.DesignerObjectHistoryStaff;
 import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
@@ -19,9 +17,8 @@ import java.util.UUID;
  * エディタ用のイメージオブジェクト
  */
 public class EditorImageObject extends SimpleImageObject implements PermanentObject, EditorDesignerObject {
-    private static final String MATERIAL_UUID = "MaterialUUID";
 
-    public static EditorImageObject deserialize(History history,Canvas canvas,DesignerObjectSerializer.DeserializedData deserializedData,Map<String,Object> serialized) {
+    public static EditorImageObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
         try {
             if (deserializedData != null) {
                 UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
@@ -53,11 +50,19 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
         this.history = history;
     }
 
+    /**
+     * イメージオブジェクトのインスタンスを作成する
+     *
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param materialUUID マテリアルUUID
+     * @param canvas    キャンバス
+     * @param position  座標
+     * @param dimension 表示領域
+     **/
     public EditorImageObject(History history, String name,UUID uuid,UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension) {
-        this(history, name, uuid, canvas, position, dimension);
-        setSaveHistory(false);
-        this.setMaterialUUID(materialUUID);
-        setSaveHistory(true);
+        super(name, uuid, materialUUID, canvas, position, dimension);
+        this.history = history;
     }
 
     @Override

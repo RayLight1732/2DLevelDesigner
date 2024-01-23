@@ -2,7 +2,7 @@ package com.jp.daichi.designer.editor.manager;
 
 import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.editor.History;
-import com.jp.daichi.designer.editor.DesignerObjectSerializer;
+import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.editor.EditorImageObject;
 import com.jp.daichi.designer.simple.manager.SimpleDesignerObjectManager;
 
@@ -12,6 +12,7 @@ import java.util.UUID;
 public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     private final History history;
     private Canvas canvas;
+
 
     public EditorDesignerObjectManager(History history) {
         this.history = history;

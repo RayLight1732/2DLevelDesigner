@@ -19,10 +19,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * エディタ用に拡張されたマテリアル
+ * エディタ用のマテリアルの実装
  */
 public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
+    /**
+     * マテリアルをデシリアライズする
+     * @param history 履歴
+     * @param materialManager マネージャー
+     * @param serialized シリアライズされたデータ
+     * @return デシリアライズされた結果
+     */
     public static EditorMaterial deserialize(History history,MaterialManager materialManager, Map<String, Object> serialized) {
         try {
             String name = (String) serialized.get("Name");

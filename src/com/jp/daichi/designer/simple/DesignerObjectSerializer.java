@@ -1,4 +1,4 @@
-package com.jp.daichi.designer.editor;
+package com.jp.daichi.designer.simple;
 
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.DesignerObjectType;

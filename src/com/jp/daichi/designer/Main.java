@@ -81,7 +81,7 @@ public class Main {
         //UIManager.put("TextField.font",defaultFont2);
         SwingUtilities.updateComponentTreeUI(frame);
 
-        EditorCanvasManager canvasManager = new EditorCanvasManager(new File("E:\\Development\\Test"));
+        EditorCanvasManager canvasManager = new EditorCanvasManager(new File("C:\\Development\\Test"));
         Canvas canvas = canvasManager.getInstance();
 
         List<DesignerObjectType> types = canvas.getLayerManager().getAllInstances().stream().map(Layer::getObjectType).toList();

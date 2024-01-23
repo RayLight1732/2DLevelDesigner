@@ -81,8 +81,7 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
         String newName = createSuffixedName(name,suffixNumber);
         for (T instance:instances) {
             if (getName(instance).equals(newName)) {
-                if (uuid != null && getUUID(instance).compareTo(uuid) == 0) {
-                } else {
+                if (uuid == null || getUUID(instance).compareTo(uuid) != 0) {
                     return true;
                 }
             }
