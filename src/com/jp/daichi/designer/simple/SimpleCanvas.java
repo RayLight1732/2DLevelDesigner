@@ -156,12 +156,8 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
                     drawX,drawY,drawX+newWidth,drawY+newHeight,
                     Util.round(uvX), Util.round(uvY), Util.round(uvX + uvWidth), Util.round(uvY + uvHeight), null);
         }
-        for (UUID layerUUID:layers) {
-            Layer layer = layerManager.getInstance(layerUUID);
-            if (layer.isVisible()) {
-                layer.draw(g,getDesignerObjectManager());
-            }
-        }
+        drawLayer(g);
+
         g.setColor(ViewUtil.BACKGROUND_COLOR);
         if (drawX == 0) {//上下に余白
             g.fillRect(0,0,width,drawY);
@@ -170,6 +166,13 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
             g.fillRect(0,0,drawX,height);
             g.fillRect(drawX+newWidth,0,width-drawX-newHeight,height);
         }
+    }
+
+    protected void drawLayer(Graphics2D g) {
+        layers.stream().map(layerManager::getInstance)
+                .filter(Objects::nonNull).sorted()
+                .forEach(layer -> layer.draw(g,getDesignerObjectManager()));
+
     }
 
     @Override

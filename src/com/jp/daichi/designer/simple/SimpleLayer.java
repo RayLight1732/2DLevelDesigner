@@ -94,4 +94,9 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
     public DesignerObjectType getObjectType() {
         return type;
     }
+
+    @Override
+    public int compareTo(Layer o) {
+        return DesignerObjectType.valueOf(getObjectType().name()).ordinal()-DesignerObjectType.valueOf(o.getObjectType().name()).ordinal();
+    }
 }

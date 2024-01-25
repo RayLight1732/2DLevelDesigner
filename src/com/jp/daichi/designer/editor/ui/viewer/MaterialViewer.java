@@ -20,6 +20,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class MaterialViewer extends JScrollPane {
 
@@ -201,9 +203,13 @@ public class MaterialViewer extends JScrollPane {
                         windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         draggedMaterial.setVisible(false);
                         draggedMaterial = null;
-                        Object property = getPropertyAt(e.getComponent(),windowManager.inspectorView(), ImageObjectInspectorView.materialPanelClientPropertyKey,e.getPoint());
-                        if (property instanceof ImageObject imageObject) {
-                            imageObject.setMaterialUUID(material.getUUID());
+                        Object property = getPropertyAt(e.getComponent(),windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey,e.getPoint());
+                        try {
+                            if (property != null) {
+                                ((Consumer<UUID>) property).accept(material.getUUID());
+                            }
+                        } catch (ClassCastException ignore){
+
                         }
                     }
                 }

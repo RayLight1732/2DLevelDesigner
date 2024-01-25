@@ -33,6 +33,10 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
             Objects.requireNonNull(objects);
             Objects.requireNonNull(type);
             EditorLayer result = new EditorLayer(history, name, uuid, type);
+            Boolean isVisible = (Boolean)map.get("isVisible");
+            if (isVisible != null) {
+                result.setVisible(isVisible);
+            }
             result.setSaveHistory(false);
             for (UUID designerObjectsUUID : objects) {
                 result.add(designerObjectsUUID);
@@ -92,6 +96,7 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
         result.put("UUID", getUUID());
         result.put("Objects", getObjects());
         result.put("Type", getObjectType());
+        result.put("isVisible",isVisible());
         return result;
     }
 

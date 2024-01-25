@@ -11,7 +11,10 @@ import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 import com.jp.daichi.designer.simple.BufferedImageSerializer;
 import com.jp.daichi.designer.simple.SimpleMaterial;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -41,8 +44,14 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
             Objects.requireNonNull(uv);
             Objects.requireNonNull(uvDimension);
             BufferedImageSerializer biSerializer = (BufferedImageSerializer) serialized.get("Image");
-            return new EditorMaterial(history, name, uuid,biSerializer == null ? null : biSerializer.getImage(),uv,uvDimension,materialManager);
-
+            String path = (String) serialized.get("Path");
+            File file;
+            if (path != null) {
+                file = new File(path);
+            } else {
+                file = null;
+            }
+            return new EditorMaterial(history, name, uuid,file,biSerializer == null ? null : biSerializer.getImage(),uv,uvDimension,materialManager);
         } catch (NullPointerException | ClassCastException e) {
             return null;
         }
@@ -50,6 +59,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
     private boolean saveHistory = true;
     private final History history;
+    private File file;
 
     /**
      * 新しいマテリアルを作成する
@@ -68,13 +78,15 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
      * @param history 履歴
      * @param name 名前
      * @param uuid UUID
+     * @param file 画像ファイル
      * @param image 画像
      * @param uv UV座標
      * @param uvDimension UVの描画領域
      * @param materialManager マネージャー
      */
-    public EditorMaterial(History history, String name, UUID uuid, BufferedImage image,Point uv,SignedDimension uvDimension, MaterialManager materialManager) {
+    public EditorMaterial(History history, String name, UUID uuid,File file, BufferedImage image,Point uv,SignedDimension uvDimension, MaterialManager materialManager) {
         super(name, uuid,image,uv,uvDimension,materialManager);
+        this.file = file;
         this.history = history;
     }
 
@@ -107,11 +119,11 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
     @Override
     public void setImage(BufferedImage image) {
-        BufferedImage oldImage =getImage();
+        //BufferedImage oldImage =getImage();
         super.setImage(image);
-        if (saveHistory) {
+        /*if (saveHistory) {
             history.add(new SetImage(getUUID(), oldImage, getImage()));
-        }
+        }*/
     }
 
     @Override
@@ -123,6 +135,9 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
         result.put("UVDimension",getUVDimension());
         if (getImage() != null) {
             result.put("Image",new BufferedImageSerializer(getImage()));
+        }
+        if (getImageFile() != null) {
+            result.put("Path",getImageFile().getPath());
         }
         return result;
     }
@@ -137,6 +152,24 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
         this.saveHistory = saveHistory;
     }
 
+    public File getImageFile() {
+        return file;
+    }
+
+    public void setImageFile(File file) throws IOException {
+        File oldFile = getImageFile();
+        this.file = file;
+        if (file != null) {
+            setImage(ImageIO.read(file));
+        } else {
+            setImage(null);
+        }
+        if (saveHistory) {
+            history.add(new SetFile(getUUID(),oldFile == null ? null:oldFile.getPath(),file == null ? null: file.getPath()));
+        }
+    }
+
+    /*
     private static class SetImage implements HistoryStaff {
         private final UUID uuid;
         private final BufferedImageSerializer oldData;
@@ -174,7 +207,38 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
             }
         }
     }
+     */
 
+    private static class SetFile extends SimpleHistoryStaff<EditorMaterial,String> {
+        public SetFile(UUID uuid, String oldValue, String newValue) {
+            super(uuid, oldValue, newValue);
+        }
+
+        @Override
+        public void setValue(EditorMaterial target, String value) {
+            File file;
+            if (value == null) {
+                file = null;
+            } else {
+                file = new File(value);
+            }
+            try {
+                target.setImageFile(file);
+            } catch (IOException ignore) {
+
+            }
+        }
+
+        @Override
+        public EditorMaterial getTarget(Canvas canvas) {
+            return (EditorMaterial) canvas.getMaterialManager().getInstance(uuid);
+        }
+
+        @Override
+        public String description() {
+            return "set image file:"+newValue;
+        }
+    }
     private static class SetUVPoint extends SimpleHistoryStaff<EditorMaterial,Point> {
         public SetUVPoint(UUID uuid, Point oldValue, Point newValue) {
             super(uuid, oldValue, newValue);

@@ -85,14 +85,12 @@ public class Main {
         EditorCanvasManager canvasManager = new EditorCanvasManager(new File("C:\\Development\\Test"));
         Canvas canvas = canvasManager.getInstance();
 
-        List<DesignerObjectType> types = canvas.getLayerManager().getAllInstances().stream().map(Layer::getObjectType).toList();
-        for (DesignerObjectType type : DesignerObjectType.values()) {
-            if (!types.contains(type)) {
+        for (DesignerObjectType type:DesignerObjectType.values()) {
+            if (canvas.getLayerManager().getLayer(type) == null) {
                 Layer layer = canvas.getLayerManager().createInstance(type.getDisplayName() + "Layer", type);
                 canvas.addLayer(layer.getUUID());
             }
         }
-
         //Layer layer = layerManager.createInstance("ImageLayer");
         //canvas.addLayer(layer.getUUID());//TODO canvasにcreateLayerを埋め込んでもいいかも
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * 描画用レイヤー
  */
-public interface Layer extends ObservedObject {
+public interface Layer extends ObservedObject,Comparable<Layer> {
 
 
 

@@ -30,15 +30,29 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
      * @param canvas キャンバス
      * @param position 座標
      * @param dimension 表示領域
-     *
      */
     public SimpleDesignerObject(String name,UUID uuid,DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension) {
+        this(name,uuid,type,canvas,position,dimension,0);
+    }
+
+    /**
+     * デザイナーオブジェクトのインスタンスを作成する
+     * @param name このオブジェクトの名前
+     * @param uuid UUID
+     * @param type タイプ
+     * @param canvas キャンバス
+     * @param position 座標
+     * @param dimension 表示領域
+     * @param priority 優先度
+     */
+    public SimpleDesignerObject(String name,UUID uuid,DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension,int priority) {
         this.name = name;
         this.uuid = uuid;
         this.type = type;
         this.canvas = canvas;
         this.position = position;
         this.dimension = dimension;
+        this.priority = priority;
     }
 
     @Override
@@ -115,7 +129,7 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     public int compareTo(DesignerObject o) {
         double d = getZ()- o.getZ();
         if (d == 0) {
-            d = getPriority()-o.getPriority();
+            d = o.getPriority()-getPriority();
             if (d == 0) {
                 return getName().compareTo(o.getName());
             }

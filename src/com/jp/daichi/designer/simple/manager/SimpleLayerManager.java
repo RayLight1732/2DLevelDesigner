@@ -1,5 +1,6 @@
 package com.jp.daichi.designer.simple.manager;
 
+import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 
@@ -23,5 +24,15 @@ public abstract class SimpleLayerManager extends AManager<Layer> implements Laye
     @Override
     protected String getDefaultName() {
         return "NewLayer";
+    }
+
+    @Override
+    public Layer getLayer(DesignerObjectType type) {
+        for (Layer layer:instances) {
+            if (layer.getObjectType() == type) {
+                return layer;
+            }
+        }
+        return null;
     }
 }

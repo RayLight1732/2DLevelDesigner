@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import static com.jp.daichi.designer.editor.ui.ViewUtil.labelHorizontalStruct;
 
@@ -150,10 +151,11 @@ public class MaterialInspectorView extends ObserverJPanel {
         panel.add(Box.createHorizontalStrut(labelHorizontalStruct));
         panel.add(Box.createGlue());
 
-        if (material.getImage() == null) {
+        File imageFile = material.getImageFile();
+        if (imageFile == null) {
             label.setText("None");
         } else {
-            label.setText("In develop");//TODO
+            label.setText(imageFile.getPath());
         }
 
         label.setEditable(false);
@@ -184,18 +186,22 @@ public class MaterialInspectorView extends ObserverJPanel {
 
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(new ImageFileFilter());
+            if (material.getImageFile() != null) {
+                fileChooser.setSelectedFile(material.getImageFile());
+            }
             int i = fileChooser.showOpenDialog(windowManager.frame());
             if (i == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
-                editorCanvas.getHistory().startCompress("Set Image:"+file.getName());
+                editorCanvas.getHistory().startCompress("Set Image:" + file.getName());
                 try {
-                    material.setImage(ImageIO.read(file));
+                    material.setImageFile(file);
+                    BufferedImage bf = material.getImage();
+                    if (bf != null) {
+                        material.setUVDimension(new SignedDimension(bf.getWidth(), bf.getHeight()));
+                    }
                 } catch (IOException exception) {
-                    exception.printStackTrace();//TODO dialog
-                }
-                BufferedImage bf = material.getImage();
-                if (bf != null) {
-                    material.setUVDimension(new SignedDimension(bf.getWidth(),bf.getHeight()));
+                    //TODO show dialog
+                    exception.printStackTrace();
                 }
                 editorCanvas.getHistory().finishCompress();
             }

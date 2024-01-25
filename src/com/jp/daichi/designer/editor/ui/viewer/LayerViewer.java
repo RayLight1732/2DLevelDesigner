@@ -15,6 +15,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,7 +46,7 @@ public class LayerViewer extends JScrollPane {
         accordion.setBackground(ViewUtil.BACKGROUND_COLOR);
         accordion.setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 5, 5));
 
-        canvas.getLayers().stream().map(it ->canvas.getLayerManager().getInstance(it)).filter(Objects::nonNull).forEach(layer-> {
+        canvas.getLayers().stream().map(it ->canvas.getLayerManager().getInstance(it)).filter(Objects::nonNull).sorted().forEach(layer-> {
             JPanel p = new LayerPanel(canvas,layer);
             accordion.add(p);
             accordion.add(Box.createVerticalStrut(5));

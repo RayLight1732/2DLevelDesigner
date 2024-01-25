@@ -1,5 +1,6 @@
 package com.jp.daichi.designer.editor.manager;
 
+import com.jp.daichi.designer.editor.EditorCollisionObject;
 import com.jp.daichi.designer.editor.EditorImageObject;
 import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
@@ -41,7 +42,11 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     protected DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> map) {
         if (deserializedData.type() == DesignerObjectType.IMAGE) {
             return EditorImageObject.deserialize(history, canvas,deserializedData, map);
-        } else {
+        } else if (deserializedData.type() == DesignerObjectType.COLLISION) {
+            return EditorCollisionObject.deserialize(history,canvas,deserializedData,map);
+        }
+
+        else {
             //TODO
             return null;
         }
@@ -53,6 +58,9 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
         switch (type) {
             case IMAGE -> {
                 return (T) new EditorImageObject(history,resolvedName, UUID.randomUUID(),canvas,new Point(0,0),new SignedDimension(0,0));
+            }
+            case COLLISION -> {
+                return (T) new EditorCollisionObject(history,resolvedName,UUID.randomUUID(),canvas,new Point(0,0),new SignedDimension(0,0));
             }
             default -> {
                 return null;

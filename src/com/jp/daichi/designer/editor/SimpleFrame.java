@@ -21,7 +21,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
      * @param canvas キャンバス
      */
     public SimpleFrame(Canvas canvas) {
-        super("Frame",UUID.randomUUID(),null,canvas,null,null);
+        super("Frame",UUID.randomUUID(),null,canvas,null,null,Integer.MAX_VALUE);
     }
 
     @Override

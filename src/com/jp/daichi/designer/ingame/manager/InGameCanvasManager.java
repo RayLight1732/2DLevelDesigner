@@ -57,6 +57,9 @@ public class InGameCanvasManager implements CanvasManager {
                             this.canvas = deserializeCanvas(Path.of(parentFolder.getAbsolutePath(),"canvas.bin"),materialManager,layerManager,designerObjectManager);
                             if (canvas != null) {
                                 canvas.setUpdateObserver(observer);
+                                designerObjectManager.setCanvas(canvas);
+                                DataLoader loader = new DataLoader(parentFolder);
+                                loader.loadData(canvas);
                             }
                             return canvas;
                         }

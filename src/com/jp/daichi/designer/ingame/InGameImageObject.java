@@ -26,7 +26,7 @@ public class InGameImageObject extends SimpleImageObject {
         try {
             if (deserializedData != null) {
                 UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
-                return new InGameImageObject(deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension());
+                return new InGameImageObject(deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension(),deserializedData.priority());
             } else {
                 return null;
             }
@@ -58,9 +58,10 @@ public class InGameImageObject extends SimpleImageObject {
      * @param canvas       キャンバス
      * @param position     座標
      * @param dimension    表示領域
+     * @param priority     優先度
      **/
-    public InGameImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension) {
-        super(name, uuid, materialUUID, canvas, position, dimension);
+    public InGameImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension,int priority) {
+        super(name, uuid, materialUUID, canvas, position, dimension,priority);
     }
 
 }

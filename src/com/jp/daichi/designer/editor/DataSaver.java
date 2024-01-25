@@ -5,20 +5,22 @@ import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
+import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class DataSaver {
 
@@ -120,6 +122,10 @@ public class DataSaver {
             oos.writeObject(target.serialize());
         }
     }
+
+
+
+
 
     private interface UUIDGetter<T> {
         UUID get(T target);

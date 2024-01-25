@@ -1,24 +1,24 @@
 package com.jp.daichi.designer.editor;
 
 import com.jp.daichi.designer.editor.history.DesignerObjectHistoryStaff;
-import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
 import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 import com.jp.daichi.designer.simple.DesignerObjectSerializer;
-import com.jp.daichi.designer.simple.SimpleImageObject;
+import com.jp.daichi.designer.simple.SimpleCollisionObject;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * エディタ用のイメージオブジェクト
+ * エディタ用のコリジョン表示用オブジェクトの実装
  */
-public class EditorImageObject extends SimpleImageObject implements PermanentObject, EditorDesignerObject {
+public class EditorCollisionObject extends SimpleCollisionObject implements PermanentObject, EditorDesignerObject {
 
     /**
      * デシリアライズを行う
@@ -28,51 +28,41 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
      * @param serialized シリアライズされたデータ
      * @return デシリアライズされた結果
      */
-    public static EditorImageObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
-        try {
-            if (deserializedData != null) {
-                UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
-                return new EditorImageObject(history, deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension(),deserializedData.priority());
-            } else {
-                return null;
-            }
-        } catch (NullPointerException | ClassCastException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static EditorCollisionObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
+        return new EditorCollisionObject(history, deserializedData.name(),deserializedData.uuid(),canvas,deserializedData.position(),deserializedData.dimension(),deserializedData.priority());
+
     }
 
     private final History history;
     private boolean saveHistory = true;
 
     /**
-     * イメージオブジェクトのインスタンスを作成する
+     * 子リジョン表示用オブジェクトのインスタンスを作成する
      *
-     * @param history   履歴
+     * @param history 履歴
      * @param name      このオブジェクトの名前
      * @param uuid      UUID
      * @param canvas    キャンバス
-     * @param position    座標
+     * @param position  座標
      * @param dimension 表示領域
-     **/
-    public EditorImageObject(History history, String name,UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
-        super(name, uuid,canvas,position, dimension);
+     * @param priority  優先度
+     */
+    public EditorCollisionObject(History history,String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension, int priority) {
+        super(name, uuid, canvas, position, dimension, priority);
         this.history = history;
     }
 
     /**
-     * イメージオブジェクトのインスタンスを作成する
-     *
-     * @param name      このオブジェクトの名前
-     * @param uuid      UUID
-     * @param materialUUID マテリアルUUID
-     * @param canvas    キャンバス
-     * @param position  座標
+     * コリジョン表示用オブジェクトのインスタンスを作成する
+     * @param history 履歴
+     * @param name このオブジェクトの名前
+     * @param uuid UUID
+     * @param canvas キャンバス
+     * @param position 座標
      * @param dimension 表示領域
-     * @param priority 優先度
-     **/
-    public EditorImageObject(History history, String name,UUID uuid,UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension,int priority) {
-        super(name, uuid, materialUUID, canvas, position, dimension,priority);
+     */
+    public EditorCollisionObject(History history,String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
+        super(name, uuid, canvas, position, dimension);
         this.history = history;
     }
 
@@ -122,21 +112,12 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
     }
 
     @Override
-    public void setMaterialUUID(UUID uuid) {
-        UUID oldValue = getUUID();
-        super.setMaterialUUID(uuid);
-        if (saveHistory) {
-            history.add(new SetMaterialUUID(getUUID(), oldValue, getMaterialUUID()));
-        }
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         DesignerObjectSerializer.serialize(this,result);
-        result.put(MATERIAL_UUID,getMaterialUUID());
         return result;
     }
+
     @Override
     public boolean saveHistory() {
         return saveHistory;
@@ -145,27 +126,5 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
     @Override
     public void setSaveHistory(boolean saveHistory) {
         this.saveHistory = saveHistory;
-    }
-
-    private static class SetMaterialUUID extends SimpleHistoryStaff<EditorImageObject,UUID> {
-
-        public SetMaterialUUID(UUID uuid,UUID oldValue, UUID newValue) {
-            super(uuid, oldValue, newValue);
-        }
-
-        @Override
-        public String description() {
-            return "Set Material";//TODO マテリアルの名前
-        }
-
-        @Override
-        public void setValue(EditorImageObject target, UUID value) {
-            target.setMaterialUUID(value);
-        }
-
-        @Override
-        public EditorImageObject getTarget(Canvas canvas) {
-            return (EditorImageObject) canvas.getDesignerObjectManager().getInstance(uuid);
-        }
     }
 }
