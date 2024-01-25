@@ -1,9 +1,6 @@
 package com.jp.daichi.designer.simple;
 
 import com.jp.daichi.designer.interfaces.*;
-import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.interfaces.UpdateAction;
 
 import java.awt.geom.Rectangle2D;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.jp.daichi.designer.editor;
+package com.jp.daichi.designer.editor.ui;
 
 import com.jp.daichi.designer.Main;
 
@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class ViewUtils {
+public class ViewUtil {
 
     public static final Color FOREGROUND_COLOR = new Color(200,200,200);
     public static final Color BACKGROUND_COLOR = new Color(56,56,56);

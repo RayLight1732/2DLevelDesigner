@@ -1,11 +1,8 @@
 package com.jp.daichi.designer.interfaces;
 
-import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 import java.util.UUID;
 
 /**

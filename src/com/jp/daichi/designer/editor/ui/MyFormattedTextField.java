@@ -1,4 +1,4 @@
-package com.jp.daichi.designer.editor;
+package com.jp.daichi.designer.editor.ui;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -195,7 +195,7 @@ public class MyFormattedTextField extends JFormattedTextField {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-                g.setColor(ViewUtils.BACKGROUND_COLOR);//TODO どこかしらが悪さをしていると思われる 要改善
+                g.setColor(ViewUtil.BACKGROUND_COLOR);//TODO どこかしらが悪さをしていると思われる 要改善
                 g2d.fillRect(0,0,getComponent().getWidth(),getComponent().getHeight());
                 g.setColor(getComponent().getBackground());
                 g2d.setStroke(border.getStroke());

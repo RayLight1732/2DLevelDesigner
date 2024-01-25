@@ -1,9 +1,12 @@
-package com.jp.daichi.designer.editor.viewer;
+package com.jp.daichi.designer.editor.ui.viewer;
 
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.editor.*;
+import com.jp.daichi.designer.editor.ui.SmoothJLabel;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
+import com.jp.daichi.designer.editor.ui.WindowManager;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.editor.*;
+import com.jp.daichi.designer.interfaces.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,14 +23,14 @@ import java.util.Objects;
 public class LayerViewer extends JScrollPane {
 
     private final WindowManager windowManager;
-    private final Canvas canvas;
+    private final EditorCanvas canvas;
 
     /**
      * レイヤーの閲覧を行うためのパネルを作成する
      * @param canvas 対象のキャンバス
      * @param windowManager ウィンドウマネージャー
      */
-    public LayerViewer(Canvas canvas, WindowManager windowManager) {
+    public LayerViewer(EditorCanvas canvas, WindowManager windowManager) {
         this.windowManager = windowManager;
         this.canvas = canvas;
         addMouseListener(new MouseAdapter() {
@@ -39,8 +42,8 @@ public class LayerViewer extends JScrollPane {
         setBorder(null);
         Box accordion = Box.createVerticalBox();
         accordion.setOpaque(true);
-        accordion.setBackground(ViewUtils.BACKGROUND_COLOR);
-        accordion.setBorder(BorderFactory.createEmptyBorder(10, ViewUtils.LEFT_PADDING, 5, 5));
+        accordion.setBackground(ViewUtil.BACKGROUND_COLOR);
+        accordion.setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 5, 5));
 
         canvas.getLayers().stream().map(it ->canvas.getLayerManager().getInstance(it)).filter(Objects::nonNull).forEach(layer-> {
             JPanel p = new LayerPanel(canvas,layer);
@@ -67,16 +70,16 @@ public class LayerViewer extends JScrollPane {
             setOpaque(false);
             label = new SmoothJLabel();
             label.setOpaque(true);
-            label.setBackground(ViewUtils.BACKGROUND_COLOR);
+            label.setBackground(ViewUtil.BACKGROUND_COLOR);
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    label.setBackground(ViewUtils.HIGHLIGHT_COLOR);
+                    label.setBackground(ViewUtil.HIGHLIGHT_COLOR);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    label.setBackground(ViewUtils.BACKGROUND_COLOR);
+                    label.setBackground(ViewUtil.BACKGROUND_COLOR);
                 }
 
                 @Override
@@ -217,14 +220,6 @@ public class LayerViewer extends JScrollPane {
             }
         }
 
-        private Component getComponent(DesignerObject designerObject) {
-            for (Component component:contentPanel.getComponents()) {
-                if (component instanceof DesignerObjectPanel designerObjectPanel && designerObjectPanel.designerObject == designerObject) {
-                    return component;
-                }
-            }
-            return null;
-        }
     }
 
     private class DesignerObjectPanel extends JPanel {
@@ -244,16 +239,16 @@ public class LayerViewer extends JScrollPane {
             SmoothJLabel label = new SmoothJLabel(designerObject.getName());
             setBorder(border);
             setOpaque(true);
-            setBackground(ViewUtils.BACKGROUND_COLOR);
+            setBackground(ViewUtil.BACKGROUND_COLOR);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    setBackground(ViewUtils.HIGHLIGHT_COLOR);
+                    setBackground(ViewUtil.HIGHLIGHT_COLOR);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    setBackground(ViewUtils.BACKGROUND_COLOR);
+                    setBackground(ViewUtil.BACKGROUND_COLOR);
                 }
 
                 @Override
@@ -285,8 +280,10 @@ public class LayerViewer extends JScrollPane {
                 if (windowManager.inspectorManager().isShowed(designerObject)) {
                     windowManager.inspectorView().setView(null);
                 }
+                canvas.getHistory().startCompress("Delete:"+designerObject.getName());
                 canvas.getDesignerObjectManager().removeInstance(designerObject);
                 layer.remove(designerObject.getUUID());
+                canvas.getHistory().finishCompress();
             });
             popup.add(item);
         }
@@ -311,7 +308,7 @@ public class LayerViewer extends JScrollPane {
         private void init() {
             setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
             setOpaque(true);
-            setBackground(ViewUtils.BACKGROUND_COLOR);
+            setBackground(ViewUtil.BACKGROUND_COLOR);
             add(textField);
             textField.addFocusListener(new FocusAdapter() {
                 @Override
@@ -328,7 +325,11 @@ public class LayerViewer extends JScrollPane {
             if (!added) {
                 added = true;
                 contentPanel.remove(this);
-                DesignerObject designerObject = canvas.getDesignerObjectManager().createInstance(textField.getText(), layer.getObjectType());
+                String name = textField.getText();
+                DesignerObject[] designerObjects = new DesignerObject[1];
+                canvas.getHistory().startCompress(()-> designerObjects[0].getName());
+                DesignerObject designerObject = canvas.getDesignerObjectManager().createInstance(name, layer.getObjectType());
+                designerObjects[0] = designerObject;
                 UpdateObserver updateObserver = designerObject.getUpdateObserver();
                 int size = 100;
                 double centerX = canvas.getViewport().getCenterX();
@@ -337,6 +338,7 @@ public class LayerViewer extends JScrollPane {
                 designerObject.setDimension(new SignedDimension(size,size));
                 designerObject.setUpdateObserver(updateObserver);
                 layer.add(designerObject.getUUID());
+                canvas.getHistory().finishCompress();
             }
         }
 

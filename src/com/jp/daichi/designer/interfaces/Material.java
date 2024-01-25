@@ -1,6 +1,5 @@
 package com.jp.daichi.designer.interfaces;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
 
@@ -52,7 +51,7 @@ public interface Material extends ObservedObject,Comparable<Material> {
     void setUV(Point point);
 
     /**
-     * UVの描画領域を表すオブジェクトのコピーを取得
+     * UVの描画領域を取得
      * @return UVの描画領域
      */
     SignedDimension getUVDimension();

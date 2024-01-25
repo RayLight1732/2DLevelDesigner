@@ -1,16 +1,18 @@
-package com.jp.daichi.designer.editor.inspector;
+package com.jp.daichi.designer.editor.ui.inspector;
 
+import com.jp.daichi.designer.editor.ui.CustomBoxLayout;
+import com.jp.daichi.designer.editor.ui.ObserverJPanel;
+import com.jp.daichi.designer.editor.ui.SmoothJLabel;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
 import com.jp.daichi.designer.interfaces.*;
-import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.editor.*;
 
 import javax.swing.*;
 import java.text.NumberFormat;
 
-import static com.jp.daichi.designer.editor.ViewUtils.labelHorizontalStruct;
+import static com.jp.daichi.designer.editor.ui.ViewUtil.labelHorizontalStruct;
 
 /**
- * エディター上のデザイナーオブジェクトのモック
+ * デザイナーオブジェクト用のインスペクタービュー
  */
 public class DesignerObjectInspectorView extends ObserverJPanel {
     private final DesignerObject designerObject;
@@ -29,7 +31,7 @@ public class DesignerObjectInspectorView extends ObserverJPanel {
     }
 
     private void init() {
-        setBorder(BorderFactory.createEmptyBorder(10, ViewUtils.LEFT_PADDING, 4, 4));
+        setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 4, 4));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(InspectorView.createTitlePanel(designerObject.getType().getDisplayName()+" Object Information"));
         add(Box.createVerticalStrut(4));
@@ -44,7 +46,7 @@ public class DesignerObjectInspectorView extends ObserverJPanel {
 
     private JComponent createNamePanel() {
         JTextField textField = new JTextField(designerObject.getName());
-        ViewUtils.addTextFieldListener(textField,designerObject::setName);
+        ViewUtil.addTextFieldListener(textField,designerObject::setName);
         return textField;
     }
     private JComponent createPositionPanel() {
@@ -58,15 +60,15 @@ public class DesignerObjectInspectorView extends ObserverJPanel {
         panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("X"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtils.createNumberTextField(designerObject.getPosition().x(), new ViewUtils.SetterRunnable<>(value -> designerObject.setPosition(new Point(value.doubleValue(),designerObject.getPosition().y())))));
+        panel.add(ViewUtil.createNumberTextField(designerObject.getPosition().x(), new ViewUtil.SetterRunnable<>(value -> designerObject.setPosition(new Point(value.doubleValue(),designerObject.getPosition().y())))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new SmoothJLabel("Y"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtils.createNumberTextField(designerObject.getPosition().y(),new ViewUtils.SetterRunnable<>(value -> designerObject.setPosition(new Point(designerObject.getPosition().x(), value.doubleValue())))));
+        panel.add(ViewUtil.createNumberTextField(designerObject.getPosition().y(),new ViewUtil.SetterRunnable<>(value -> designerObject.setPosition(new Point(designerObject.getPosition().x(), value.doubleValue())))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new SmoothJLabel("Z"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtils.createNumberTextField(designerObject.getZ(),new ViewUtils.SetterRunnable<>(value ->designerObject.setZ(value.doubleValue()))));
+        panel.add(ViewUtil.createNumberTextField(designerObject.getZ(),new ViewUtil.SetterRunnable<>(value ->designerObject.setZ(value.doubleValue()))));
 
         parent.add(panel);
         return parent;
@@ -83,11 +85,11 @@ public class DesignerObjectInspectorView extends ObserverJPanel {
         panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("Width"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtils.createNumberTextField(designerObject.getDimension().width(),new ViewUtils.SetterRunnable<>(value -> designerObject.setDimension(new SignedDimension(value.doubleValue(),designerObject.getDimension().height())))));
+        panel.add(ViewUtil.createNumberTextField(designerObject.getDimension().width(),new ViewUtil.SetterRunnable<>(value -> designerObject.setDimension(new SignedDimension(value.doubleValue(),designerObject.getDimension().height())))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new SmoothJLabel("Height"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtils.createNumberTextField(designerObject.getDimension().height(),new ViewUtils.SetterRunnable<>(value -> designerObject.setDimension(new SignedDimension(designerObject.getDimension().width(), value.doubleValue())))));
+        panel.add(ViewUtil.createNumberTextField(designerObject.getDimension().height(),new ViewUtil.SetterRunnable<>(value -> designerObject.setDimension(new SignedDimension(designerObject.getDimension().width(), value.doubleValue())))));
 
         parent.add(panel);
         return parent;
@@ -102,7 +104,7 @@ public class DesignerObjectInspectorView extends ObserverJPanel {
         panel.add(Box.createGlue());
         NumberFormat format = NumberFormat.getIntegerInstance();
         format.setGroupingUsed(false);
-        JTextField textField = ViewUtils.createNumberTextField(designerObject.getPriority(),new ViewUtils.SetterRunnable<>(value -> designerObject.setPriority(value.intValue())),true);
+        JTextField textField = ViewUtil.createNumberTextField(designerObject.getPriority(),new ViewUtil.SetterRunnable<>(value -> designerObject.setPriority(value.intValue())),true);
         textField.setColumns(20);
         panel.add(textField);
         return panel;

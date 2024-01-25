@@ -1,6 +1,5 @@
 package com.jp.daichi.designer.interfaces.manager;
 
-import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
 

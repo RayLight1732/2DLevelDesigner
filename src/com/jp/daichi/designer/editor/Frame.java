@@ -1,8 +1,11 @@
-package com.jp.daichi.designer.interfaces;
+package com.jp.daichi.designer.editor;
 
+
+import com.jp.daichi.designer.interfaces.DesignerObject;
+import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.SignedDimension;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -53,5 +56,5 @@ public interface Frame extends DesignerObject {
      * @param point 位置
      * @param dimension 大きさ
      */
-    void setPositionAndDimension(Point point,SignedDimension dimension);
+    void setPositionAndDimension(Point point, SignedDimension dimension);
 }

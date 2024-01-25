@@ -1,4 +1,4 @@
-package com.jp.daichi.designer.editor.inspector;
+package com.jp.daichi.designer.editor.ui;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;

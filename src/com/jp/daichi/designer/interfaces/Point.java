@@ -1,6 +1,6 @@
 package com.jp.daichi.designer.interfaces;
 
-import com.jp.daichi.designer.Utils;
+import com.jp.daichi.designer.Util;
 
 import java.awt.geom.Point2D;
 import java.io.Serial;
@@ -40,7 +40,7 @@ public record Point(double x, double y) implements Serializable {
     }
 
     public java.awt.Point convert() {
-        return new java.awt.Point(Utils.round(x),Utils.round(y));
+        return new java.awt.Point(Util.round(x), Util.round(y));
     }
 
 

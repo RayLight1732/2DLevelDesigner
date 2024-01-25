@@ -1,14 +1,16 @@
-package com.jp.daichi.designer.simple;
+package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.Utils;
-import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.Frame;
 import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.simple.SimpleDesignerObject;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class SimpleFrame extends SimpleDesignerObject implements Frame {
 
@@ -31,7 +33,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
     public void draw(Graphics2D g) {
         if (getSelectedObjectCount() != 0) {
             updateRectangle();
-            Utils.drawSelectedFrame(g,this);
+            EditorUtil.drawSelectedFrame(g,this);
         }
     }
 

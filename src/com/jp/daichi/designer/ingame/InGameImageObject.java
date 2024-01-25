@@ -1,9 +1,9 @@
 package com.jp.daichi.designer.ingame;
 
-import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
+import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.simple.SimpleImageObject;
 
 import java.util.Map;
@@ -14,6 +14,14 @@ import java.util.UUID;
  */
 public class InGameImageObject extends SimpleImageObject {
 
+    /**
+     * デシリアライズを行う
+     *
+     * @param canvas           キャンバス
+     * @param deserializedData デシリアライズされたデータ
+     * @param serialized       シリアライズされたデータ
+     * @return デシリアライズの結果
+     */
     public static InGameImageObject deserialize(Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> serialized) {
         try {
             if (deserializedData != null) {

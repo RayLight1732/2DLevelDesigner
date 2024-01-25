@@ -1,39 +1,45 @@
 package com.jp.daichi.designer.editor;
 
+import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 import com.jp.daichi.designer.simple.SimpleLayer;
-import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
 
 import java.util.*;
 
+/**
+ * エディタ用のレイヤーの実装
+ */
 public class EditorLayer extends SimpleLayer implements PermanentObject {
 
-    public static Layer deserialize(History history,Map<String,Object> map) {
+    /**
+     * デシリアライズを行う
+     * @param history 履歴
+     * @param map シリアライズされたデータ
+     * @return デシリアライズの結果
+     */
+    public static Layer deserialize(History history, Map<String, Object> map) {
         try {
             String name = (String) map.get("Name");
             UUID uuid = (UUID) map.get("UUID");
-            List<UUID> objects = (List<UUID>)map.get("Objects");
-            DesignerObjectType type = (DesignerObjectType)map.get("Type");
+            List<UUID> objects = (List<UUID>) map.get("Objects");
+            DesignerObjectType type = (DesignerObjectType) map.get("Type");
             Objects.requireNonNull(name);
             Objects.requireNonNull(uuid);
             Objects.requireNonNull(objects);
             Objects.requireNonNull(type);
-            EditorLayer result = new EditorLayer(history,name,uuid,type);
+            EditorLayer result = new EditorLayer(history, name, uuid, type);
             result.setSaveHistory(false);
-            for (UUID designerObjectsUUID:objects) {
+            for (UUID designerObjectsUUID : objects) {
                 result.add(designerObjectsUUID);
             }
             result.setSaveHistory(true);
             return result;
-        } catch (NullPointerException|ClassCastException e) {
+        } catch (NullPointerException | ClassCastException e) {
             return null;
         }
     }
@@ -41,8 +47,15 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
     private final History history;
     private boolean saveHistory = true;
 
-    public EditorLayer(History history, String name, UUID uuid,DesignerObjectType objectType) {
-        super(name, uuid,objectType);
+    /**
+     * 新しいレイヤーのインスタンスを作成する
+     * @param history 履歴
+     * @param name 名前
+     * @param uuid UUID
+     * @param objectType このレイヤーが管理するデザイナーオブジェクトのタイプ
+     */
+    public EditorLayer(History history, String name, UUID uuid, DesignerObjectType objectType) {
+        super(name, uuid, objectType);
         this.history = history;
     }
 
@@ -67,18 +80,18 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
     public boolean remove(UUID designerObjectUUID) {
         boolean result = super.remove(designerObjectUUID);
         if (result && saveHistory) {
-            history.add(new EditRegisteredObjectList(getUUID(), designerObjectUUID, true));
+            history.add(new EditRegisteredObjectList(getUUID(), designerObjectUUID, false));
         }
         return result;
     }
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String,Object> result = new HashMap<>();
-        result.put("Name",getName());
-        result.put("UUID",getUUID());
-        result.put("Objects",getObjects());
-        result.put("Type",getObjectType());
+        Map<String, Object> result = new HashMap<>();
+        result.put("Name", getName());
+        result.put("UUID", getUUID());
+        result.put("Objects", getObjects());
+        result.put("Type", getObjectType());
         return result;
     }
 
@@ -92,15 +105,15 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
         this.saveHistory = saveHistory;
     }
 
-    private static class SetName extends SimpleHistoryStaff<EditorLayer,String> {
+    private static class SetName extends SimpleHistoryStaff<EditorLayer, String> {
 
         public SetName(UUID uuid, String oldValue, String newValue) {
             super(uuid, oldValue, newValue);
         }
 
         @Override
-        public String getDescription() {
-            return "Change Name:"+newValue;
+        public String description() {
+            return "Change Name:" + newValue;
         }
 
         @Override
@@ -117,41 +130,44 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
     private record EditRegisteredObjectList(UUID uuid, UUID target, boolean add) implements HistoryStaff {
 
         @Override
-            public String getDescription() {
-                if (add) {
-                    return "add object to layer";
-                } else {
-                    return "remove object from layer";
-                }
-            }
-
-            @Override
-            public void undo(Canvas canvas) {
-                EditorLayer layer = (EditorLayer) canvas.getLayerManager().getInstance(uuid);
-                if (layer != null) {
-                    layer.setSaveHistory(false);
-                    if (add) {
-                        layer.remove(target);
-                    } else {
-                        layer.add(target);
-                    }
-                    layer.setSaveHistory(true);
-                }
-            }
-
-            @Override
-            public void redo(Canvas canvas) {
-                EditorLayer layer = (EditorLayer) canvas.getLayerManager().getInstance(uuid);
-                if (layer != null) {
-                    layer.setSaveHistory(false);
-                    if (add) {
-                        layer.add(target);
-                    } else {
-                        layer.remove(target);
-                    }
-                    layer.setSaveHistory(true);
-                }
+        public String description() {
+            if (add) {
+                return "add object to layer";
+            } else {
+                return "remove object from layer";
             }
         }
+
+        @Override
+        public void undo(Canvas canvas) {
+            EditorLayer layer = (EditorLayer) canvas.getLayerManager().getInstance(uuid);
+            if (layer != null) {
+                layer.setSaveHistory(false);
+                System.out.println("undo");
+                if (add) {
+                    layer.remove(target);
+                } else {
+                    System.out.println("add:"+target.toString());
+                    layer.add(target);
+                }
+                layer.setSaveHistory(true);
+            }
+        }
+
+        @Override
+        public void redo(Canvas canvas) {
+            EditorLayer layer = (EditorLayer) canvas.getLayerManager().getInstance(uuid);
+            if (layer != null) {
+                layer.setSaveHistory(false);
+                System.out.println("redo");
+                if (add) {
+                    layer.add(target);
+                } else {
+                    layer.remove(target);
+                }
+                layer.setSaveHistory(true);
+            }
+        }
+    }
 
 }

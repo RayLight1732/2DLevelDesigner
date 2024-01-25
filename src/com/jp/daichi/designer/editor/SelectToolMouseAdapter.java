@@ -1,10 +1,11 @@
-package com.jp.daichi.designer.simple;
+package com.jp.daichi.designer.editor;
 
 import com.jp.daichi.designer.KeyManager;
-import com.jp.daichi.designer.Utils;
-import com.jp.daichi.designer.interfaces.*;
-import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.Util;
+import com.jp.daichi.designer.interfaces.DesignerObject;
+import com.jp.daichi.designer.interfaces.Direction;
 import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.SignedDimension;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,10 +19,8 @@ import java.awt.event.MouseEvent;
 public class SelectToolMouseAdapter extends MouseAdapter {
 
     private final SelectAndMoveTool tool;
-    private final Canvas canvas;
-    public SelectToolMouseAdapter(SelectAndMoveTool tool,Canvas canvas) {
+    public SelectToolMouseAdapter(SelectAndMoveTool tool) {
         this.tool = tool;
-        this.canvas = canvas;
     }
 
     private Direction direction = Direction.NONE;
@@ -34,7 +33,8 @@ public class SelectToolMouseAdapter extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         firstMousePosition = Point.convert(e.getPoint());
         if (e.getButton() == MouseEvent.BUTTON1) {//右クリック
-            direction = Utils.getSizeChangeAnchor(canvas.getFrame(), firstMousePosition);
+            EditorCanvas canvas = tool.getCanvas();
+            direction = EditorUtil.getSizeChangeAnchor(canvas.getFrame(), firstMousePosition);
             if (direction == Direction.NONE) {//どこのアンカーも指していない時
                 DesignerObject designerObject = canvas.getDesignerObject(Point.convert(e.getPoint()));
                 if (designerObject != null) {
@@ -56,6 +56,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                 firstFramePosition = canvas.getFrame().getPosition();
                 firstDimension = canvas.getFrame().getDimension();
             }
+
         }
     }
 
@@ -69,6 +70,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
         Point point = Point.convert(e.getPoint());
         if (SwingUtilities.isLeftMouseButton(e)) {
             if (selected) {
+                EditorCanvas canvas = tool.getCanvas();
                 if (end) {
                     isDrag = false;
                 } else if (!isDrag) {
@@ -90,6 +92,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                         tool.endDrag(firstFramePosition,firstDimension,true);
                     }
                     canvas.getFrame().setPosition(new Point(firstFramePosition.x() + deltaX, firstFramePosition.y() + deltaY));
+
                 } else {
                     double x = firstFramePosition.x();
                     double y = firstFramePosition.y();
@@ -143,6 +146,9 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                         canvas.getFrame().setPositionAndDimension(newPoint,newDimension);
                     }
                 }
+                if (end) {
+                    tool.getCanvas().getHistory().finishCompress();
+                }
             } else {
                 tool.setRectangle(createRectangle(firstMousePosition,point));
             }
@@ -184,6 +190,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
             if (selected) {
                 processMouseMove(e,true);
             } else {
+                EditorCanvas canvas = tool.getCanvas();
                 canvas.getFrame().clearSelectedObject();
                 canvas.getFrame().addAll(canvas.getDesignerObjects(createRectangle(firstMousePosition,Point.convert(e.getPoint()))));
             }
@@ -199,6 +206,6 @@ public class SelectToolMouseAdapter extends MouseAdapter {
         double y = Math.min(p1.y(),p2.y());
         double w = Math.abs(p1.x()-p2.x());
         double h = Math.abs(p1.y()-p2.y());
-        return new Rectangle(Utils.round(x),Utils.round(y),Utils.round(w),Utils.round(h));
+        return new Rectangle(Util.round(x), Util.round(y), Util.round(w), Util.round(h));
     }
 }

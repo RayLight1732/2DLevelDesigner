@@ -1,9 +1,9 @@
 package com.jp.daichi.designer.editor.manager;
 
+import com.jp.daichi.designer.editor.EditorLayer;
 import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.editor.History;
-import com.jp.daichi.designer.editor.EditorLayer;
 import com.jp.daichi.designer.simple.manager.SimpleLayerManager;
 
 import java.util.Map;
@@ -16,6 +16,10 @@ public class EditorLayerManager extends SimpleLayerManager {
 
     private final History history;
 
+    /**
+     * 新しいレイヤーマネージャーのインスタンスを作成する
+     * @param history 履歴
+     */
     public EditorLayerManager(History history) {
         this.history = history;
     }

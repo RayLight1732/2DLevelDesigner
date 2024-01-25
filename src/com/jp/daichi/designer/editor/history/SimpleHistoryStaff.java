@@ -3,9 +3,6 @@ package com.jp.daichi.designer.editor.history;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
 import java.util.UUID;
 

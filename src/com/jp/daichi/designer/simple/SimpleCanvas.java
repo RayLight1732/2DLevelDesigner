@@ -1,38 +1,39 @@
 package com.jp.daichi.designer.simple;
 
-import com.jp.daichi.designer.Utils;
-import com.jp.daichi.designer.interfaces.UpdateAction;
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.Util;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
 import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.Frame;
 import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
-import com.jp.daichi.designer.editor.ViewUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * 基本的なキャンバスの実装
  */
 public class SimpleCanvas extends SimpleObservedObject implements Canvas {
-
-    private final Frame frame = new SimpleFrame(this);
     private final List<UUID> layers = new ArrayList<>();
     private final MaterialManager materialManager;
     private final LayerManager layerManager;
     private final DesignerObjectManager designerObjectManager;
-    private BufferedImage backgroundImage;
+    private UUID backgroundMaterialUUID;
     private Color fogColor;
     private double fogStrength = 0;
 
+    /**
+     * 新しいキャンバスのインスタンスを作成する
+     * @param materialManager マテリアルマネージャー
+     * @param layerManager レイヤーマネージャー
+     * @param designerObjectManager デザイナーオブジェクトマネージャー
+     */
     public SimpleCanvas(MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager) {
         this.materialManager = materialManager;
         this.layerManager = layerManager;
@@ -55,15 +56,11 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
             return false;
         } else {
             layers.add(layerUUID);
-            getLayerManager().getInstance(layerUUID).setUpdateObserver(frame.getUpdateObserver());
+            getLayerManager().getInstance(layerUUID).setUpdateObserver(getUpdateObserver());
             return true;
         }
     }
 
-    @Override
-    public Frame getFrame() {
-        return frame;
-    }
 
     @Override
     public DesignerObject getDesignerObject(Point point) {
@@ -79,7 +76,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
                 .sorted().toList();
         java.awt.Point converted = point.convert();
         for (DesignerObject designerObject:designerObjects) {
-            if (Utils.getRectangleOnScreen(this,designerObject).contains(converted)) {
+            if (Util.getRectangleOnScreen(this,designerObject).contains(converted)) {
                 return designerObject;
             }
         }
@@ -94,7 +91,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
             if (layer != null) {
                 for (UUID objectUUID:layer.getObjects()) {
                     DesignerObject designerObject = getDesignerObjectManager().getInstance(objectUUID);
-                    if (designerObject != null && designerObject.isVisible() && Utils.getRectangleOnScreen(this,designerObject).intersects(rectangle)) {
+                    if (designerObject != null && designerObject.isVisible() && Util.getRectangleOnScreen(this,designerObject).intersects(rectangle)) {
                         result.add(designerObject);
                     }
                 }
@@ -111,14 +108,15 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     private int lastUpdateWidth;
     private int lastUpdateHeight;
 
+    @Override
     public void updateTransform(int width,int height) {
         lastUpdateWidth = width;
         lastUpdateHeight = height;
         double scaleX = (double) width/ getViewport().width;
         double scaleY = (double) height/ getViewport().height;
         scale = Math.min(scaleX,scaleY);
-        int newWidth = Utils.round(getViewport().width*scale);
-        int newHeight = Utils.round(getViewport().height*scale);
+        int newWidth = Util.round(getViewport().width*scale);
+        int newHeight = Util.round(getViewport().height*scale);
         drawX =(width-newWidth)/2;
         drawY = (height-newHeight)/2;
         transform = AffineTransform.getScaleInstance(1/scale,1/scale);
@@ -143,13 +141,20 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     @Override
     public void draw(Graphics2D g,int width,int height) {
         updateTransform(width,height);
-        int newWidth = Utils.round(getViewport().width*scale);
-        int newHeight = Utils.round(getViewport().height*scale);
-        if (getBackgroundImage() == null) {
+        int newWidth = Util.round(getViewport().width*scale);
+        int newHeight = Util.round(getViewport().height*scale);
+        Material background = getMaterialManager().getInstance(backgroundMaterialUUID);
+        if (background == null || background.getImage() == null) {
             g.setColor(Color.BLACK);
             g.fillRect(drawX,drawY,newWidth,newHeight);
         } else {
-            g.drawImage(getBackgroundImage(),drawX,drawY,newWidth,newHeight,null);
+            double uvX = background.getUV().x();
+            double uvY = background.getUV().y();
+            double uvWidth = background.getUVDimension().width();
+            double uvHeight = background.getUVDimension().height();
+            g.drawImage(background.getImage(),
+                    drawX,drawY,drawX+newWidth,drawY+newHeight,
+                    Util.round(uvX), Util.round(uvY), Util.round(uvX + uvWidth), Util.round(uvY + uvHeight), null);
         }
         for (UUID layerUUID:layers) {
             Layer layer = layerManager.getInstance(layerUUID);
@@ -157,7 +162,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
                 layer.draw(g,getDesignerObjectManager());
             }
         }
-        g.setColor(ViewUtils.BACKGROUND_COLOR);
+        g.setColor(ViewUtil.BACKGROUND_COLOR);
         if (drawX == 0) {//上下に余白
             g.fillRect(0,0,width,drawY);
             g.fillRect(0,drawY+newHeight,width,height-drawY-newHeight);
@@ -165,30 +170,28 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
             g.fillRect(0,0,drawX,height);
             g.fillRect(drawX+newWidth,0,width-drawX-newHeight,height);
         }
-        frame.draw(g);
     }
 
     @Override
     public void setUpdateObserver(UpdateObserver updateObserver) {
         super.setUpdateObserver(updateObserver);
-        frame.setUpdateObserver(updateObserver);
         getLayerManager().setUpdateObserver(updateObserver);
         getMaterialManager().setUpdateObserver(updateObserver);
         getDesignerObjectManager().setUpdateObserver(updateObserver);
     }
 
-    private Rectangle rectangle = new Rectangle(0,0,1920,1080);
+    private Rectangle viewPort = new Rectangle(0,0,1920,1080);
 
     @Override
     public void setViewport(Rectangle rectangle) {
-        this.rectangle = rectangle;
+        this.viewPort = rectangle;
         updateTransform(lastUpdateWidth,lastUpdateHeight);
         sendUpdate(UpdateAction.CHANGE_VIEWPORT);
     }
 
     @Override
     public Rectangle getViewport() {
-        return rectangle;
+        return viewPort;
     }
 
     private double pov = Math.toRadians(60);
@@ -206,11 +209,11 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
 
     @Override
     public Point convertToScreenPosition(Point point, double z) {
-        double distance = rectangle.width/2.0/Math.tan(pov/2);//カメラからスクリーンまでの距離
-        double centerX = rectangle.x+rectangle.width/2.0;
-        double centerY = rectangle.y+rectangle.height/2.0;
-        double x = distance/(distance+z)*(point.x()-centerX)+rectangle.width/2.0;
-        double y = distance/(distance+z)*(point.y()-centerY)+rectangle.height/2.0;
+        double distance = viewPort.width/2.0/Math.tan(pov/2);//カメラからスクリーンまでの距離
+        double centerX = viewPort.x+ viewPort.width/2.0;
+        double centerY = viewPort.y+ viewPort.height/2.0;
+        double x = distance/(distance+z)*(point.x()-centerX)+ viewPort.width/2.0;
+        double y = distance/(distance+z)*(point.y()-centerY)+ viewPort.height/2.0;
         try {
             //System.out.println(point+","+x+","+y+","+Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null)));
             return Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null));
@@ -226,11 +229,11 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
 
     @Override
     public Point convertFromScreenPosition(Point point, double z, boolean inViewport) {
-        double distance = rectangle.width/2.0/Math.tan(pov/2);//カメラからスクリーンまでの距離
-        double centerX = rectangle.x+rectangle.width/2.0;
-        double centerY = rectangle.y+rectangle.height/2.0;
-        double x = (distance+z)*(point.x()-rectangle.width/2.0)/distance+centerX;
-        double y = (distance+z)*(point.y()-rectangle.height/2.0)/distance+centerY;
+        double distance = viewPort.width/2.0/Math.tan(pov/2);//カメラからスクリーンまでの距離
+        double centerX = viewPort.x+ viewPort.width/2.0;
+        double centerY = viewPort.y+ viewPort.height/2.0;
+        double x = (distance+z)*(point.x()- viewPort.width/2.0)/distance+centerX;
+        double y = (distance+z)*(point.y()- viewPort.height/2.0)/distance+centerY;
         if (inViewport) {
             return new Point(x,y);
         } else {
@@ -239,14 +242,14 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     }
 
     @Override
-    public BufferedImage getBackgroundImage() {
-        return backgroundImage;
+    public void setMaterialUUID(UUID uuid) {
+        this.backgroundMaterialUUID = uuid;
+        sendUpdate(UpdateAction.CHANGE_MATERIAL);
     }
 
     @Override
-    public void setBackgroundImage(BufferedImage backgroundImage) {
-        this.backgroundImage = backgroundImage;
-        sendUpdate(UpdateAction.CHANGE_IMAGE);
+    public UUID getMaterialUUID() {
+        return backgroundMaterialUUID;
     }
 
     @Override

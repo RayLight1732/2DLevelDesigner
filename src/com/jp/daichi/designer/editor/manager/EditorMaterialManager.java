@@ -1,21 +1,17 @@
 package com.jp.daichi.designer.editor.manager;
 
-import com.jp.daichi.designer.NotImplementedException;
+import com.jp.daichi.designer.editor.EditorMaterial;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
-import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
-import com.jp.daichi.designer.editor.EditorMaterial;
 import com.jp.daichi.designer.simple.manager.SimpleMaterialManager;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class EditorMaterialManager extends SimpleMaterialManager implements PermanentObject {
+public class EditorMaterialManager extends SimpleMaterialManager {
 
     private final History history;
     private boolean saveHistory = true;
@@ -29,42 +25,23 @@ public class EditorMaterialManager extends SimpleMaterialManager implements Perm
         EditorMaterial material = EditorMaterial.deserialize(history,this,map);
         if (material != null) {
             addInstance(material);
-            /*
-            if (saveHistory()) {
-                history.add(new EditRegisteredMaterialList(material.getUUID(),material.getName(),material.serialize(),true));
-            }*/
         }
         return material;
     }
     @Override
     public boolean removeInstance(Material object) {
         boolean result = super.removeInstance(object);
-        if (saveHistory()) {
+        if (saveHistory) {
             history.add(new EditRegisteredMaterialList(object.getUUID(),object.getName(),((EditorMaterial)object).serialize(),false));
         }
         return result;
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public boolean saveHistory() {
-        return saveHistory;
-    }
-
-    @Override
-    public void setSaveHistory(boolean saveHistory) {
-        this.saveHistory = saveHistory;
-    }
-
-    @Override
     public Material createInstance(String name) {
         EditorMaterial material = new EditorMaterial(history,resolveName(null,name),UUID.randomUUID(),this);
         addInstance(material);
-        if (saveHistory()) {
+        if (saveHistory) {
             history.add(new EditRegisteredMaterialList(material.getUUID(),material.getName(),material.serialize(),true));
         }
         return material;
@@ -73,7 +50,7 @@ public class EditorMaterialManager extends SimpleMaterialManager implements Perm
     private record EditRegisteredMaterialList(UUID uuid,String name,Map<String,Object> serialized,boolean add) implements HistoryStaff {
 
         @Override
-        public String getDescription() {
+        public String description() {
             if (add) {
                 return "add material:"+name;
             } else {
@@ -86,13 +63,13 @@ public class EditorMaterialManager extends SimpleMaterialManager implements Perm
             MaterialManager materialManager = canvas.getMaterialManager();
             if (materialManager instanceof EditorMaterialManager editorMaterialManager) {
                 if (add) {
-                    editorMaterialManager.setSaveHistory(false);
+                    editorMaterialManager.saveHistory = false;
                     materialManager.removeInstance(materialManager.getInstance(uuid));
-                    editorMaterialManager.setSaveHistory(true);
+                    editorMaterialManager.saveHistory = true;
                 } else {
-                    editorMaterialManager.setSaveHistory(false);
+                    editorMaterialManager.saveHistory = false;
                     materialManager.deserializeManagedObject(serialized);
-                    editorMaterialManager.setSaveHistory(true);
+                    editorMaterialManager.saveHistory = true;
                 }
             }
         }
@@ -102,13 +79,13 @@ public class EditorMaterialManager extends SimpleMaterialManager implements Perm
             MaterialManager materialManager = canvas.getMaterialManager();
             if (materialManager instanceof EditorMaterialManager editorMaterialManager) {
                 if (!add) {
-                    editorMaterialManager.setSaveHistory(false);
+                    editorMaterialManager.saveHistory = false;
                     materialManager.removeInstance(materialManager.getInstance(uuid));
-                    editorMaterialManager.setSaveHistory(true);
+                    editorMaterialManager.saveHistory = true;
                 } else {
-                    editorMaterialManager.setSaveHistory(false);
+                    editorMaterialManager.saveHistory = false;
                     materialManager.deserializeManagedObject(serialized);
-                    editorMaterialManager.setSaveHistory(true);
+                    editorMaterialManager.saveHistory = true;
                 }
             }
         }

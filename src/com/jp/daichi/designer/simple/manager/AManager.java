@@ -1,10 +1,10 @@
 package com.jp.daichi.designer.simple.manager;
 
 import com.jp.daichi.designer.interfaces.ObservedObject;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 import com.jp.daichi.designer.interfaces.UpdateObserver;
 import com.jp.daichi.designer.interfaces.manager.IManager;
 import com.jp.daichi.designer.simple.SimpleObservedObject;
-import com.jp.daichi.designer.interfaces.UpdateAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,9 @@ import java.util.UUID;
  * @param <T> 管理対象の型
  */
 public abstract class AManager<T extends ObservedObject> extends SimpleObservedObject implements IManager<T> {
+    /**
+     * このレイヤーが管理するオブジェクトのリスト
+     */
     protected final List<T> instances = new ArrayList<>();
 
 

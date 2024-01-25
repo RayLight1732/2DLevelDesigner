@@ -12,7 +12,6 @@ import com.jp.daichi.designer.interfaces.manager.CanvasManager;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
-import com.jp.daichi.designer.simple.SimpleCanvas;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,15 +20,20 @@ import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.stream.Stream;
 
+/**
+ * エディタ用のキャンバスマネージャーの実装
+ */
 public class EditorCanvasManager implements CanvasManager {
 
     private final File parentFolder;
     private Canvas canvas;
     private DataSaver saver;
-    private History history;
 
+    /**
+     * 新しいキャンバスマネージャーのインスタンスを作成する
+     * @param parentFolder データを保存している親フォルダー このフォルダーの下に様々なデータが保存される
+     */
     public EditorCanvasManager(File parentFolder) {
         this.parentFolder = parentFolder;
     }
@@ -62,7 +66,6 @@ public class EditorCanvasManager implements CanvasManager {
                 canvas = new EditorCanvas(history,materialManager, layerManager, designerObjectManager);
             }
             if (canvas != null) {
-                this.history = history;
                 designerObjectManager.setCanvas(canvas);
                 canvas.setUpdateObserver(observer);
                 DataLoader loader = new DataLoader(parentFolder);
@@ -73,6 +76,8 @@ public class EditorCanvasManager implements CanvasManager {
                         saver.save(permanentObject);
                     } else if (target instanceof DesignerObjectManager designerObjectManager1) {
                         saver.update(designerObjectManager1);
+                    } else if (target instanceof MaterialManager materialManager1) {
+                        saver.update(materialManager1);
                     }
                 });
 
@@ -82,13 +87,14 @@ public class EditorCanvasManager implements CanvasManager {
         return canvas;
     }
 
+    /**
+     * データを保存するためのデータセーバーを取得する
+     * @return データセーバー
+     */
     public DataSaver getDataSaver() {
         return saver;
     }
 
-    public History getHistory() {
-        return history;
-    }
 
     private Canvas deserializeCanvas(Path path,History history,MaterialManager materialManager,LayerManager layerManager,DesignerObjectManager designerObjectManager) {
         if (Files.exists(path)) {

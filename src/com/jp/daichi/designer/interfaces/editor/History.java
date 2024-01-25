@@ -2,16 +2,15 @@ package com.jp.daichi.designer.interfaces.editor;
 
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.ObservedObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 履歴を管理する
  */
-public interface History extends ObservedObject {
+public interface History extends ObservedObject, Serializable {
     /**
      * 現状の状態を表す履歴のインデックスを返す
      * @return 現在の状態を表す履歴のインデックス -1は履歴が存在しないことを表す
@@ -65,5 +64,24 @@ public interface History extends ObservedObject {
      * @return やり直しを行えるかどうか
      */
     boolean canRedo();
+
+    /**
+     * 以降追加される履歴を圧縮し、一つにまとめる
+     * また、すでにstartCompressが呼ばれており、finishCompressが呼ばれていない時は、続けて追加する
+     * @param description 履歴の説明
+     */
+    void startCompress(String description);
+    /**
+     * 以降追加される履歴を圧縮し、一つにまとめる
+     * また、すでにstartCompressが呼ばれており、finishCompressが呼ばれていない時は、続けて追加する
+     * @param descriptionSupplier finishCompressが呼ばれた際にgetメソッドが呼ばれ、履歴の説明が確定される
+     */
+    void startCompress(Supplier<String> descriptionSupplier);
+
+    /**
+     * 履歴の圧縮を終了する。
+     * 以降追加される履歴はひとずつ追加される
+     */
+    void finishCompress();
 
 }

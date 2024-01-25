@@ -1,23 +1,24 @@
 package com.jp.daichi.designer;
 
-import com.jp.daichi.designer.editor.manager.EditorCanvasManager;
-import com.jp.daichi.designer.interfaces.*;
-import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.editor.History;
-import com.jp.daichi.designer.simple.SelectAndMoveTool;
 import com.jp.daichi.designer.editor.*;
-import com.jp.daichi.designer.editor.inspector.InspectorView;
-import com.jp.daichi.designer.editor.inspector.SimpleInspectorManager;
-import com.jp.daichi.designer.editor.viewer.LayerViewer;
-import com.jp.daichi.designer.editor.viewer.MaterialViewer;
+import com.jp.daichi.designer.editor.ui.LineBorderEx;
+import com.jp.daichi.designer.editor.ui.WindowManager;
+import com.jp.daichi.designer.editor.ui.inspector.InspectorView;
+import com.jp.daichi.designer.editor.ui.inspector.SimpleInspectorManager;
+import com.jp.daichi.designer.editor.manager.EditorCanvasManager;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
+import com.jp.daichi.designer.editor.ui.viewer.LayerViewer;
+import com.jp.daichi.designer.editor.ui.viewer.MaterialViewer;
+import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.interfaces.editor.History;
+import com.jp.daichi.designer.editor.SelectAndMoveTool;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -55,23 +56,23 @@ public class Main {
         JFrame frame = new JFrame("2D Level Designer");
 
         //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        Border defaultBorder = BorderFactory.createCompoundBorder(new LineBorderEx(ViewUtils.HIGHLIGHT_COLOR, 1,10),BorderFactory.createEmptyBorder(0,5,0,0));
+        Border defaultBorder = BorderFactory.createCompoundBorder(new LineBorderEx(ViewUtil.HIGHLIGHT_COLOR, 1,10),BorderFactory.createEmptyBorder(0,5,0,0));
         UIManager.put("TextField.border", defaultBorder);
         UIManager.put("FormattedTextField.border", defaultBorder);
 
 
-        UIManager.put("Label.foreground", ViewUtils.FOREGROUND_COLOR);
-        UIManager.put("TextField.foreground", ViewUtils.FOREGROUND_COLOR);
-        UIManager.put("FormattedTextField.foreground",ViewUtils.FOREGROUND_COLOR);
-        UIManager.put("List.foreground", ViewUtils.FOREGROUND_COLOR);
-        UIManager.put("Button.foreground", ViewUtils.FOREGROUND_COLOR);
+        UIManager.put("Label.foreground", ViewUtil.FOREGROUND_COLOR);
+        UIManager.put("TextField.foreground", ViewUtil.FOREGROUND_COLOR);
+        UIManager.put("FormattedTextField.foreground", ViewUtil.FOREGROUND_COLOR);
+        UIManager.put("List.foreground", ViewUtil.FOREGROUND_COLOR);
+        UIManager.put("Button.foreground", ViewUtil.FOREGROUND_COLOR);
 
-        UIManager.put("Label.background", ViewUtils.BACKGROUND_COLOR);
-        UIManager.put("List.background", ViewUtils.BACKGROUND_COLOR);
-        UIManager.put("Button.background", ViewUtils.BACKGROUND_COLOR);
-        UIManager.put("Panel.background", ViewUtils.BACKGROUND_COLOR);
-        UIManager.put("FormattedTextField.background",ViewUtils.HIGHLIGHT_COLOR);
-        UIManager.put("TextField.background", ViewUtils.HIGHLIGHT_COLOR);
+        UIManager.put("Label.background", ViewUtil.BACKGROUND_COLOR);
+        UIManager.put("List.background", ViewUtil.BACKGROUND_COLOR);
+        UIManager.put("Button.background", ViewUtil.BACKGROUND_COLOR);
+        UIManager.put("Panel.background", ViewUtil.BACKGROUND_COLOR);
+        UIManager.put("FormattedTextField.background", ViewUtil.HIGHLIGHT_COLOR);
+        UIManager.put("TextField.background", ViewUtil.HIGHLIGHT_COLOR);
         Font defaultFont = new Font("Dialog", Font.PLAIN, 11);
         UIManager.put("Button.font", defaultFont);
         UIManager.put("Label.font", defaultFont);
@@ -96,7 +97,7 @@ public class Main {
         //canvas.addLayer(layer.getUUID());//TODO canvasにcreateLayerを埋め込んでもいいかも
 
 
-        Tool tool = new SelectAndMoveTool(canvas);
+        Tool tool = new SelectAndMoveTool((EditorCanvas) canvas);
 
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,14 +105,13 @@ public class Main {
 
 
         InspectorView inspectorView = new InspectorView();
-        SimpleInspectorManager simpleInspectorManager = new SimpleInspectorManager();
+        SimpleInspectorManager simpleInspectorManager = new SimpleInspectorManager((EditorCanvas) canvas);
         WindowManager windowManager = new WindowManager(frame, inspectorView, simpleInspectorManager);
 
         jPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    System.out.println("click");
                     JComponent view = windowManager.inspectorManager().createInspectorView(canvas);
                     if (view != null) {
                         windowManager.inspectorView().setView(view);
@@ -122,7 +122,7 @@ public class Main {
 
 
         simpleInspectorManager.setWindowManager(windowManager);
-        JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, inspectorView, new LayerViewer(canvas, windowManager));
+        JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, inspectorView, new LayerViewer((EditorCanvas) canvas, windowManager));
         right.setUI(new CustomSplitPaneUI());
         right.setDividerSize(3);
         right.setResizeWeight(0.5);
@@ -153,7 +153,7 @@ public class Main {
         JMenuBar menuBar = new JMenuBar();
         JMenu edit = new JMenu("Edit");
         menuBar.add(edit);
-        History history = canvasManager.getHistory();
+        History history = ((EditorCanvas)canvas).getHistory();
         JMenuItem undo = new JMenuItem(getUndoText(history));
         if (!history.canUndo()) {
             undo.setEnabled(false);
@@ -199,7 +199,7 @@ public class Main {
 
     private static String getUndoText(History history) {
         if (history.canUndo()) {
-            return "Undo " + history.getUndoTarget().getDescription();
+            return "Undo " + history.getUndoTarget().description();
         } else {
             return "Undo";
         }
@@ -207,7 +207,7 @@ public class Main {
 
     private static String getRedoText(History history) {
         if (history.canRedo()) {
-            return "Redo " + history.getRedoTarget().getDescription();
+            return "Redo " + history.getRedoTarget().description();
         } else {
             return "Redo";
         }
@@ -235,12 +235,6 @@ public class Main {
             addMouseListener(tool.getMouseAdapter());
             addMouseMotionListener(tool.getMouseAdapter());
             addMouseWheelListener(tool.getMouseAdapter());
-            addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    canvas.updateTransform(getWidth(), getHeight());
-                }
-            });
             setBackground(Color.GRAY);
         }
 
@@ -263,7 +257,7 @@ public class Main {
 
                 @Override
                 public void paint(Graphics g) {
-                    g.setColor(ViewUtils.HIGHLIGHT_COLOR);
+                    g.setColor(ViewUtil.HIGHLIGHT_COLOR);
                     g.fillRect(0, 0, getSize().width, getSize().height);
                     super.paint(g);
                 }

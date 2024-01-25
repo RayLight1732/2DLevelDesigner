@@ -1,4 +1,4 @@
-package com.jp.daichi.designer.editor;
+package com.jp.daichi.designer.editor.ui;
 
 import javax.swing.*;
 import java.awt.*;

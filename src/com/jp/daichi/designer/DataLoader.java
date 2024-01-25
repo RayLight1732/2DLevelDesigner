@@ -1,16 +1,13 @@
 package com.jp.daichi.designer;
 
 import com.jp.daichi.designer.interfaces.Canvas;
-import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
-import com.jp.daichi.designer.interfaces.Material;
-import com.jp.daichi.designer.interfaces.editor.PermanentObject;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.IManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;

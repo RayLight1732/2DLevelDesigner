@@ -1,7 +1,5 @@
 package com.jp.daichi.designer.interfaces.editor;
 
-import com.jp.daichi.designer.interfaces.ObservedObject;
-
 import java.util.Map;
 
 /**

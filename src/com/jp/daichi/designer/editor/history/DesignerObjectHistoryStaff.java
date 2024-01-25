@@ -5,9 +5,6 @@ import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 
 import java.util.UUID;
 
@@ -49,7 +46,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "Set Position:"+"("+oldValue.x()+","+oldValue.y()+")"+"to"+"("+newValue.x()+","+newValue.y()+")";
         }
 
@@ -67,7 +64,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "Set Dimension:(width="+newValue.width()+",height="+newValue.height()+")";//TODO 名前を表示するのもありかも
 
         }
@@ -85,7 +82,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "Set Priority:"+newValue;
         }
 
@@ -102,7 +99,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "Set Z:"+newValue;
         }
 
@@ -119,7 +116,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "SetName:"+newValue;
         }
 

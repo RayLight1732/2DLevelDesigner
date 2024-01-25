@@ -4,7 +4,6 @@ public class UpdateAction {
     public static final UpdateAction REMOVE = new UpdateAction("REMOVE");
     public static final UpdateAction ADD = new UpdateAction("ADD");
     public static final UpdateAction CHANGE_RECTANGLE = new UpdateAction("ChangeRectangle");
-    public static final UpdateAction REORDER = new UpdateAction("Reorder");
     public static final UpdateAction CHANGE_VISIBLY = new UpdateAction("ChangeVisibly");
 
     public static final UpdateAction CHANGE_Z = new UpdateAction("ChangeZ");
@@ -14,7 +13,6 @@ public class UpdateAction {
 
     public static final UpdateAction CHANGE_IMAGE = new UpdateAction("ChangeImage");
     public static final UpdateAction CHANGE_MATERIAL = new UpdateAction("ChangeMaterial");
-    public static final UpdateAction CHANGE_IMAGE_FILE = new UpdateAction("ChangeImageFile");
     public static final UpdateAction UNDO = new UpdateAction("Undo");
     public static final UpdateAction REDO = new UpdateAction("Redo");
     public static final UpdateAction CHANGE_FOG_COLOR = new UpdateAction("ChangeFogColor");

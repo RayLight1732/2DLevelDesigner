@@ -34,11 +34,6 @@ public interface Canvas extends ObservedObject {
      */
     boolean addLayer(UUID layerUUID);
 
-    /**
-     * 選択用の枠線を取得する
-     * @return 枠線
-     */
-    Frame getFrame();
 
     /**
      * 点上にあるデザイナーオブジェクトを取得する
@@ -145,17 +140,16 @@ public interface Canvas extends ObservedObject {
     DesignerObjectManager getDesignerObjectManager();
 
     /**
-     * 背景画像を取得する
-     * @return 背景画像
+     * 背景画像用のマテリアルを設定する
+     * @param uuid マテリアルのUUID
      */
-    BufferedImage getBackgroundImage();
+    void setMaterialUUID(UUID uuid);
 
     /**
-     * 背景画像を設定する
-     * @param backgroundImage 背景画像
+     * 背景画像用のマテリアルを取得する
+     * @return マテリアルのUUID
      */
-    void setBackgroundImage(BufferedImage backgroundImage);
-
+    UUID getMaterialUUID();
     /**
      * 霧の色を取得する
      * @return 霧の色

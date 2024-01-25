@@ -1,6 +1,9 @@
 package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.DesignerObject;
+import com.jp.daichi.designer.interfaces.Layer;
+import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
@@ -12,7 +15,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class DataSaver {
 
@@ -42,8 +48,6 @@ public class DataSaver {
             save(target,Path.of(parentFolder.getAbsolutePath(),"objects",((DesignerObject) target).getUUID().toString()+".bin"));
         } else if (target instanceof Material) {
             save(target,Path.of(parentFolder.getAbsolutePath(),"materials",((Material) target).getUUID().toString()+".bin"));
-        } else if (target instanceof MaterialManager materialManager) {
-            update(Path.of(parentFolder.getAbsolutePath(),"materials"),materialManager.getAllInstances(), Material::getUUID);
         } else if (target instanceof EditorCanvas editorCanvas) {
             System.out.println("save");
             save(target,Path.of(parentFolder.getAbsolutePath(),"canvas.bin"));
@@ -56,6 +60,14 @@ public class DataSaver {
      */
     public void update(DesignerObjectManager manager) {
         update(Path.of(parentFolder.getAbsolutePath(),"objects"),manager.getAllInstances(), DesignerObject::getUUID);
+    }
+
+    /**
+     * 新たに登録されたものや、削除されたもののデータの更新を行う
+     * @param manager デザイナーオブジェクトマネージャー
+     */
+    public void update(MaterialManager manager) {
+        update(Path.of(parentFolder.getAbsolutePath(),"materials"),manager.getAllInstances(), Material::getUUID);
     }
 
     private <T> void update(Path targetParentPath,List<T> allInstances,UUIDGetter<T> getter) {

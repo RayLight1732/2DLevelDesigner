@@ -1,16 +1,14 @@
 package com.jp.daichi.designer.editor.history;
 
 import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
-import com.jp.daichi.designer.interfaces.manager.LayerManager;
-import com.jp.daichi.designer.interfaces.manager.MaterialManager;
 import com.jp.daichi.designer.simple.SimpleObservedObject;
-import com.jp.daichi.designer.interfaces.UpdateAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 基本的な履歴の実装
@@ -18,6 +16,10 @@ import java.util.List;
 public class SimpleHistory extends SimpleObservedObject implements History {
     private int head = -1;
     private List<HistoryStaff> historyStaffs = new ArrayList<>();
+    private List<HistoryStaff> staffsToCompress = new ArrayList<>();
+
+    private Supplier<String> compressDescriptionSupplier = null;
+    private boolean compress = false;
 
     @Override
     public int getHead() {
@@ -26,10 +28,14 @@ public class SimpleHistory extends SimpleObservedObject implements History {
 
     @Override
     public void add(HistoryStaff historyStaff) {
-        head++;
-        historyStaffs = historyStaffs.subList(0, head);
-        historyStaffs.add(historyStaff);
-        sendUpdate(UpdateAction.ADD);
+        if (!compress) {
+            head++;
+            historyStaffs = historyStaffs.subList(0, head);
+            historyStaffs.add(historyStaff);
+            sendUpdate(UpdateAction.ADD);
+        } else {
+            staffsToCompress.add(historyStaff);
+        }
     }
 
     @Override
@@ -82,4 +88,48 @@ public class SimpleHistory extends SimpleObservedObject implements History {
     public boolean canRedo() {
         return head+1 < historyStaffs.size();
     }
+
+    @Override
+    public void startCompress(String description) {
+        startCompress(()->description);
+    }
+
+    @Override
+    public void startCompress(Supplier<String> descriptionSupplier) {
+        if (!compress) {
+            compress = true;
+            staffsToCompress = new ArrayList<>();
+            compressDescriptionSupplier = descriptionSupplier;
+        }
+    }
+
+    @Override
+    public void finishCompress() {
+        if (compress) {
+            compress = false;
+            if (staffsToCompress.size() > 0) {
+                add(new CompressStaff(compressDescriptionSupplier.get(), staffsToCompress));
+            }
+            staffsToCompress = null;
+            compressDescriptionSupplier = null;
+        }
+    }
+
+
+    private record CompressStaff(String description, List<HistoryStaff> staffs) implements HistoryStaff {
+
+        @Override
+            public void undo(Canvas canvas) {
+                for (HistoryStaff staff : staffs) {
+                    staff.undo(canvas);
+                }
+            }
+
+            @Override
+            public void redo(Canvas canvas) {
+                for (HistoryStaff staff : staffs) {
+                    staff.redo(canvas);
+                }
+            }
+        }
 }

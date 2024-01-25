@@ -3,21 +3,34 @@ package com.jp.daichi.designer.simple;
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.DesignerObjectType;
 import com.jp.daichi.designer.interfaces.Layer;
-import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.UpdateAction;
+import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
+/**
+ * 基本的なレイヤーの実装
+ */
 public class SimpleLayer extends SimpleObservedObject implements Layer {
 
     private String name;
     private boolean isVisible = true;
     private final UUID uuid;
     private final DesignerObjectType type;
+
+    /**
+     * 登録されているデザイナーオブジェクトのリスト
+     */
     protected final List<UUID> designerObjects = new ArrayList<>();
 
+    /**
+     * 新しいレイヤーのインスタンスを作成する
+     * @param name 名前
+     * @param uuid UUID
+     * @param type 管理するデザイナーオブジェクトのタイプ
+     */
     public SimpleLayer(String name,UUID uuid,DesignerObjectType type) {
         this.name = name;
         this.uuid = uuid;

@@ -1,11 +1,11 @@
-package com.jp.daichi.designer.simple;
+package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.SignedDimension;
 import com.jp.daichi.designer.interfaces.Tool;
-import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.UpdateAction;
+import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
+import com.jp.daichi.designer.simple.SimpleObservedObject;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -17,15 +17,15 @@ public class SelectAndMoveTool extends SimpleObservedObject implements Tool  {
 
     private static final Color selectRectColor = new Color(65,105,255,100);
     private final MouseAdapter mouseAdapter;
-    private final Canvas canvas;
+    private final EditorCanvas canvas;
 
     /**
      * 新しいインスタンスを作成する
      * @param canvas キャンバス
      */
-    public SelectAndMoveTool(Canvas canvas) {
+    public SelectAndMoveTool(EditorCanvas canvas) {
         this.canvas = canvas;
-        this.mouseAdapter = new SelectToolMouseAdapter(this,canvas);
+        this.mouseAdapter = new SelectToolMouseAdapter(this);
     }
     private Rectangle rectangle;
 
@@ -55,10 +55,17 @@ public class SelectAndMoveTool extends SimpleObservedObject implements Tool  {
         if (moveOnly) {
             canvas.getFrame().setPosition(startPoint);
         } else {
-            canvas.getFrame().setPositionAndDimension(startPoint,startDimension);
+            canvas.getFrame().setPositionAndDimension(startPoint, startDimension);
         }
-        canvas.getFrame().getSelected().forEach(designerObject ->( (EditorDesignerObject)designerObject).setSaveHistory(true));
-        startPoint = null;
-        startDimension = null;
+        canvas.getFrame().getSelected().forEach(designerObject -> ((EditorDesignerObject) designerObject).setSaveHistory(true));
+        if (moveOnly) {
+            canvas.getHistory().startCompress("Move");
+        } else {
+            canvas.getHistory().startCompress("Resize");
+        }
+    }
+
+    public EditorCanvas getCanvas() {
+        return canvas;
     }
 }

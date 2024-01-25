@@ -1,14 +1,20 @@
-package com.jp.daichi.designer.editor.viewer;
+package com.jp.daichi.designer.editor.ui.viewer;
 
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.editor.ui.ObserverJPanel;
+import com.jp.daichi.designer.editor.ui.SmoothJLabel;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
+import com.jp.daichi.designer.editor.ui.WindowManager;
+import com.jp.daichi.designer.editor.ui.inspector.ImageObjectInspectorView;
+import com.jp.daichi.designer.editor.ui.inspector.InspectorUtil;
+import com.jp.daichi.designer.interfaces.ImageObject;
+import com.jp.daichi.designer.interfaces.Material;
+import com.jp.daichi.designer.interfaces.ObservedObject;
+import com.jp.daichi.designer.interfaces.UpdateAction;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
-import com.jp.daichi.designer.editor.*;
-import com.jp.daichi.designer.editor.inspector.ImageObjectInspectorView;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
@@ -31,7 +37,7 @@ public class MaterialViewer extends JScrollPane {
             }
         });
         materialListViewer = new MaterialListViewer();
-        materialListViewer.setBackground(ViewUtils.BACKGROUND_COLOR);
+        materialListViewer.setBackground(ViewUtil.BACKGROUND_COLOR);
         super.setViewportView(materialListViewer);
 
         super.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -133,7 +139,7 @@ public class MaterialViewer extends JScrollPane {
         }
     }
 
-    private static final Border defaultPreviewBorder = BorderFactory.createMatteBorder(1,1,1,1, ViewUtils.HIGHLIGHT_COLOR);
+    private static final Border defaultPreviewBorder = BorderFactory.createMatteBorder(1,1,1,1, ViewUtil.HIGHLIGHT_COLOR);
 
     private static final Dimension previewImageSize = new Dimension(70,50);
     private static final Dimension previewSize = new Dimension(70,70);
@@ -157,7 +163,7 @@ public class MaterialViewer extends JScrollPane {
             if (material.getImage() != null) {
                 imageLabel.setIcon(new ImageIcon(material.getImage().getScaledInstance(previewImageSize.width,previewImageSize.height,Image.SCALE_SMOOTH)));//TODO 中央に配置する
             } else {
-                imageLabel.setBackground(ViewUtils.MATERIAL_ERROR_COLOR);
+                imageLabel.setBackground(ViewUtil.MATERIAL_ERROR_COLOR);
             }
             SmoothJLabel nameLabel = new SmoothJLabel(material.getName());
             nameLabel.setAlignmentX(0.5f);
@@ -182,8 +188,8 @@ public class MaterialViewer extends JScrollPane {
                             draggedMaterial.setBorder(BorderFactory.createEmptyBorder());
                         }
                         draggedMaterial.show(e.getComponent(), e.getX() - 1, e.getY() - 1);
-                        if (getPropertyAt(e.getComponent(),windowManager.inspectorView(),ImageObjectInspectorView.materialPanelClientPropertyKey,e.getPoint())==null) {
-                            windowManager.frame().setCursor(ViewUtils.NO_DRAG);
+                        if (getPropertyAt(e.getComponent(),windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey,e.getPoint())==null) {
+                            windowManager.frame().setCursor(ViewUtil.NO_DRAG);
                         } else {
                             windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         }

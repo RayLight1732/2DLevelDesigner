@@ -5,6 +5,9 @@ import com.jp.daichi.designer.interfaces.manager.LayerManager;
 
 import java.util.UUID;
 
+/**
+ * 基本的なレイヤーマネージャーの実装
+ */
 public abstract class SimpleLayerManager extends AManager<Layer> implements LayerManager {
 
     @Override

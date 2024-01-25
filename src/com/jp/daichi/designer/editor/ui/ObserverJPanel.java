@@ -1,4 +1,6 @@
-package com.jp.daichi.designer.editor;
+package com.jp.daichi.designer.editor.ui;
+
+import com.jp.daichi.designer.editor.ObserverComponent;
 
 import javax.swing.*;
 

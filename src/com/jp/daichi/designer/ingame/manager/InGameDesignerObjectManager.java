@@ -1,8 +1,8 @@
 package com.jp.daichi.designer.ingame.manager;
 
-import com.jp.daichi.designer.editor.EditorImageObject;
 import com.jp.daichi.designer.ingame.InGameImageObject;
 import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.simple.manager.SimpleDesignerObjectManager;
 
 import java.util.Map;
@@ -17,32 +17,32 @@ public class InGameDesignerObjectManager extends SimpleDesignerObjectManager {
 
     /**
      * 対象となるキャンバスを設定
+     *
      * @param canvas キャンバス
      */
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends DesignerObject> T createInstance(String name, DesignerObjectType type) {
-        String resolvedName = resolveName(null,name);
-        DesignerObject designerObject = null;
+    protected <T extends DesignerObject> T createInstance(String resolvedName, UUID uuid, DesignerObjectType type) {
         if (type == DesignerObjectType.IMAGE) {
-            designerObject = new InGameImageObject(resolvedName, UUID.randomUUID(),canvas,new Point(0,0),new SignedDimension(0,0));
+            return (T) new InGameImageObject(resolvedName, UUID.randomUUID(), canvas, new Point(0, 0), new SignedDimension(0, 0));
         } else {
-            //TODO
-        }
-
-        if (designerObject != null) {
-            addInstance(designerObject);
-            return (T) designerObject;
-        } else {
+            //TODO その他のタイプのインスタンス化
             return null;
         }
     }
 
+
     @Override
-    public DesignerObject deserializeManagedObject(Map<String, Object> map) {
-        return null;
+    protected DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> map) {
+        if (deserializedData.type() == DesignerObjectType.IMAGE) {
+            return InGameImageObject.deserialize(canvas, deserializedData, map);
+        } else {
+            //TODO
+            return null;
+        }
     }
 }

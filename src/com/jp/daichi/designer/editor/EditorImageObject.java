@@ -1,13 +1,15 @@
 package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.editor.history.DesignerObjectHistoryStaff;
+import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
+import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.Point;
+import com.jp.daichi.designer.interfaces.SignedDimension;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 import com.jp.daichi.designer.simple.DesignerObjectSerializer;
 import com.jp.daichi.designer.simple.SimpleImageObject;
-import com.jp.daichi.designer.editor.history.DesignerObjectHistoryStaff;
-import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,14 @@ import java.util.UUID;
  */
 public class EditorImageObject extends SimpleImageObject implements PermanentObject, EditorDesignerObject {
 
+    /**
+     * デシリアライズを行う
+     * @param history 履歴
+     * @param canvas  キャンバス
+     * @param deserializedData デシリアライズされたデータ
+     * @param serialized シリアライズされたデータ
+     * @return デシリアライズされた結果
+     */
     public static EditorImageObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
         try {
             if (deserializedData != null) {
@@ -143,7 +153,7 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
         }
 
         @Override
-        public String getDescription() {
+        public String description() {
             return "Set Material";//TODO マテリアルの名前
         }
 

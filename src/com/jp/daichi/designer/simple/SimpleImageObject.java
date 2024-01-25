@@ -1,11 +1,10 @@
 package com.jp.daichi.designer.simple;
 
-import com.jp.daichi.designer.Utils;
-import com.jp.daichi.designer.interfaces.*;
+import com.jp.daichi.designer.Util;
+import com.jp.daichi.designer.editor.ui.ViewUtil;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.interfaces.UpdateAction;
-import com.jp.daichi.designer.editor.ViewUtils;
+import com.jp.daichi.designer.interfaces.*;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -55,7 +54,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = Utils.getRectangleOnScreen(getCanvas(), this);
+        Rectangle rectangle = Util.getRectangleOnScreen(getCanvas(), this);
         try {
             Material material = getCanvas().getMaterialManager().getInstance(getMaterialUUID());
             if (material == null || material.getImage() == null) {
@@ -67,7 +66,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
                 double uvHeight = material.getUVDimension().height();
                 g.drawImage(material.getImage(),
                         rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height,
-                        Utils.round(uvX), Utils.round(uvY), Utils.round(uvX + uvWidth), Utils.round(uvY + uvHeight), null);
+                        Util.round(uvX), Util.round(uvY), Util.round(uvX + uvWidth), Util.round(uvY + uvHeight), null);
             }
         } catch (NullPointerException exception) {
             drawMissing(g, rectangle);
@@ -75,7 +74,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     }
 
     private void drawMissing(Graphics2D g, Rectangle rectangle) {
-        g.setColor(ViewUtils.MATERIAL_ERROR_COLOR);
+        g.setColor(ViewUtil.MATERIAL_ERROR_COLOR);
         g.fill(rectangle);
     }
 
