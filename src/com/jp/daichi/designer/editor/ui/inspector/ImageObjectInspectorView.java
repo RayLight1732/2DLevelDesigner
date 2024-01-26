@@ -41,7 +41,7 @@ public class ImageObjectInspectorView extends DesignerObjectInspectorView {
             z = getComponentZOrder(materialPanel);
             remove(z);
             materialPanel = createMaterialPanel();
-            add(materialPanel,z);
+            add(materialPanel, z);
         }
     }
 
@@ -51,10 +51,11 @@ public class ImageObjectInspectorView extends DesignerObjectInspectorView {
     }
 
 
-    private final Supplier<UUID> materialUUIDGetter = ()->getDesignerObject().getMaterialUUID();
-    private final Function<UUID,Material> materialGetter = uuid -> Util.getMaterial(getDesignerObject());
+    private final Supplier<UUID> materialUUIDGetter = () -> getDesignerObject().getMaterialUUID();
+    private final Function<UUID, Material> materialGetter = uuid -> Util.getMaterial(getDesignerObject());
+
     private JPanel createMaterialPanel() {
-        return InspectorUtil.createMaterialPanel(uuid ->  getDesignerObject().setMaterialUUID(uuid),materialUUIDGetter,materialGetter);
+        return InspectorUtil.createMaterialPanel(uuid -> getDesignerObject().setMaterialUUID(uuid), materialUUIDGetter, materialGetter);
     }
 
 }

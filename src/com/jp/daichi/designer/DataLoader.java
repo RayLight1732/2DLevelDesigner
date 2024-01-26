@@ -23,18 +23,18 @@ public class DataLoader {
     }
 
     public void loadData(Canvas canvas) {
-        File materialParentFile = new File(file.getAbsolutePath(),"materials");
-        deserialize(canvas.getMaterialManager(),materialParentFile);
-        File designerObjectParentFile = new File(file.getAbsolutePath(),"objects");
-        deserialize(canvas.getDesignerObjectManager(),designerObjectParentFile);
-        File layerParentFile = new File(file.getAbsolutePath(),"layers");
-        deserialize(canvas.getLayerManager(),layerParentFile);
-        for (Layer layer:canvas.getLayerManager().getAllInstances()) {
+        File materialParentFile = new File(file.getAbsolutePath(), "materials");
+        deserialize(canvas.getMaterialManager(), materialParentFile);
+        File designerObjectParentFile = new File(file.getAbsolutePath(), "objects");
+        deserialize(canvas.getDesignerObjectManager(), designerObjectParentFile);
+        File layerParentFile = new File(file.getAbsolutePath(), "layers");
+        deserialize(canvas.getLayerManager(), layerParentFile);
+        for (Layer layer : canvas.getLayerManager().getAllInstances()) {
             canvas.addLayer(layer.getUUID());
         }
     }
 
-    private void deserialize(IManager<?> manager,File file) {
+    private void deserialize(IManager<?> manager, File file) {
         if (file.exists()) {
             try (Stream<Path> stream = Files.list(file.toPath())) {
                 stream.forEach(p -> {

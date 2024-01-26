@@ -24,24 +24,26 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
 
     /**
      * 新しいマテリアルを作成する
-     * @param name 名前
-     * @param uuid UUID
+     *
+     * @param name            名前
+     * @param uuid            UUID
      * @param materialManager マネージャー
      */
     public SimpleMaterial(String name, UUID uuid, MaterialManager materialManager) {
-        this(name,uuid,null,new Point(0,0),new SignedDimension(0,0),materialManager);
+        this(name, uuid, null, new Point(0, 0), new SignedDimension(0, 0), materialManager);
     }
 
     /**
      * 新しいマテリアルを作成する
-     * @param name 名前
-     * @param uuid UUID
-     * @param image 画像
-     * @param uv UV座標
-     * @param uvDimension UVの描画領域
+     *
+     * @param name            名前
+     * @param uuid            UUID
+     * @param image           画像
+     * @param uv              UV座標
+     * @param uvDimension     UVの描画領域
      * @param materialManager マネージャー
      */
-    public SimpleMaterial(String name, UUID uuid,BufferedImage image,Point uv,SignedDimension uvDimension, MaterialManager materialManager) {
+    public SimpleMaterial(String name, UUID uuid, BufferedImage image, Point uv, SignedDimension uvDimension, MaterialManager materialManager) {
         Objects.requireNonNull(uv);
         Objects.requireNonNull(uvDimension);
         this.name = name;
@@ -51,6 +53,7 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
         this.uvPoint = uv;
         this.uvDimension = uvDimension;
     }
+
     @Override
     public String getName() {
         return name;
@@ -59,7 +62,7 @@ public class SimpleMaterial extends SimpleObservedObject implements Material {
     @Override
     public void setName(String name) {
         if (!this.name.equals(name)) {
-            this.name = materialManager.resolveName(getUUID(),name);
+            this.name = materialManager.resolveName(getUUID(), name);
             sendUpdate(UpdateAction.CHANGE_NAME);
         }
     }

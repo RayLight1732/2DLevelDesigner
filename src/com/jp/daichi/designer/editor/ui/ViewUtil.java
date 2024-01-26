@@ -1,6 +1,6 @@
 package com.jp.daichi.designer.editor.ui;
 
-import com.jp.daichi.designer.Main;
+import com.jp.daichi.designer.editor.EditorMain;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,11 +15,6 @@ import java.text.NumberFormat;
 
 public class ViewUtil {
 
-    public static final Color FOREGROUND_COLOR = new Color(200,200,200);
-    public static final Color BACKGROUND_COLOR = new Color(56,56,56);
-    public static final Color HIGHLIGHT_COLOR = new Color(30,30,30);
-    public static final Color MATERIAL_ERROR_COLOR = new Color(255,0,255);
-
     public static final int labelHorizontalStruct = 6;
 
     public static final Cursor NO_DRAG = createNoDragCursor();
@@ -28,12 +23,13 @@ public class ViewUtil {
 
     public static final int TEXT_FIELD_COLUMNS = 10;
 
-    public static final Font HIGHLIGHT_FONT = new Font("Dialog",Font.PLAIN,13);
+    public static final Font HIGHLIGHT_FONT = new Font("Dialog", Font.PLAIN, 13);
 
-    public static JTextField createNumberTextField(Number value,SetterRunnable<Number> setter) {
-        return createNumberTextField(value,setter,false);
+    public static JTextField createNumberTextField(Number value, SetterRunnable<Number> setter) {
+        return createNumberTextField(value, setter, false);
     }
-    public static JTextField createNumberTextField(Number value,SetterRunnable<Number> setter,boolean isInteger) {
+
+    public static JTextField createNumberTextField(Number value, SetterRunnable<Number> setter, boolean isInteger) {
         NumberFormat format = isInteger ? NumberFormat.getIntegerInstance() : new DecimalFormat();
         format.setGroupingUsed(false);
         JFormattedTextField textField = new MyFormattedTextField(format, value);
@@ -42,7 +38,8 @@ public class ViewUtil {
         addFormattedTextFieldListener(textField, setter);
         return textField;
     }
-    public static  <T> void addFormattedTextFieldListener(JFormattedTextField textField, SetterRunnable<T> setter) {
+
+    public static <T> void addFormattedTextFieldListener(JFormattedTextField textField, SetterRunnable<T> setter) {
         textField.addActionListener(e -> {
             if (!setter.set) {
                 setter.set = true;
@@ -59,9 +56,11 @@ public class ViewUtil {
             }
         });
     }
-    public static SetterRunnable<String> addTextFieldListener(JTextField textField,ValueSetter<String> setter) {
-        SetterRunnable<String> setterRunnable = new SetterRunnable<>(setter);;
-        textField.addActionListener(e->{
+
+    public static SetterRunnable<String> addTextFieldListener(JTextField textField, ValueSetter<String> setter) {
+        SetterRunnable<String> setterRunnable = new SetterRunnable<>(setter);
+        ;
+        textField.addActionListener(e -> {
             if (!setterRunnable.set) {
                 setterRunnable.set = true;
                 setterRunnable.set(textField.getText());
@@ -80,11 +79,11 @@ public class ViewUtil {
     }
 
     private static Cursor createNoDragCursor() {
-        try (InputStream is = Main.class.getResourceAsStream("\\NoDrag.png")){
-             //TODO resourcesを使用するようにする
+        try (InputStream is = EditorMain.class.getResourceAsStream("\\NoDrag.png")) {
+            //TODO resourcesを使用するようにする
             if (is != null) {
                 BufferedImage bf = ImageIO.read(is);
-                return Toolkit.getDefaultToolkit().createCustomCursor(bf,new Point(0,0),"NoDrag");
+                return Toolkit.getDefaultToolkit().createCustomCursor(bf, new Point(0, 0), "NoDrag");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,6 +99,7 @@ public class ViewUtil {
     /**
      * 値を設定するために用いられるクラス
      * 一度値が設定されると、Resetが呼ばれるまで設定されない
+     *
      * @param <T> 与えられる型
      */
     public static class SetterRunnable<T> {
@@ -108,6 +108,7 @@ public class ViewUtil {
 
         /**
          * 新しいインスタンスを作成する
+         *
          * @param setter セッター
          */
         public SetterRunnable(ValueSetter<T> setter) {
@@ -116,6 +117,7 @@ public class ViewUtil {
 
         /**
          * 値を設定する
+         *
          * @param value 値
          */
         public void set(T value) {

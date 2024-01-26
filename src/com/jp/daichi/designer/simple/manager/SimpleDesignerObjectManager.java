@@ -30,7 +30,7 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
 
     @Override
     public <T extends DesignerObject> T createInstance(String name, DesignerObjectType type) {
-        T designerObject = createInstance(resolveName(null,name),UUID.randomUUID(),type);
+        T designerObject = createInstance(resolveName(null, name), UUID.randomUUID(), type);
         if (designerObject != null) {
             addInstance(designerObject);
             return designerObject;
@@ -41,19 +41,20 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
 
     /**
      * 新しいデザイナーオブジェクトのインスタンスを作成する
+     *
      * @param resolvedName 重複が解消された名前
-     * @param uuid UUID
-     * @param type タイプ
+     * @param uuid         UUID
+     * @param type         タイプ
+     * @param <T>          typeが表すクラス
      * @return 新しいデザイナーオブジェクトのインスタンス
-     * @param <T> typeが表すクラス
      */
-    protected  abstract  <T extends DesignerObject> T createInstance(String resolvedName,UUID uuid, DesignerObjectType type);
+    protected abstract <T extends DesignerObject> T createInstance(String resolvedName, UUID uuid, DesignerObjectType type);
 
     @Override
     public DesignerObject deserializeManagedObject(Map<String, Object> map) {
         DesignerObjectSerializer.DeserializedData deserializedData = DesignerObjectSerializer.deserialize(map);
         if (deserializedData != null) {
-            DesignerObject designerObject = deserializeManagedObject(deserializedData,map);
+            DesignerObject designerObject = deserializeManagedObject(deserializedData, map);
             if (designerObject != null) {
                 addInstance(designerObject);
             }
@@ -65,9 +66,10 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
 
     /**
      * デシリアライズを行うと同時に登録を行う。
+     *
      * @param deserializedData デシリアライズされたデータ
-     * @param map シリアライズされたデータ
+     * @param map              シリアライズされたデータ
      * @return デシリアライズの結果
      */
-    protected abstract DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData ,Map<String, Object> map);
+    protected abstract DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> map);
 }

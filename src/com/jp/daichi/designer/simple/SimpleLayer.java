@@ -27,11 +27,12 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
 
     /**
      * 新しいレイヤーのインスタンスを作成する
+     *
      * @param name 名前
      * @param uuid UUID
      * @param type 管理するデザイナーオブジェクトのタイプ
      */
-    public SimpleLayer(String name,UUID uuid,DesignerObjectType type) {
+    public SimpleLayer(String name, UUID uuid, DesignerObjectType type) {
         this.name = name;
         this.uuid = uuid;
         this.type = type;
@@ -79,9 +80,9 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
     }
 
     @Override
-    public void draw(Graphics2D g,DesignerObjectManager designerObjectManager) {
+    public void draw(Graphics2D g, DesignerObjectManager designerObjectManager) {
         if (isVisible()) {
-            designerObjects.stream().map(designerObjectManager::getInstance).filter(Objects::nonNull).filter(DesignerObject::isVisible).sorted(Comparator.reverseOrder()).forEach(it ->it.draw(g));
+            designerObjects.stream().map(designerObjectManager::getInstance).filter(Objects::nonNull).filter(DesignerObject::isVisible).sorted(Comparator.reverseOrder()).forEach(it -> it.draw(g));
         }
     }
 
@@ -97,6 +98,6 @@ public class SimpleLayer extends SimpleObservedObject implements Layer {
 
     @Override
     public int compareTo(Layer o) {
-        return DesignerObjectType.valueOf(getObjectType().name()).ordinal()-DesignerObjectType.valueOf(o.getObjectType().name()).ordinal();
+        return DesignerObjectType.valueOf(getObjectType().name()).ordinal() - DesignerObjectType.valueOf(o.getObjectType().name()).ordinal();
     }
 }

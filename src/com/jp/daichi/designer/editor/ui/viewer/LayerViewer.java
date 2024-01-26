@@ -18,6 +18,8 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Objects;
 
+import static com.jp.daichi.designer.ColorProfile.*;
+
 /**
  * レイヤーの閲覧を行うためのパネル
  */
@@ -28,7 +30,8 @@ public class LayerViewer extends JScrollPane {
 
     /**
      * レイヤーの閲覧を行うためのパネルを作成する
-     * @param canvas 対象のキャンバス
+     *
+     * @param canvas        対象のキャンバス
      * @param windowManager ウィンドウマネージャー
      */
     public LayerViewer(EditorCanvas canvas, WindowManager windowManager) {
@@ -43,11 +46,11 @@ public class LayerViewer extends JScrollPane {
         setBorder(null);
         Box accordion = Box.createVerticalBox();
         accordion.setOpaque(true);
-        accordion.setBackground(ViewUtil.BACKGROUND_COLOR);
+        accordion.setBackground(BACKGROUND_COLOR);
         accordion.setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 5, 5));
 
-        canvas.getLayers().stream().map(it ->canvas.getLayerManager().getInstance(it)).filter(Objects::nonNull).sorted().forEach(layer-> {
-            JPanel p = new LayerPanel(canvas,layer);
+        canvas.getLayers().stream().map(it -> canvas.getLayerManager().getInstance(it)).filter(Objects::nonNull).sorted().forEach(layer -> {
+            JPanel p = new LayerPanel(canvas, layer);
             accordion.add(p);
             accordion.add(Box.createVerticalStrut(5));
         });
@@ -66,21 +69,22 @@ public class LayerViewer extends JScrollPane {
 
         private final SmoothJLabel label;
         private JPanel contentPanel;
+
         private AAccordionPanel() {
             super(new BorderLayout());
             setOpaque(false);
             label = new SmoothJLabel();
             label.setOpaque(true);
-            label.setBackground(ViewUtil.BACKGROUND_COLOR);
+            label.setBackground(BACKGROUND_COLOR);
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    label.setBackground(ViewUtil.HIGHLIGHT_COLOR);
+                    label.setBackground(HIGHLIGHT_COLOR);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    label.setBackground(ViewUtil.BACKGROUND_COLOR);
+                    label.setBackground(BACKGROUND_COLOR);
                 }
 
                 @Override
@@ -99,7 +103,7 @@ public class LayerViewer extends JScrollPane {
         }
 
         protected void initContentPanel() {
-            label.setText(closed +" " + getTitle());
+            label.setText(closed + " " + getTitle());
 
             contentPanel = getContentPanel();
             //Border outBorder = BorderFactory.createMatteBorder(0, 2, 2, 2, Color.WHITE);
@@ -133,7 +137,7 @@ public class LayerViewer extends JScrollPane {
         @Override
         public Dimension getMaximumSize() {
             Dimension d = getPreferredSize();
-            return new Dimension(Integer.MAX_VALUE,d.height);
+            return new Dimension(Integer.MAX_VALUE, d.height);
         }
 
         public abstract JPanel getContentPanel();
@@ -148,10 +152,11 @@ public class LayerViewer extends JScrollPane {
     private class LayerPanel extends AAccordionPanel {
         private final Canvas canvas;
         private final Layer layer;
-        private final JPopupMenu  popup;
+        private final JPopupMenu popup;
 
-        private final JPanel contentPanel = new JPanel(new GridLayout(0,1));
-        public LayerPanel(Canvas canvas,Layer layer) {
+        private final JPanel contentPanel = new JPanel(new GridLayout(0, 1));
+
+        public LayerPanel(Canvas canvas, Layer layer) {
             this.canvas = canvas;
             this.layer = layer;
             this.popup = new JPopupMenu();
@@ -161,7 +166,7 @@ public class LayerViewer extends JScrollPane {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        popup.show(e.getComponent(),e.getX(),e.getY());
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             });
@@ -170,7 +175,7 @@ public class LayerViewer extends JScrollPane {
         private void initPopupMenu() {
             JMenuItem item = new JMenuItem("Create");
             item.addActionListener(e -> {
-                JPanel panel = new NewDesignerObjectPanel(layer,contentPanel);
+                JPanel panel = new NewDesignerObjectPanel(layer, contentPanel);
                 contentPanel.add(panel);
                 if (!contentPanel.isVisible()) {
                     revalidateContentPanel();
@@ -189,9 +194,9 @@ public class LayerViewer extends JScrollPane {
         }
 
         private void addContentsToContentPanel() {
-            layer.getObjects().stream().map(it->canvas.getDesignerObjectManager().getInstance(it)).filter(Objects::nonNull)
+            layer.getObjects().stream().map(it -> canvas.getDesignerObjectManager().getInstance(it)).filter(Objects::nonNull)
                     .sorted()
-                    .forEach(designerObject -> contentPanel.add(new DesignerObjectPanel(designerObject,layer)));
+                    .forEach(designerObject -> contentPanel.add(new DesignerObjectPanel(designerObject, layer)));
         }
 
         @Override
@@ -204,18 +209,18 @@ public class LayerViewer extends JScrollPane {
             if (target == layer && action == UpdateAction.CHANGE_NAME) {
                 updateLabelText();
             } else if (target instanceof DesignerObject designerObject && layer.getObjects().contains(designerObject.getUUID())) {
-                if (action==UpdateAction.CHANGE_NAME || action == UpdateAction.CHANGE_PRIORITY || action == UpdateAction.CHANGE_Z) {
+                if (action == UpdateAction.CHANGE_NAME || action == UpdateAction.CHANGE_PRIORITY || action == UpdateAction.CHANGE_Z) {
                     int index = layer.getObjects().stream().map(designerObjectUUID -> canvas.getDesignerObjectManager().getInstance(designerObjectUUID)).filter(Objects::nonNull).sorted().toList().indexOf(designerObject);
                     for (Component component : contentPanel.getComponents()) {
                         if (component instanceof DesignerObjectPanel designerObjectPanel && designerObjectPanel.designerObject == designerObject) {
                             int z = contentPanel.getComponentZOrder(component);
                             contentPanel.remove(z);
-                            contentPanel.add(new DesignerObjectPanel(designerObject,layer), index);
+                            contentPanel.add(new DesignerObjectPanel(designerObject, layer), index);
                             break;
                         }
                     }
                 }
-            } else if (target == layer && (action == UpdateAction.ADD||action == UpdateAction.REMOVE)) {
+            } else if (target == layer && (action == UpdateAction.ADD || action == UpdateAction.REMOVE)) {
                 contentPanel.removeAll();
                 addContentsToContentPanel();
             }
@@ -228,28 +233,28 @@ public class LayerViewer extends JScrollPane {
 
 
         private final DesignerObject designerObject;
-        private final JPopupMenu  popup;
+        private final JPopupMenu popup;
         private final Layer layer;
 
-        private DesignerObjectPanel(DesignerObject designerObject,Layer layer) {
+        private DesignerObjectPanel(DesignerObject designerObject, Layer layer) {
             this.designerObject = designerObject;
             this.popup = new JPopupMenu();
             this.layer = layer;
             initPopupMenu();
-            setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             SmoothJLabel label = new SmoothJLabel(designerObject.getName());
             setBorder(border);
             setOpaque(true);
-            setBackground(ViewUtil.BACKGROUND_COLOR);
+            setBackground(BACKGROUND_COLOR);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    setBackground(ViewUtil.HIGHLIGHT_COLOR);
+                    setBackground(HIGHLIGHT_COLOR);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    setBackground(ViewUtil.BACKGROUND_COLOR);
+                    setBackground(BACKGROUND_COLOR);
                 }
 
                 @Override
@@ -263,14 +268,14 @@ public class LayerViewer extends JScrollPane {
                         canvas.getFrame().clearSelectedObject();
                         canvas.getFrame().addSelectedObject(designerObject);
                     } else if (SwingUtilities.isRightMouseButton(e)) {
-                        popup.show(e.getComponent(),e.getX(),e.getY());
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             });
             add(label);
             add(Box.createHorizontalStrut(5));
             add(Box.createGlue());
-            SmoothJLabel label2 = new SmoothJLabel("Z:"+designerObject.getZ()+" Priority:"+designerObject.getPriority());
+            SmoothJLabel label2 = new SmoothJLabel("Z:" + designerObject.getZ() + " Priority:" + designerObject.getPriority());
             add(label2);
         }
 
@@ -281,7 +286,7 @@ public class LayerViewer extends JScrollPane {
                 if (windowManager.inspectorManager().isShowed(designerObject)) {
                     windowManager.inspectorView().setView(null);
                 }
-                canvas.getHistory().startCompress("Delete:"+designerObject.getName());
+                canvas.getHistory().startCompress("Delete:" + designerObject.getName());
                 canvas.getDesignerObjectManager().removeInstance(designerObject);
                 layer.remove(designerObject.getUUID());
                 canvas.getHistory().finishCompress();
@@ -299,7 +304,8 @@ public class LayerViewer extends JScrollPane {
         private final JPanel contentPanel;
         private final JTextField textField;
         private boolean added = false;
-        private NewDesignerObjectPanel(Layer layer,JPanel contentPanel) {
+
+        private NewDesignerObjectPanel(Layer layer, JPanel contentPanel) {
             this.layer = layer;
             this.contentPanel = contentPanel;
             this.textField = new JTextField(20);
@@ -307,9 +313,9 @@ public class LayerViewer extends JScrollPane {
         }
 
         private void init() {
-            setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             setOpaque(true);
-            setBackground(ViewUtil.BACKGROUND_COLOR);
+            setBackground(BACKGROUND_COLOR);
             add(textField);
             textField.addFocusListener(new FocusAdapter() {
                 @Override
@@ -317,7 +323,7 @@ public class LayerViewer extends JScrollPane {
                     onEndEnteringName();
                 }
             });
-            textField.addActionListener(e->{
+            textField.addActionListener(e -> {
                 onEndEnteringName();
             });
         }
@@ -328,15 +334,15 @@ public class LayerViewer extends JScrollPane {
                 contentPanel.remove(this);
                 String name = textField.getText();
                 DesignerObject[] designerObjects = new DesignerObject[1];
-                canvas.getHistory().startCompress(()-> designerObjects[0].getName());
+                canvas.getHistory().startCompress(() -> designerObjects[0].getName());
                 DesignerObject designerObject = canvas.getDesignerObjectManager().createInstance(name, layer.getObjectType());
                 designerObjects[0] = designerObject;
                 UpdateObserver updateObserver = designerObject.getUpdateObserver();
                 int size = 100;
                 double centerX = canvas.getViewport().getCenterX();
                 double centerY = canvas.getViewport().getCenterY();
-                designerObject.setPosition(canvas.convertFromScreenPosition(new Point(centerX-size/2.0,centerY-size/2.0),designerObject.getZ(),true));
-                designerObject.setDimension(new SignedDimension(size,size));
+                designerObject.setPosition(canvas.convertFromScreenPosition(new Point(centerX - size / 2.0, centerY - size / 2.0), designerObject.getZ(), true));
+                designerObject.setDimension(new SignedDimension(size, size));
                 designerObject.setUpdateObserver(updateObserver);
                 layer.add(designerObject.getUUID());
                 canvas.getHistory().finishCompress();

@@ -22,14 +22,15 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
 
     /**
      * デシリアライズを行う
-     * @param history 履歴
-     * @param canvas  キャンバス
+     *
+     * @param history          履歴
+     * @param canvas           キャンバス
      * @param deserializedData デシリアライズされたデータ
-     * @param serialized シリアライズされたデータ
+     * @param serialized       シリアライズされたデータ
      * @return デシリアライズされた結果
      */
-    public static EditorCollisionObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
-        return new EditorCollisionObject(history, deserializedData.name(),deserializedData.uuid(),canvas,deserializedData.position(),deserializedData.dimension(),deserializedData.priority());
+    public static EditorCollisionObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> serialized) {
+        return new EditorCollisionObject(history, deserializedData.name(), deserializedData.uuid(), canvas, deserializedData.position(), deserializedData.dimension(), deserializedData.priority());
 
     }
 
@@ -39,7 +40,7 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
     /**
      * 子リジョン表示用オブジェクトのインスタンスを作成する
      *
-     * @param history 履歴
+     * @param history   履歴
      * @param name      このオブジェクトの名前
      * @param uuid      UUID
      * @param canvas    キャンバス
@@ -47,21 +48,22 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
      * @param dimension 表示領域
      * @param priority  優先度
      */
-    public EditorCollisionObject(History history,String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension, int priority) {
+    public EditorCollisionObject(History history, String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension, int priority) {
         super(name, uuid, canvas, position, dimension, priority);
         this.history = history;
     }
 
     /**
      * コリジョン表示用オブジェクトのインスタンスを作成する
-     * @param history 履歴
-     * @param name このオブジェクトの名前
-     * @param uuid UUID
-     * @param canvas キャンバス
-     * @param position 座標
+     *
+     * @param history   履歴
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param canvas    キャンバス
+     * @param position  座標
      * @param dimension 表示領域
      */
-    public EditorCollisionObject(History history,String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
+    public EditorCollisionObject(History history, String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
         super(name, uuid, canvas, position, dimension);
         this.history = history;
     }
@@ -114,7 +116,7 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
-        DesignerObjectSerializer.serialize(this,result);
+        DesignerObjectSerializer.serialize(this, result);
         return result;
     }
 

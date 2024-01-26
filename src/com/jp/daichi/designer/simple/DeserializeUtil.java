@@ -16,14 +16,15 @@ public class DeserializeUtil {
     public static final String VIEWPORT = "ViewPort";
     public static final String FOG_STRENGTH = "FogStrength";
     public static final String FOG_COLOR = "FogColor";
-    public static final String MATERIAL_UUID ="MaterialUUID";
+    public static final String MATERIAL_UUID = "MaterialUUID";
 
     /**
      * シリアライズされたデータからプロパティを読み込み、キャンバスのインスタンスに設定する
-     * @param canvas キャンバスのインスタンス
+     *
+     * @param canvas     キャンバスのインスタンス
      * @param serialized シリアライズされたデータ
      */
-    public static void setCanvasProperties(Canvas canvas, Map<String,Object> serialized) throws ClassCastException,NullPointerException {
+    public static void setCanvasProperties(Canvas canvas, Map<String, Object> serialized) throws ClassCastException, NullPointerException {
         Double pov = (Double) serialized.get(POV);
         if (pov != null) {
             canvas.setPov(pov);

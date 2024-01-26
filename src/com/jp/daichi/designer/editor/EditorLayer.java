@@ -18,8 +18,9 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
 
     /**
      * デシリアライズを行う
+     *
      * @param history 履歴
-     * @param map シリアライズされたデータ
+     * @param map     シリアライズされたデータ
      * @return デシリアライズの結果
      */
     public static Layer deserialize(History history, Map<String, Object> map) {
@@ -33,7 +34,7 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
             Objects.requireNonNull(objects);
             Objects.requireNonNull(type);
             EditorLayer result = new EditorLayer(history, name, uuid, type);
-            Boolean isVisible = (Boolean)map.get("isVisible");
+            Boolean isVisible = (Boolean) map.get("isVisible");
             if (isVisible != null) {
                 result.setVisible(isVisible);
             }
@@ -53,9 +54,10 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
 
     /**
      * 新しいレイヤーのインスタンスを作成する
-     * @param history 履歴
-     * @param name 名前
-     * @param uuid UUID
+     *
+     * @param history    履歴
+     * @param name       名前
+     * @param uuid       UUID
      * @param objectType このレイヤーが管理するデザイナーオブジェクトのタイプ
      */
     public EditorLayer(History history, String name, UUID uuid, DesignerObjectType objectType) {
@@ -96,7 +98,7 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
         result.put("UUID", getUUID());
         result.put("Objects", getObjects());
         result.put("Type", getObjectType());
-        result.put("isVisible",isVisible());
+        result.put("isVisible", isVisible());
         return result;
     }
 
@@ -152,7 +154,7 @@ public class EditorLayer extends SimpleLayer implements PermanentObject {
                 if (add) {
                     layer.remove(target);
                 } else {
-                    System.out.println("add:"+target.toString());
+                    System.out.println("add:" + target.toString());
                     layer.add(target);
                 }
                 layer.setSaveHistory(true);

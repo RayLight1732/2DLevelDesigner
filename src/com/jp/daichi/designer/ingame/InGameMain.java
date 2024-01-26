@@ -1,4 +1,4 @@
-package com.jp.daichi.designer;
+package com.jp.daichi.designer.ingame;
 
 import com.jp.daichi.designer.ingame.manager.InGameCanvasManager;
 import com.jp.daichi.designer.interfaces.Canvas;
@@ -13,7 +13,7 @@ public class InGameMain {
         CanvasManager canvasManager = new InGameCanvasManager(new File("C:\\Development\\Test"));
         Canvas canvas = canvasManager.getInstance();
         JFrame frame = new JFrame("TestGameWindow");
-        frame.setSize(300,300);
+        frame.setSize(300, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MainPanel mainPanel = new MainPanel(canvas);
         frame.add(mainPanel);
@@ -23,6 +23,7 @@ public class InGameMain {
 
     private static class MainPanel extends JPanel {
         private final Canvas canvas;
+
         private MainPanel(Canvas canvas) {
             this.canvas = canvas;
         }
@@ -30,7 +31,7 @@ public class InGameMain {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            canvas.draw((Graphics2D) g,getWidth(),getHeight());
+            canvas.draw((Graphics2D) g, getWidth(), getHeight());
         }
     }
 }

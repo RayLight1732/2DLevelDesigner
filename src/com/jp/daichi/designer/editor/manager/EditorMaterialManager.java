@@ -22,39 +22,41 @@ public class EditorMaterialManager extends SimpleMaterialManager {
 
     @Override
     public Material deserializeManagedObject(Map<String, Object> map) {
-        EditorMaterial material = EditorMaterial.deserialize(history,this,map);
+        EditorMaterial material = EditorMaterial.deserialize(history, this, map);
         if (material != null) {
             addInstance(material);
         }
         return material;
     }
+
     @Override
     public boolean removeInstance(Material object) {
         boolean result = super.removeInstance(object);
         if (saveHistory) {
-            history.add(new EditRegisteredMaterialList(object.getUUID(),object.getName(),((EditorMaterial)object).serialize(),false));
+            history.add(new EditRegisteredMaterialList(object.getUUID(), object.getName(), ((EditorMaterial) object).serialize(), false));
         }
         return result;
     }
 
     @Override
     public Material createInstance(String name) {
-        EditorMaterial material = new EditorMaterial(history,resolveName(null,name),UUID.randomUUID(),this);
+        EditorMaterial material = new EditorMaterial(history, resolveName(null, name), UUID.randomUUID(), this);
         addInstance(material);
         if (saveHistory) {
-            history.add(new EditRegisteredMaterialList(material.getUUID(),material.getName(),material.serialize(),true));
+            history.add(new EditRegisteredMaterialList(material.getUUID(), material.getName(), material.serialize(), true));
         }
         return material;
     }
 
-    private record EditRegisteredMaterialList(UUID uuid,String name,Map<String,Object> serialized,boolean add) implements HistoryStaff {
+    private record EditRegisteredMaterialList(UUID uuid, String name, Map<String, Object> serialized,
+                                              boolean add) implements HistoryStaff {
 
         @Override
         public String description() {
             if (add) {
-                return "add material:"+name;
+                return "add material:" + name;
             } else {
-                return "remove material:"+name;
+                return "remove material:" + name;
             }
         }
 

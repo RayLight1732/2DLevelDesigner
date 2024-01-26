@@ -28,7 +28,7 @@ public abstract class SimpleLayerManager extends AManager<Layer> implements Laye
 
     @Override
     public Layer getLayer(DesignerObjectType type) {
-        for (Layer layer:instances) {
+        for (Layer layer : instances) {
             if (layer.getObjectType() == type) {
                 return layer;
             }

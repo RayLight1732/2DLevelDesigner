@@ -78,6 +78,7 @@ public class LineBorderEx extends LineBorder {
 
     /**
      * ストロークを取得する
+     *
      * @return ストローク
      */
     public Stroke getStroke() {
@@ -86,6 +87,7 @@ public class LineBorderEx extends LineBorder {
 
     /**
      * 横の弧の半径を取得する
+     *
      * @return 横の弧の半径
      */
     public int getHorizontalArcRatio() {
@@ -94,6 +96,7 @@ public class LineBorderEx extends LineBorder {
 
     /**
      * 縦の弧の半径を取得する
+     *
      * @return 縦の弧の半径
      */
     public int getVerticalArcRatio() {
@@ -102,6 +105,7 @@ public class LineBorderEx extends LineBorder {
 
     /**
      * 角が円形かどうか
+     *
      * @return 角が円形かどうか
      */
     public boolean isRoundingCorners() {

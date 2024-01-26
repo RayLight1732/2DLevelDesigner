@@ -33,7 +33,7 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     public <T extends DesignerObject> T createInstance(String name, DesignerObjectType type) {
         T designerObject = super.createInstance(name, type);
         if (saveHistory) {
-            history.add(new EditRegisteredMaterialList(designerObject.getUUID(),designerObject.getName(),((EditorDesignerObject) designerObject).serialize(),true));
+            history.add(new EditRegisteredMaterialList(designerObject.getUUID(), designerObject.getName(), ((EditorDesignerObject) designerObject).serialize(), true));
         }
         return designerObject;
     }
@@ -41,12 +41,10 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     @Override
     protected DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> map) {
         if (deserializedData.type() == DesignerObjectType.IMAGE) {
-            return EditorImageObject.deserialize(history, canvas,deserializedData, map);
+            return EditorImageObject.deserialize(history, canvas, deserializedData, map);
         } else if (deserializedData.type() == DesignerObjectType.COLLISION) {
-            return EditorCollisionObject.deserialize(history,canvas,deserializedData,map);
-        }
-
-        else {
+            return EditorCollisionObject.deserialize(history, canvas, deserializedData, map);
+        } else {
             //TODO
             return null;
         }
@@ -57,10 +55,10 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     protected <T extends DesignerObject> T createInstance(String resolvedName, UUID uuid, DesignerObjectType type) {
         switch (type) {
             case IMAGE -> {
-                return (T) new EditorImageObject(history,resolvedName, UUID.randomUUID(),canvas,new Point(0,0),new SignedDimension(0,0));
+                return (T) new EditorImageObject(history, resolvedName, UUID.randomUUID(), canvas, new Point(0, 0), new SignedDimension(0, 0));
             }
             case COLLISION -> {
-                return (T) new EditorCollisionObject(history,resolvedName,UUID.randomUUID(),canvas,new Point(0,0),new SignedDimension(0,0));
+                return (T) new EditorCollisionObject(history, resolvedName, UUID.randomUUID(), canvas, new Point(0, 0), new SignedDimension(0, 0));
             }
             default -> {
                 return null;
@@ -73,20 +71,21 @@ public class EditorDesignerObjectManager extends SimpleDesignerObjectManager {
     public boolean removeInstance(DesignerObject object) {
         boolean result = super.removeInstance(object);
         if (result && saveHistory) {
-            history.add(new EditRegisteredMaterialList(object.getUUID(),object.getName(),((EditorDesignerObject)object).serialize(),false));
+            history.add(new EditRegisteredMaterialList(object.getUUID(), object.getName(), ((EditorDesignerObject) object).serialize(), false));
         }
         return result;
     }
 
 
-    private record EditRegisteredMaterialList(UUID uuid,String name,Map<String,Object> serialized,boolean add) implements HistoryStaff {
+    private record EditRegisteredMaterialList(UUID uuid, String name, Map<String, Object> serialized,
+                                              boolean add) implements HistoryStaff {
 
         @Override
         public String description() {
             if (add) {
-                return "add material:"+name;
+                return "add material:" + name;
             } else {
-                return "remove material:"+name;
+                return "remove material:" + name;
             }
         }
 

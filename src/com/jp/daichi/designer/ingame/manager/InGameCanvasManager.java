@@ -35,6 +35,7 @@ public class InGameCanvasManager implements CanvasManager {
 
     /**
      * 新しいキャンバスマネージャーのインスタンスを作成する
+     *
      * @param parentFolder データを保存している親フォルダー このフォルダーの下に様々なデータが保存される
      */
     public InGameCanvasManager(File parentFolder) {
@@ -52,9 +53,9 @@ public class InGameCanvasManager implements CanvasManager {
             if (parentFolder.exists()) {
                 File[] files = parentFolder.listFiles();
                 if (files != null) {
-                    for (File file:files) {
+                    for (File file : files) {
                         if (file.getName().equals("canvas.bin")) {
-                            this.canvas = deserializeCanvas(Path.of(parentFolder.getAbsolutePath(),"canvas.bin"),materialManager,layerManager,designerObjectManager);
+                            this.canvas = deserializeCanvas(Path.of(parentFolder.getAbsolutePath(), "canvas.bin"), materialManager, layerManager, designerObjectManager);
                             if (canvas != null) {
                                 canvas.setUpdateObserver(observer);
                                 designerObjectManager.setCanvas(canvas);
@@ -70,11 +71,11 @@ public class InGameCanvasManager implements CanvasManager {
         return canvas;
     }
 
-    private Canvas deserializeCanvas(Path path,MaterialManager materialManager,LayerManager layerManager,DesignerObjectManager designerObjectManager) {
+    private Canvas deserializeCanvas(Path path, MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager) {
         if (Files.exists(path)) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toString()))) {
                 Map<String, Object> deserialized = (Map<String, Object>) ois.readObject();
-                return InGameCanvas.deserialize(materialManager,layerManager,designerObjectManager,deserialized);
+                return InGameCanvas.deserialize(materialManager, layerManager, designerObjectManager, deserialized);
             } catch (IOException | ClassNotFoundException | ClassCastException e) {
                 e.printStackTrace();
                 return null;

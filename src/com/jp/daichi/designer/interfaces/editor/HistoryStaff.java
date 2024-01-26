@@ -10,6 +10,7 @@ import java.io.Serializable;
 public interface HistoryStaff extends Serializable {
     /**
      * この履歴の説明を取得する
+     *
      * @return 履歴の説明
      */
     String description();

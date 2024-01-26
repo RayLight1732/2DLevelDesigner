@@ -54,8 +54,8 @@ public class SimpleHistory extends SimpleObservedObject implements History {
 
     @Override
     public HistoryStaff getRedoTarget() {
-        if (getHead()+1 < historyStaffs.size()) {
-            return historyStaffs.get(getHead()+1);
+        if (getHead() + 1 < historyStaffs.size()) {
+            return historyStaffs.get(getHead() + 1);
         } else {
             return null;
         }
@@ -86,12 +86,12 @@ public class SimpleHistory extends SimpleObservedObject implements History {
 
     @Override
     public boolean canRedo() {
-        return head+1 < historyStaffs.size();
+        return head + 1 < historyStaffs.size();
     }
 
     @Override
     public void startCompress(String description) {
-        startCompress(()->description);
+        startCompress(() -> description);
     }
 
     @Override
@@ -119,17 +119,17 @@ public class SimpleHistory extends SimpleObservedObject implements History {
     private record CompressStaff(String description, List<HistoryStaff> staffs) implements HistoryStaff {
 
         @Override
-            public void undo(Canvas canvas) {
-                for (HistoryStaff staff : staffs) {
-                    staff.undo(canvas);
-                }
-            }
-
-            @Override
-            public void redo(Canvas canvas) {
-                for (HistoryStaff staff : staffs) {
-                    staff.redo(canvas);
-                }
+        public void undo(Canvas canvas) {
+            for (HistoryStaff staff : staffs) {
+                staff.undo(canvas);
             }
         }
+
+        @Override
+        public void redo(Canvas canvas) {
+            for (HistoryStaff staff : staffs) {
+                staff.redo(canvas);
+            }
+        }
+    }
 }

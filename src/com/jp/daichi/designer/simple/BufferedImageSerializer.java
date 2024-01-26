@@ -18,7 +18,7 @@ public class BufferedImageSerializer implements Serializable {
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        ImageIO.write(image,"png",out);
+        ImageIO.write(image, "png", out);
     }
 
     @Serial

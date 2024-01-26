@@ -32,6 +32,7 @@ public class EditorCanvasManager implements CanvasManager {
 
     /**
      * 新しいキャンバスマネージャーのインスタンスを作成する
+     *
      * @param parentFolder データを保存している親フォルダー このフォルダーの下に様々なデータが保存される
      */
     public EditorCanvasManager(File parentFolder) {
@@ -53,17 +54,17 @@ public class EditorCanvasManager implements CanvasManager {
             if (parentFolder.exists()) {
                 File[] files = parentFolder.listFiles();
                 if (files != null) {
-                    for (File file:files) {
+                    for (File file : files) {
                         if (file.getName().equals("canvas.bin")) {
                             tried = true;
-                            canvas = deserializeCanvas(Path.of(parentFolder.getAbsolutePath(),"canvas.bin"),history,materialManager,layerManager,designerObjectManager);
+                            canvas = deserializeCanvas(Path.of(parentFolder.getAbsolutePath(), "canvas.bin"), history, materialManager, layerManager, designerObjectManager);
                             break;
                         }
                     }
                 }
             }
             if (!tried) {
-                canvas = new EditorCanvas(history,materialManager, layerManager, designerObjectManager);
+                canvas = new EditorCanvas(history, materialManager, layerManager, designerObjectManager);
             }
             if (canvas != null) {
                 designerObjectManager.setCanvas(canvas);
@@ -89,6 +90,7 @@ public class EditorCanvasManager implements CanvasManager {
 
     /**
      * データを保存するためのデータセーバーを取得する
+     *
      * @return データセーバー
      */
     public DataSaver getDataSaver() {
@@ -96,11 +98,11 @@ public class EditorCanvasManager implements CanvasManager {
     }
 
 
-    private Canvas deserializeCanvas(Path path,History history,MaterialManager materialManager,LayerManager layerManager,DesignerObjectManager designerObjectManager) {
+    private Canvas deserializeCanvas(Path path, History history, MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager) {
         if (Files.exists(path)) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toString()))) {
                 Map<String, Object> deserialized = (Map<String, Object>) ois.readObject();
-                return EditorCanvas.deserialize(history,materialManager,layerManager,designerObjectManager,deserialized);
+                return EditorCanvas.deserialize(history, materialManager, layerManager, designerObjectManager, deserialized);
             } catch (IOException | ClassNotFoundException | ClassCastException e) {
                 e.printStackTrace();
                 return null;

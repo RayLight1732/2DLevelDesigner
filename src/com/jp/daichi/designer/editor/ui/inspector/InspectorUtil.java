@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.jp.daichi.designer.ColorProfile.HIGHLIGHT_COLOR;
 import static com.jp.daichi.designer.editor.ui.ViewUtil.labelHorizontalStruct;
 
 /**
@@ -22,11 +23,11 @@ import static com.jp.daichi.designer.editor.ui.ViewUtil.labelHorizontalStruct;
 public class InspectorUtil {
 
     public static final String materialPanelClientPropertyKey = "MaterialPanel";
-    public static final Border labelBorder = BorderFactory.createMatteBorder(1,1,1,1, ViewUtil.HIGHLIGHT_COLOR);
+    public static final Border labelBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, HIGHLIGHT_COLOR);
 
-    public static JPanel createMaterialPanel(Consumer<UUID> materialUUIDSetter, Supplier<UUID> materialUUIDGetter, Function<UUID,Material> materialGetter) {
+    public static JPanel createMaterialPanel(Consumer<UUID> materialUUIDSetter, Supplier<UUID> materialUUIDGetter, Function<UUID, Material> materialGetter) {
         JPanel panel = new JPanel();
-        panel.putClientProperty(materialPanelClientPropertyKey,materialUUIDSetter);
+        panel.putClientProperty(materialPanelClientPropertyKey, materialUUIDSetter);
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("Material"));
         panel.add(Box.createHorizontalStrut(labelHorizontalStruct));
@@ -36,7 +37,7 @@ public class InspectorUtil {
         SmoothJLabel label = new SmoothJLabel();
         label.setBorder(labelBorder);
         UUID materialUUID = materialUUIDGetter.get();
-        if (materialUUID== null) {
+        if (materialUUID == null) {
             label.setText("None");
         } else {
             Material material = materialGetter.apply(materialUUID);
@@ -47,7 +48,7 @@ public class InspectorUtil {
             }
         }
         label.validate();
-        Dimension dimension = new Dimension(200,label.getPreferredSize().height);
+        Dimension dimension = new Dimension(200, label.getPreferredSize().height);
         label.setPreferredSize(dimension);
         label.setMaximumSize(dimension);
         panel.add(label);

@@ -21,12 +21,13 @@ public class UpdateAction {
     public static final UpdateAction CHANGE_POV = new UpdateAction("ChangePov");
 
     private final String name;
+
     public UpdateAction(String name) {
         this.name = name;
     }
 
     @Override
     public String toString() {
-        return "UpdateAction:"+name;
+        return "UpdateAction:" + name;
     }
 }

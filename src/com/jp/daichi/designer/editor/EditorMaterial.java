@@ -28,16 +28,17 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
     /**
      * デシリアライズを行う
-     * @param history 履歴
+     *
+     * @param history         履歴
      * @param materialManager マネージャー
-     * @param serialized シリアライズされたデータ
+     * @param serialized      シリアライズされたデータ
      * @return デシリアライズされた結果
      */
-    public static EditorMaterial deserialize(History history,MaterialManager materialManager, Map<String, Object> serialized) {
+    public static EditorMaterial deserialize(History history, MaterialManager materialManager, Map<String, Object> serialized) {
         try {
             String name = (String) serialized.get("Name");
             UUID uuid = (UUID) serialized.get("UUID");
-            Point uv = (Point)serialized.get("UV");
+            Point uv = (Point) serialized.get("UV");
             SignedDimension uvDimension = (SignedDimension) serialized.get("UVDimension");
             Objects.requireNonNull(name);
             Objects.requireNonNull(uuid);
@@ -51,7 +52,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
             } else {
                 file = null;
             }
-            return new EditorMaterial(history, name, uuid,file,biSerializer == null ? null : biSerializer.getImage(),uv,uvDimension,materialManager);
+            return new EditorMaterial(history, name, uuid, file, biSerializer == null ? null : biSerializer.getImage(), uv, uvDimension, materialManager);
         } catch (NullPointerException | ClassCastException e) {
             return null;
         }
@@ -63,29 +64,31 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
     /**
      * 新しいマテリアルを作成する
-     * @param history 履歴
-     * @param name 名前
-     * @param uuid UUID
+     *
+     * @param history         履歴
+     * @param name            名前
+     * @param uuid            UUID
      * @param materialManager マネージャー
      */
-    public EditorMaterial(History history, String name, UUID uuid,MaterialManager materialManager) {
-        super(name, uuid,materialManager);
+    public EditorMaterial(History history, String name, UUID uuid, MaterialManager materialManager) {
+        super(name, uuid, materialManager);
         this.history = history;
     }
 
     /**
      * 新しいマテリアルを作成する
-     * @param history 履歴
-     * @param name 名前
-     * @param uuid UUID
-     * @param file 画像ファイル
-     * @param image 画像
-     * @param uv UV座標
-     * @param uvDimension UVの描画領域
+     *
+     * @param history         履歴
+     * @param name            名前
+     * @param uuid            UUID
+     * @param file            画像ファイル
+     * @param image           画像
+     * @param uv              UV座標
+     * @param uvDimension     UVの描画領域
      * @param materialManager マネージャー
      */
-    public EditorMaterial(History history, String name, UUID uuid,File file, BufferedImage image,Point uv,SignedDimension uvDimension, MaterialManager materialManager) {
-        super(name, uuid,image,uv,uvDimension,materialManager);
+    public EditorMaterial(History history, String name, UUID uuid, File file, BufferedImage image, Point uv, SignedDimension uvDimension, MaterialManager materialManager) {
+        super(name, uuid, image, uv, uvDimension, materialManager);
         this.file = file;
         this.history = history;
     }
@@ -131,13 +134,13 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
         Map<String, Object> result = new HashMap<>();
         result.put("UUID", getUUID());
         result.put("Name", getName());
-        result.put("UV",getUV());
-        result.put("UVDimension",getUVDimension());
+        result.put("UV", getUV());
+        result.put("UVDimension", getUVDimension());
         if (getImage() != null) {
-            result.put("Image",new BufferedImageSerializer(getImage()));
+            result.put("Image", new BufferedImageSerializer(getImage()));
         }
         if (getImageFile() != null) {
-            result.put("Path",getImageFile().getPath());
+            result.put("Path", getImageFile().getPath());
         }
         return result;
     }
@@ -165,7 +168,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
             setImage(null);
         }
         if (saveHistory) {
-            history.add(new SetFile(getUUID(),oldFile == null ? null:oldFile.getPath(),file == null ? null: file.getPath()));
+            history.add(new SetFile(getUUID(), oldFile == null ? null : oldFile.getPath(), file == null ? null : file.getPath()));
         }
     }
 
@@ -209,7 +212,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
     }
      */
 
-    private static class SetFile extends SimpleHistoryStaff<EditorMaterial,String> {
+    private static class SetFile extends SimpleHistoryStaff<EditorMaterial, String> {
         public SetFile(UUID uuid, String oldValue, String newValue) {
             super(uuid, oldValue, newValue);
         }
@@ -236,18 +239,20 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
         @Override
         public String description() {
-            return "set image file:"+newValue;
+            return "set image file:" + newValue;
         }
     }
-    private static class SetUVPoint extends SimpleHistoryStaff<EditorMaterial,Point> {
+
+    private static class SetUVPoint extends SimpleHistoryStaff<EditorMaterial, Point> {
         public SetUVPoint(UUID uuid, Point oldValue, Point newValue) {
             super(uuid, oldValue, newValue);
         }
 
         @Override
         public String description() {
-            return "Set UV Point:("+newValue.x()+","+newValue.y()+")";
+            return "Set UV Point:(" + newValue.x() + "," + newValue.y() + ")";
         }
+
         @Override
         public void setValue(EditorMaterial target, Point value) {
             target.setUV(value);
@@ -267,7 +272,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
         @Override
         public String description() {
-            return "Set UV Dimension:(width="+newValue.width()+",height="+newValue.height()+")";//TODO 名前を表示するのもありかも
+            return "Set UV Dimension:(width=" + newValue.width() + ",height=" + newValue.height() + ")";//TODO 名前を表示するのもありかも
         }
 
         @Override
@@ -281,7 +286,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
         }
     }
 
-    private static class SetName extends SimpleHistoryStaff<EditorMaterial,String> {
+    private static class SetName extends SimpleHistoryStaff<EditorMaterial, String> {
 
         public SetName(UUID uuid, String oldValue, String newValue) {
             super(uuid, oldValue, newValue);
@@ -289,7 +294,7 @@ public class EditorMaterial extends SimpleMaterial implements PermanentObject {
 
         @Override
         public String description() {
-            return "Set Material Name:"+newValue;
+            return "Set Material Name:" + newValue;
         }
 
         @Override

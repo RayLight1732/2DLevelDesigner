@@ -7,7 +7,8 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static com.jp.daichi.designer.editor.ui.ViewUtil.HIGHLIGHT_COLOR;
+import static com.jp.daichi.designer.ColorProfile.HIGHLIGHT_COLOR;
+
 
 /**
  * インスペクターを表示するためのJPanelを拡張したコンテナ
@@ -16,6 +17,7 @@ public class InspectorView extends JPanel {
 
     /**
      * インスペクターのタイトルを表示するコンポーネントを作成する
+     *
      * @param title インスペクターのタイトル
      * @return インスペクターのタイトルを表示するコンポーネント
      */
@@ -26,7 +28,7 @@ public class InspectorView extends JPanel {
         label.setFont(ViewUtil.HIGHLIGHT_FONT);
         panel.add(label);
         panel.add(Box.createGlue());
-        panel.setBorder(BorderFactory.createMatteBorder(0,0,2,0,HIGHLIGHT_COLOR));
+        panel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, HIGHLIGHT_COLOR));
         return panel;
     }
 
@@ -47,6 +49,7 @@ public class InspectorView extends JPanel {
 
     /**
      * ビューを設定する
+     *
      * @param view 表示用のコンポーネント
      */
     public void setView(JComponent view) {
@@ -56,9 +59,9 @@ public class InspectorView extends JPanel {
         if (view != null) {
             this.view = view;
             SpringLayout layout = new SpringLayout();
-            layout.putConstraint(SpringLayout.NORTH,view,0,SpringLayout.NORTH,this);
-            layout.putConstraint(SpringLayout.EAST,view,0,SpringLayout.EAST,this);
-            layout.putConstraint(SpringLayout.WEST,view,0,SpringLayout.WEST,this);
+            layout.putConstraint(SpringLayout.NORTH, view, 0, SpringLayout.NORTH, this);
+            layout.putConstraint(SpringLayout.EAST, view, 0, SpringLayout.EAST, this);
+            layout.putConstraint(SpringLayout.WEST, view, 0, SpringLayout.WEST, this);
             setLayout(layout);
             add(view);
         }
@@ -68,6 +71,7 @@ public class InspectorView extends JPanel {
 
     /**
      * 現在表示されているビューを取得する
+     *
      * @return 現在表示されているビュー
      */
     public JComponent getView() {

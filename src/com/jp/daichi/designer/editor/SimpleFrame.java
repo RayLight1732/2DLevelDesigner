@@ -18,10 +18,11 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
 
     /**
      * フレームのインスタンスを作成する
+     *
      * @param canvas キャンバス
      */
     public SimpleFrame(Canvas canvas) {
-        super("Frame",UUID.randomUUID(),null,canvas,null,null,Integer.MAX_VALUE);
+        super("Frame", UUID.randomUUID(), null, canvas, null, null, Integer.MAX_VALUE);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
     public void draw(Graphics2D g) {
         if (getSelectedObjectCount() != 0) {
             updateRectangle();
-            EditorUtil.drawSelectedFrame(g,this);
+            EditorUtil.drawSelectedFrame(g, this);
         }
     }
 
@@ -61,7 +62,7 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
 
     @Override
     public void addAll(Collection<DesignerObject> designerObjects) {
-        for (DesignerObject designerObject:designerObjects) {
+        for (DesignerObject designerObject : designerObjects) {
             addSelectedObject(designerObject);
         }
         updateRectangle();
@@ -93,26 +94,26 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
     @Override
     public void setPosition(Point point) {
         Point now = getPosition();
-        for (DesignerObject designerObject:selectedObjects) {
+        for (DesignerObject designerObject : selectedObjects) {
             designerObject.setPosition(point.add(designerObject.getPosition().subtract(now)));
         }
         super.setPosition(point);
     }
 
     @Override
-    public void setPositionAndDimension(Point point,SignedDimension dimension) {
+    public void setPositionAndDimension(Point point, SignedDimension dimension) {
         double width = dimension.width();
         double height = dimension.height();
-        for (DesignerObject designerObject: selectedObjects) {
+        for (DesignerObject designerObject : selectedObjects) {
             Point vec = designerObject.getPosition().subtract(getPosition());
-            designerObject.setPosition( new Point(point.x()+vec.x()* width/getDimension().width(),point.y()+vec.y()*height/getDimension().height()));
+            designerObject.setPosition(new Point(point.x() + vec.x() * width / getDimension().width(), point.y() + vec.y() * height / getDimension().height()));
 
-            double widthRatio = designerObject.getDimension().width()/getDimension().width();
-            double heightRatio = designerObject.getDimension().height()/getDimension().height();
-            designerObject.setDimension(new SignedDimension(widthRatio*width,heightRatio*height));
+            double widthRatio = designerObject.getDimension().width() / getDimension().width();
+            double heightRatio = designerObject.getDimension().height() / getDimension().height();
+            designerObject.setDimension(new SignedDimension(widthRatio * width, heightRatio * height));
         }
         super.setPosition(point);
-        setDimension(new SignedDimension(width,height));
+        setDimension(new SignedDimension(width, height));
     }
 
     private void updateRectangle() {
@@ -128,17 +129,17 @@ public class SimpleFrame extends SimpleDesignerObject implements Frame {
 
                 double x1 = designerObject.getPosition().x();
                 double y1 = designerObject.getPosition().y();
-                double x2 = x1+designerObject.getDimension().width();
-                double y2 = y1+designerObject.getDimension().height();
+                double x2 = x1 + designerObject.getDimension().width();
+                double y2 = y1 + designerObject.getDimension().height();
 
-                maxX = Math.max(maxX, Math.max(x1,x2));
-                maxY = Math.max(maxY, Math.max(y1,y2));
-                minX = Math.min(minX, Math.min(x1,x2));
-                minY = Math.min(minY, Math.min(y1,y2));
+                maxX = Math.max(maxX, Math.max(x1, x2));
+                maxY = Math.max(maxY, Math.max(y1, y2));
+                minX = Math.min(minX, Math.min(x1, x2));
+                minY = Math.min(minY, Math.min(y1, y2));
 
             }
 
-            super.setPosition(new Point(minX,minY));
+            super.setPosition(new Point(minX, minY));
             setDimension(new SignedDimension(maxX - minX, maxY - minY));
         }
     }

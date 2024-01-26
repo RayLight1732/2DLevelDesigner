@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+
 import static com.jp.daichi.designer.simple.DeserializeUtil.*;
 
 /**
@@ -24,14 +25,15 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
     /**
      * デシリアライズを行う
-     * @param history 履歴
-     * @param materialManager マテリアルマネージャー
-     * @param layerManager レイヤーマネージャー
+     *
+     * @param history               履歴
+     * @param materialManager       マテリアルマネージャー
+     * @param layerManager          レイヤーマネージャー
      * @param designerObjectManager デザイナーオブジェクトマネージャー
-     * @param serialized シリアライズされたデータ
+     * @param serialized            シリアライズされたデータ
      * @return デシリアライズの結果
      */
-    public static Canvas deserialize(History history,MaterialManager materialManager,LayerManager layerManager,DesignerObjectManager designerObjectManager,Map<String,Object> serialized) {
+    public static Canvas deserialize(History history, MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager, Map<String, Object> serialized) {
         EditorCanvas canvas = new EditorCanvas(history, materialManager, layerManager, designerObjectManager);
         try {
             canvas.setSaveHistory(false);
@@ -52,7 +54,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
             canvas.setMaterialUUID(materialUUID);
             canvas.setSaveHistory(true);
             return canvas;
-        } catch (ClassCastException|NullPointerException e) {
+        } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();
             return null;
         }
@@ -65,24 +67,25 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
     /**
      * 新しいキャンバスのインスタンスを作成する
-     * @param history 履歴
-     * @param materialManager マテリアルマネージャー
-     * @param layerManager レイヤーマネージャー
+     *
+     * @param history               履歴
+     * @param materialManager       マテリアルマネージャー
+     * @param layerManager          レイヤーマネージャー
      * @param designerObjectManager デザイナーオブジェクトマネージャー
      */
-    public EditorCanvas(History history,MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager) {
+    public EditorCanvas(History history, MaterialManager materialManager, LayerManager layerManager, DesignerObjectManager designerObjectManager) {
         super(materialManager, layerManager, designerObjectManager);
         this.history = history;
     }
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String,Object> result = new HashMap<>();
-        result.put(POV,getPov());
+        Map<String, Object> result = new HashMap<>();
+        result.put(POV, getPov());
         result.put(VIEWPORT, getViewport());
-        result.put(FOG_STRENGTH,getFogStrength());
-        result.put(FOG_COLOR,getFogColor());
-        result.put(MATERIAL_UUID,getMaterialUUID());
+        result.put(FOG_STRENGTH, getFogStrength());
+        result.put(FOG_COLOR, getFogColor());
+        result.put(MATERIAL_UUID, getMaterialUUID());
         return result;
     }
 
@@ -94,6 +97,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
     /**
      * 選択用の枠線を取得する
+     *
      * @return 枠線
      */
     public Frame getFrame() {
@@ -111,7 +115,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         UUID oldValue = getMaterialUUID();
         super.setMaterialUUID(uuid);
         if (saveHistory) {
-            history.add(new SetMaterialUUID(null,oldValue,getMaterialUUID()));
+            history.add(new SetMaterialUUID(null, oldValue, getMaterialUUID()));
         }
     }
 
@@ -120,7 +124,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         double oldValue = getPov();
         super.setPov(angle);
         if (saveHistory) {
-            history.add(new SetPov(null,oldValue,getPov()));
+            history.add(new SetPov(null, oldValue, getPov()));
         }
     }
 
@@ -130,7 +134,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         Color old = getFogColor();
         super.setFogColor(color);
         if (saveHistory) {
-            history.add(new SetFogColor(null,old,getFogColor()));
+            history.add(new SetFogColor(null, old, getFogColor()));
         }
     }
 
@@ -139,10 +143,9 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         double old = getFogStrength();
         super.setFogStrength(fogStrength);
         if (saveHistory) {
-            history.add(new SetFogStrength(null,old,getFogStrength()));
+            history.add(new SetFogStrength(null, old, getFogStrength()));
         }
     }
-
 
 
     @Override
@@ -157,13 +160,14 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
     /**
      * 履歴を取得する
+     *
      * @return 履歴
      */
     public History getHistory() {
         return history;
     }
 
-    private class SetMaterialUUID extends SimpleHistoryStaff<EditorCanvas,UUID> {
+    private class SetMaterialUUID extends SimpleHistoryStaff<EditorCanvas, UUID> {
 
         public SetMaterialUUID(UUID uuid, UUID oldValue, UUID newValue) {
             super(uuid, oldValue, newValue);
@@ -185,7 +189,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         }
     }
 
-    private static class SetPov extends SimpleHistoryStaff<EditorCanvas,Double> {
+    private static class SetPov extends SimpleHistoryStaff<EditorCanvas, Double> {
 
         public SetPov(UUID uuid, Double oldValue, Double newValue) {
             super(uuid, oldValue, newValue);
@@ -207,11 +211,11 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
         @Override
         public String description() {
-            return "set pov:"+newValue;
+            return "set pov:" + newValue;
         }
     }
 
-    private static class SetFogColor extends SimpleHistoryStaff<EditorCanvas,Color> {
+    private static class SetFogColor extends SimpleHistoryStaff<EditorCanvas, Color> {
 
         public SetFogColor(UUID uuid, Color oldValue, Color newValue) {
             super(uuid, oldValue, newValue);
@@ -233,11 +237,11 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
         @Override
         public String description() {
-            return "set fog color:"+newValue;
+            return "set fog color:" + newValue;
         }
     }
 
-    private static class SetFogStrength extends SimpleHistoryStaff<EditorCanvas,Double> {
+    private static class SetFogStrength extends SimpleHistoryStaff<EditorCanvas, Double> {
 
         public SetFogStrength(UUID uuid, Double oldValue, Double newValue) {
             super(uuid, oldValue, newValue);
@@ -259,7 +263,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
 
         @Override
         public String description() {
-            return "set fog strength:"+newValue;
+            return "set fog strength:" + newValue;
         }
     }
 }

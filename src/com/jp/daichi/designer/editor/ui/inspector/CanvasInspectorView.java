@@ -50,18 +50,18 @@ public class CanvasInspectorView extends ObserverJPanel {
                 int z = getComponentZOrder(povPanel);
                 remove(z);
                 povPanel = createPovPanel();
-                add(povPanel,z);
+                add(povPanel, z);
             } else if (action == UpdateAction.CHANGE_MATERIAL) {
                 int z = getComponentZOrder(materialPanel);
                 remove(z);
                 materialPanel = createMaterialPanel();
-                add(materialPanel,z);
+                add(materialPanel, z);
             }
         } else if (target instanceof Material material && material.getUUID().compareTo(canvas.getMaterialUUID()) == 0) {
             int z = getComponentZOrder(materialPanel);
             remove(z);
             materialPanel = createMaterialPanel();
-            add(materialPanel,z);
+            add(materialPanel, z);
         }
     }
 
@@ -74,7 +74,7 @@ public class CanvasInspectorView extends ObserverJPanel {
         panel.add(Box.createGlue());
         NumberFormat format = NumberFormat.getIntegerInstance();
         format.setGroupingUsed(false);
-        JTextField textField = ViewUtil.createNumberTextField(Math.toDegrees(canvas.getPov()),new ViewUtil.SetterRunnable<>(value -> canvas.setPov(Math.toRadians(value.doubleValue()))));
+        JTextField textField = ViewUtil.createNumberTextField(Math.toDegrees(canvas.getPov()), new ViewUtil.SetterRunnable<>(value -> canvas.setPov(Math.toRadians(value.doubleValue()))));
         textField.setColumns(20);
         panel.add(textField);
         return panel;
@@ -82,7 +82,7 @@ public class CanvasInspectorView extends ObserverJPanel {
 
 
     private JPanel createMaterialPanel() {
-        return InspectorUtil.createMaterialPanel(canvas::setMaterialUUID, canvas::getMaterialUUID,uuid -> canvas.getMaterialManager().getInstance(uuid));
+        return InspectorUtil.createMaterialPanel(canvas::setMaterialUUID, canvas::getMaterialUUID, uuid -> canvas.getMaterialManager().getInstance(uuid));
     }
 
 }

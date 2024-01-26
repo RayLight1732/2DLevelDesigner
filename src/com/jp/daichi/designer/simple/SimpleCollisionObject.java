@@ -18,7 +18,7 @@ public class SimpleCollisionObject extends SimpleDesignerObject {
     /**
      * 描画色
      */
-    public static final Color color = new Color(180,0,0,100);
+    public static final Color color = new Color(180, 0, 0, 100);
 
     /**
      * コリジョン表示用オブジェクトのインスタンスを作成する
@@ -36,14 +36,15 @@ public class SimpleCollisionObject extends SimpleDesignerObject {
 
     /**
      * コリジョン表示用オブジェクトのインスタンスを作成する
-     * @param name このオブジェクトの名前
-     * @param uuid UUID
-     * @param canvas キャンバス
-     * @param position 座標
+     *
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param canvas    キャンバス
+     * @param position  座標
      * @param dimension 表示領域
      */
-    public SimpleCollisionObject(String name,UUID uuid,Canvas canvas, Point position, SignedDimension dimension) {
-        super(name, uuid,DesignerObjectType.COLLISION , canvas, position, dimension);
+    public SimpleCollisionObject(String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
+        super(name, uuid, DesignerObjectType.COLLISION, canvas, position, dimension);
     }
 
 
@@ -54,7 +55,7 @@ public class SimpleCollisionObject extends SimpleDesignerObject {
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = Util.getRectangleOnScreen(getCanvas(),this);
+        Rectangle rectangle = Util.getRectangleOnScreen(getCanvas(), this);
         g.setColor(color);
         g.fill(rectangle);
     }

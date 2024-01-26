@@ -1,18 +1,15 @@
-package com.jp.daichi.designer;
+package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.editor.*;
 import com.jp.daichi.designer.editor.ui.LineBorderEx;
 import com.jp.daichi.designer.editor.ui.WindowManager;
 import com.jp.daichi.designer.editor.ui.inspector.InspectorView;
 import com.jp.daichi.designer.editor.ui.inspector.SimpleInspectorManager;
 import com.jp.daichi.designer.editor.manager.EditorCanvasManager;
-import com.jp.daichi.designer.editor.ui.ViewUtil;
 import com.jp.daichi.designer.editor.ui.viewer.LayerViewer;
 import com.jp.daichi.designer.editor.ui.viewer.MaterialViewer;
 import com.jp.daichi.designer.interfaces.Canvas;
 import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.editor.History;
-import com.jp.daichi.designer.editor.SelectAndMoveTool;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -22,10 +19,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.List;
+
+import static com.jp.daichi.designer.ColorProfile.*;
 
 
-public class Main {
+public class EditorMain {
     //TODO
     //やらなければならないこと
     //マテリアルで画像が選択できるようにする△
@@ -52,27 +50,27 @@ public class Main {
     //サーバーで同期する
     //来週以降？
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) {
         JFrame frame = new JFrame("2D Level Designer");
 
         //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        Border defaultBorder = BorderFactory.createCompoundBorder(new LineBorderEx(ViewUtil.HIGHLIGHT_COLOR, 1,10),BorderFactory.createEmptyBorder(0,5,0,0));
+        Border defaultBorder = BorderFactory.createCompoundBorder(new LineBorderEx(HIGHLIGHT_COLOR, 1, 10), BorderFactory.createEmptyBorder(0, 5, 0, 0));
         UIManager.put("TextField.border", defaultBorder);
         UIManager.put("FormattedTextField.border", defaultBorder);
 
 
-        UIManager.put("Label.foreground", ViewUtil.FOREGROUND_COLOR);
-        UIManager.put("TextField.foreground", ViewUtil.FOREGROUND_COLOR);
-        UIManager.put("FormattedTextField.foreground", ViewUtil.FOREGROUND_COLOR);
-        UIManager.put("List.foreground", ViewUtil.FOREGROUND_COLOR);
-        UIManager.put("Button.foreground", ViewUtil.FOREGROUND_COLOR);
+        UIManager.put("Label.foreground", FOREGROUND_COLOR);
+        UIManager.put("TextField.foreground", FOREGROUND_COLOR);
+        UIManager.put("FormattedTextField.foreground", FOREGROUND_COLOR);
+        UIManager.put("List.foreground", FOREGROUND_COLOR);
+        UIManager.put("Button.foreground", FOREGROUND_COLOR);
 
-        UIManager.put("Label.background", ViewUtil.BACKGROUND_COLOR);
-        UIManager.put("List.background", ViewUtil.BACKGROUND_COLOR);
-        UIManager.put("Button.background", ViewUtil.BACKGROUND_COLOR);
-        UIManager.put("Panel.background", ViewUtil.BACKGROUND_COLOR);
-        UIManager.put("FormattedTextField.background", ViewUtil.HIGHLIGHT_COLOR);
-        UIManager.put("TextField.background", ViewUtil.HIGHLIGHT_COLOR);
+        UIManager.put("Label.background", BACKGROUND_COLOR);
+        UIManager.put("List.background", BACKGROUND_COLOR);
+        UIManager.put("Button.background", BACKGROUND_COLOR);
+        UIManager.put("Panel.background", BACKGROUND_COLOR);
+        UIManager.put("FormattedTextField.background", HIGHLIGHT_COLOR);
+        UIManager.put("TextField.background", HIGHLIGHT_COLOR);
         Font defaultFont = new Font("Dialog", Font.PLAIN, 11);
         UIManager.put("Button.font", defaultFont);
         UIManager.put("Label.font", defaultFont);
@@ -85,7 +83,7 @@ public class Main {
         EditorCanvasManager canvasManager = new EditorCanvasManager(new File("C:\\Development\\Test"));
         Canvas canvas = canvasManager.getInstance();
 
-        for (DesignerObjectType type:DesignerObjectType.values()) {
+        for (DesignerObjectType type : DesignerObjectType.values()) {
             if (canvas.getLayerManager().getLayer(type) == null) {
                 Layer layer = canvas.getLayerManager().createInstance(type.getDisplayName() + "Layer", type);
                 canvas.addLayer(layer.getUUID());
@@ -124,20 +122,20 @@ public class Main {
         right.setUI(new CustomSplitPaneUI());
         right.setDividerSize(3);
         right.setResizeWeight(0.5);
-        right.setDividerLocation((int) (frame.getSize().height*0.5));
+        right.setDividerLocation((int) (frame.getSize().height * 0.5));
         right.setBorder(null);
         JSplitPane left = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, jPanel, new MaterialViewer(canvas.getMaterialManager(), windowManager));
         left.setUI(new CustomSplitPaneUI());
         left.setDividerSize(3);
         left.setResizeWeight(0.5);
-        left.setDividerLocation((int) (frame.getSize().height*0.7));
+        left.setDividerLocation((int) (frame.getSize().height * 0.7));
         left.setBorder(null);
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, left, right);
         split.setUI(new CustomSplitPaneUI());
         split.setDividerSize(3);
         split.setResizeWeight(0.5);
         split.setBorder(null);
-        split.setDividerLocation((int) (frame.getSize().width*0.7));
+        split.setDividerLocation((int) (frame.getSize().width * 0.7));
 
         frame.add(split);
 
@@ -151,7 +149,7 @@ public class Main {
         JMenuBar menuBar = new JMenuBar();
         JMenu edit = new JMenu("Edit");
         menuBar.add(edit);
-        History history = ((EditorCanvas)canvas).getHistory();
+        History history = ((EditorCanvas) canvas).getHistory();
         JMenuItem undo = new JMenuItem(getUndoText(history));
         if (!history.canUndo()) {
             undo.setEnabled(false);
@@ -255,7 +253,7 @@ public class Main {
 
                 @Override
                 public void paint(Graphics g) {
-                    g.setColor(ViewUtil.HIGHLIGHT_COLOR);
+                    g.setColor(HIGHLIGHT_COLOR);
                     g.fillRect(0, 0, getSize().width, getSize().height);
                     super.paint(g);
                 }

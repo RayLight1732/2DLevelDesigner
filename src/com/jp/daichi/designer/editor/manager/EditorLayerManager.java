@@ -18,6 +18,7 @@ public class EditorLayerManager extends SimpleLayerManager {
 
     /**
      * 新しいレイヤーマネージャーのインスタンスを作成する
+     *
      * @param history 履歴
      */
     public EditorLayerManager(History history) {
@@ -26,7 +27,7 @@ public class EditorLayerManager extends SimpleLayerManager {
 
     @Override
     public Layer deserializeManagedObject(Map<String, Object> map) {
-        Layer layer = EditorLayer.deserialize(history,map);
+        Layer layer = EditorLayer.deserialize(history, map);
         if (layer != null) {
             addInstance(layer);
         }
@@ -36,7 +37,7 @@ public class EditorLayerManager extends SimpleLayerManager {
 
     @Override
     public Layer createInstance(String name, DesignerObjectType type) {
-        Layer layer = new EditorLayer(history,resolveName(null,name),UUID.randomUUID(),type);
+        Layer layer = new EditorLayer(history, resolveName(null, name), UUID.randomUUID(), type);
         addInstance(layer);
         return layer;
     }

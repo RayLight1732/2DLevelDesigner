@@ -11,9 +11,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.text.*;
 
+import static com.jp.daichi.designer.ColorProfile.BACKGROUND_COLOR;
+
 public class MyFormattedTextField extends JFormattedTextField {
 
-    private static final Color ERROR_BACKGROUND_COLOR = new Color(153,0,51);
+    private static final Color ERROR_BACKGROUND_COLOR = new Color(153, 0, 51);
     private Color fBackground;
 
     /**
@@ -192,17 +194,17 @@ public class MyFormattedTextField extends JFormattedTextField {
                 Graphics2D g2d = (Graphics2D) g;
                 Color oldColor = g.getColor();
                 Stroke oldStroke = g2d.getStroke();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-                g.setColor(ViewUtil.BACKGROUND_COLOR);//TODO どこかしらが悪さをしていると思われる 要改善
-                g2d.fillRect(0,0,getComponent().getWidth(),getComponent().getHeight());
+                g.setColor(BACKGROUND_COLOR);
+                g2d.fillRect(0, 0, getComponent().getWidth(), getComponent().getHeight());
                 g.setColor(getComponent().getBackground());
                 g2d.setStroke(border.getStroke());
                 int p = border.getThickness() >> 1;
                 int rw = border.getHorizontalArcRatio();
                 int rh = border.getVerticalArcRatio();
-                g2d.fillRoundRect(p, p, getComponent().getWidth() - border.getThickness(), getComponent().getHeight()-border.getThickness(), rw, rh);
+                g2d.fillRoundRect(p, p, getComponent().getWidth() - border.getThickness(), getComponent().getHeight() - border.getThickness(), rw, rh);
 
                 g.setColor(oldColor);
                 g2d.setStroke(oldStroke);

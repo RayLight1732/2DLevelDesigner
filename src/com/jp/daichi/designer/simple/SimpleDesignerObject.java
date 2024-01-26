@@ -24,28 +24,30 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
 
     /**
      * デザイナーオブジェクトのインスタンスを作成する
-     * @param name このオブジェクトの名前
-     * @param uuid UUID
-     * @param type タイプ
-     * @param canvas キャンバス
-     * @param position 座標
+     *
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param type      タイプ
+     * @param canvas    キャンバス
+     * @param position  座標
      * @param dimension 表示領域
      */
-    public SimpleDesignerObject(String name,UUID uuid,DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension) {
-        this(name,uuid,type,canvas,position,dimension,0);
+    public SimpleDesignerObject(String name, UUID uuid, DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension) {
+        this(name, uuid, type, canvas, position, dimension, 0);
     }
 
     /**
      * デザイナーオブジェクトのインスタンスを作成する
-     * @param name このオブジェクトの名前
-     * @param uuid UUID
-     * @param type タイプ
-     * @param canvas キャンバス
-     * @param position 座標
+     *
+     * @param name      このオブジェクトの名前
+     * @param uuid      UUID
+     * @param type      タイプ
+     * @param canvas    キャンバス
+     * @param position  座標
      * @param dimension 表示領域
-     * @param priority 優先度
+     * @param priority  優先度
      */
-    public SimpleDesignerObject(String name,UUID uuid,DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension,int priority) {
+    public SimpleDesignerObject(String name, UUID uuid, DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension, int priority) {
         this.name = name;
         this.uuid = uuid;
         this.type = type;
@@ -127,9 +129,9 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
 
     @Override
     public int compareTo(DesignerObject o) {
-        double d = getZ()- o.getZ();
+        double d = getZ() - o.getZ();
         if (d == 0) {
-            d = o.getPriority()-getPriority();
+            d = o.getPriority() - getPriority();
             if (d == 0) {
                 return getName().compareTo(o.getName());
             }
@@ -147,7 +149,7 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     @Override
     public void setName(String name) {
         if (!name.equals(this.name)) {
-            this.name = canvas.getDesignerObjectManager().resolveName(getUUID(),name);
+            this.name = canvas.getDesignerObjectManager().resolveName(getUUID(), name);
             sendUpdate(UpdateAction.CHANGE_NAME);
         }
     }
@@ -161,9 +163,9 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
     public Rectangle2D getRectangle() {
         double x1 = position.x();
         double y1 = position.y();
-        double x2 = x1+dimension.width();
-        double y2 = y1+dimension.height();
-        return new Rectangle2D.Double(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x1-x2),Math.abs(y1-y2));
+        double x2 = x1 + dimension.width();
+        double y2 = y1 + dimension.height();
+        return new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
     }
 
     @Override

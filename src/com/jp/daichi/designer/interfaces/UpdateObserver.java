@@ -19,18 +19,20 @@ public class UpdateObserver {
     public void removeRunnable(ObserverRunnable runnable) {
         list.remove(runnable);
     }
+
     /**
      * 更新されたときに呼び出される
      */
     public void update(ObservedObject target, UpdateAction action) {
         isUpdated = true;
-        for (ObserverRunnable runnable:list) {
-            SwingUtilities.invokeLater(()->runnable.run(target,action));
+        for (ObserverRunnable runnable : list) {
+            SwingUtilities.invokeLater(() -> runnable.run(target, action));
         }
     }
 
     /**
      * 更新されたかどうか
+     *
      * @return 更新されたならtrue
      */
     public boolean isUpdated() {
@@ -45,6 +47,6 @@ public class UpdateObserver {
     }
 
     public interface ObserverRunnable {
-        void run(ObservedObject target,UpdateAction action);
+        void run(ObservedObject target, UpdateAction action);
     }
 }

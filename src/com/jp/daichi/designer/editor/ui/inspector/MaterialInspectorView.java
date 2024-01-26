@@ -28,7 +28,8 @@ public class MaterialInspectorView extends ObserverJPanel {
     private JComponent propertyPanel;
     private final WindowManager windowManager;
     private final EditorCanvas editorCanvas;
-    public MaterialInspectorView(EditorMaterial material, WindowManager windowManager,EditorCanvas editorCanvas) {
+
+    public MaterialInspectorView(EditorMaterial material, WindowManager windowManager, EditorCanvas editorCanvas) {
         this.material = material;
         this.windowManager = windowManager;
         this.editorCanvas = editorCanvas;
@@ -38,6 +39,7 @@ public class MaterialInspectorView extends ObserverJPanel {
     public Material getMaterial() {
         return material;
     }
+
     private void init() {
         namePanel = createNamePanel();
         uvPanel = createUVPanel();
@@ -69,22 +71,22 @@ public class MaterialInspectorView extends ObserverJPanel {
             z = getComponentZOrder(namePanel);
             remove(z);
             namePanel = createNamePanel();
-            add(namePanel,z);
+            add(namePanel, z);
 
             z = getComponentZOrder(uvPanel);
             remove(z);
             uvPanel = createUVPanel();
-            add(uvPanel,z);
+            add(uvPanel, z);
 
             z = getComponentZOrder(uvDimensionPanel);
             remove(z);
             uvDimensionPanel = createUVDimensionPanel();
-            add(uvDimensionPanel,z);
+            add(uvDimensionPanel, z);
 
             z = getComponentZOrder(imagePanel);
             remove(z);
             imagePanel = createImagePanel();
-            add(imagePanel,z);
+            add(imagePanel, z);
 
             if (propertyPanel != null) {
                 remove(propertyPanel);
@@ -97,9 +99,10 @@ public class MaterialInspectorView extends ObserverJPanel {
             }
         }
     }
+
     private JComponent createNamePanel() {
         SmoothJTextField textField = new SmoothJTextField(material.getName());
-        ViewUtil.addTextFieldListener(textField,material::setName);
+        ViewUtil.addTextFieldListener(textField, material::setName);
         return textField;
     }
 
@@ -114,11 +117,11 @@ public class MaterialInspectorView extends ObserverJPanel {
         panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("X"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtil.createNumberTextField(material.getUV().x(),new ViewUtil.SetterRunnable<>(value -> material.setUV(new Point(value.doubleValue(),material.getUV().y())))));
+        panel.add(ViewUtil.createNumberTextField(material.getUV().x(), new ViewUtil.SetterRunnable<>(value -> material.setUV(new Point(value.doubleValue(), material.getUV().y())))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new SmoothJLabel("Y"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtil.createNumberTextField(material.getUV().y(),new ViewUtil.SetterRunnable<>(value -> material.setUV(new Point(material.getUV().x(),value.doubleValue())))));
+        panel.add(ViewUtil.createNumberTextField(material.getUV().y(), new ViewUtil.SetterRunnable<>(value -> material.setUV(new Point(material.getUV().x(), value.doubleValue())))));
         parent.add(panel);
         return parent;
     }
@@ -134,11 +137,11 @@ public class MaterialInspectorView extends ObserverJPanel {
         panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("Width"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtil.createNumberTextField(material.getUVDimension().width(),new ViewUtil.SetterRunnable<>(value -> material.setUVDimension(new SignedDimension(value.doubleValue(),material.getUVDimension().height())))));
+        panel.add(ViewUtil.createNumberTextField(material.getUVDimension().width(), new ViewUtil.SetterRunnable<>(value -> material.setUVDimension(new SignedDimension(value.doubleValue(), material.getUVDimension().height())))));
         panel.add(Box.createHorizontalStrut(4));
         panel.add(new SmoothJLabel("Height"));
         panel.add(Box.createHorizontalStrut(4));
-        panel.add(ViewUtil.createNumberTextField(material.getUVDimension().height(),new ViewUtil.SetterRunnable<>(value -> material.setUVDimension(new SignedDimension(material.getUVDimension().width(),value.doubleValue())))));
+        panel.add(ViewUtil.createNumberTextField(material.getUVDimension().height(), new ViewUtil.SetterRunnable<>(value -> material.setUVDimension(new SignedDimension(material.getUVDimension().width(), value.doubleValue())))));
         parent.add(panel);
         return parent;
     }
@@ -167,14 +170,14 @@ public class MaterialInspectorView extends ObserverJPanel {
 
     private JComponent createPropertyPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(new SmoothJLabel("Property"));
         panel.add(Box.createHorizontalStrut(labelHorizontalStruct));
         panel.add(Box.createGlue());
         if (material.getImage() != null) {
-            panel.add(new SmoothJLabel("Width:"+material.getImage().getWidth()));
+            panel.add(new SmoothJLabel("Width:" + material.getImage().getWidth()));
             panel.add(Box.createHorizontalStrut(5));
-            panel.add(new SmoothJLabel("Height:"+material.getImage().getHeight()));
+            panel.add(new SmoothJLabel("Height:" + material.getImage().getHeight()));
         }
 
         return panel;

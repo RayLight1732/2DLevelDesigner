@@ -21,7 +21,7 @@ public class InGameLayerManager extends SimpleLayerManager {
 
     @Override
     public Layer createInstance(String name, DesignerObjectType type) {
-        Layer layer = new InGameLayer(resolveName(null,name), UUID.randomUUID(),type);
+        Layer layer = new InGameLayer(resolveName(null, name), UUID.randomUUID(), type);
         addInstance(layer);
         return layer;
     }

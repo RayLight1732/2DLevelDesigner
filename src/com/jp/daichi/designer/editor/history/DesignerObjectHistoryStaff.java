@@ -8,25 +8,25 @@ import com.jp.daichi.designer.interfaces.editor.HistoryStaff;
 
 import java.util.UUID;
 
-public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<EditorDesignerObject,U> {
+public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<EditorDesignerObject, U> {
 
-    public static HistoryStaff createPositionInstance(UUID uuid,Point oldValue,Point newValue) {
+    public static HistoryStaff createPositionInstance(UUID uuid, Point oldValue, Point newValue) {
         return new SetPosition(uuid, oldValue, newValue);
     }
 
-    public static HistoryStaff createDimensionInstance(UUID uuid,SignedDimension oldValue,SignedDimension newValue) {
+    public static HistoryStaff createDimensionInstance(UUID uuid, SignedDimension oldValue, SignedDimension newValue) {
         return new SetDimension(uuid, oldValue, newValue);
     }
 
-    public static HistoryStaff createPriorityInstance(UUID uuid,int oldValue,int newValue) {
-        return new SetPriority(uuid,oldValue,newValue);
+    public static HistoryStaff createPriorityInstance(UUID uuid, int oldValue, int newValue) {
+        return new SetPriority(uuid, oldValue, newValue);
     }
 
-    public static HistoryStaff createZInstance(UUID uuid,double oldValue,double newValue) {
-        return new SetZ(uuid,oldValue,newValue);
+    public static HistoryStaff createZInstance(UUID uuid, double oldValue, double newValue) {
+        return new SetZ(uuid, oldValue, newValue);
     }
 
-    public static HistoryStaff createNameInstance(UUID uuid,String oldValue,String newValue) {
+    public static HistoryStaff createNameInstance(UUID uuid, String oldValue, String newValue) {
         return new SetName(uuid, oldValue, newValue);
     }
 
@@ -47,7 +47,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
 
         @Override
         public String description() {
-            return "Set Position:"+"("+oldValue.x()+","+oldValue.y()+")"+"to"+"("+newValue.x()+","+newValue.y()+")";
+            return "Set Position:" + "(" + oldValue.x() + "," + oldValue.y() + ")" + "to" + "(" + newValue.x() + "," + newValue.y() + ")";
         }
 
         @Override
@@ -65,7 +65,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
 
         @Override
         public String description() {
-            return "Set Dimension:(width="+newValue.width()+",height="+newValue.height()+")";//TODO 名前を表示するのもありかも
+            return "Set Dimension:(width=" + newValue.width() + ",height=" + newValue.height() + ")";//TODO 名前を表示するのもありかも
 
         }
 
@@ -83,7 +83,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
 
         @Override
         public String description() {
-            return "Set Priority:"+newValue;
+            return "Set Priority:" + newValue;
         }
 
         @Override
@@ -100,7 +100,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
 
         @Override
         public String description() {
-            return "Set Z:"+newValue;
+            return "Set Z:" + newValue;
         }
 
         @Override
@@ -117,7 +117,7 @@ public abstract class DesignerObjectHistoryStaff<U> extends SimpleHistoryStaff<E
 
         @Override
         public String description() {
-            return "SetName:"+newValue;
+            return "SetName:" + newValue;
         }
 
         @Override

@@ -22,17 +22,18 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
 
     /**
      * デシリアライズを行う
-     * @param history 履歴
-     * @param canvas  キャンバス
+     *
+     * @param history          履歴
+     * @param canvas           キャンバス
      * @param deserializedData デシリアライズされたデータ
-     * @param serialized シリアライズされたデータ
+     * @param serialized       シリアライズされたデータ
      * @return デシリアライズされた結果
      */
-    public static EditorImageObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String,Object> serialized) {
+    public static EditorImageObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> serialized) {
         try {
             if (deserializedData != null) {
                 UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
-                return new EditorImageObject(history, deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension(),deserializedData.priority());
+                return new EditorImageObject(history, deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension(), deserializedData.priority());
             } else {
                 return null;
             }
@@ -52,27 +53,27 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
      * @param name      このオブジェクトの名前
      * @param uuid      UUID
      * @param canvas    キャンバス
-     * @param position    座標
+     * @param position  座標
      * @param dimension 表示領域
      **/
-    public EditorImageObject(History history, String name,UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
-        super(name, uuid,canvas,position, dimension);
+    public EditorImageObject(History history, String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
+        super(name, uuid, canvas, position, dimension);
         this.history = history;
     }
 
     /**
      * イメージオブジェクトのインスタンスを作成する
      *
-     * @param name      このオブジェクトの名前
-     * @param uuid      UUID
+     * @param name         このオブジェクトの名前
+     * @param uuid         UUID
      * @param materialUUID マテリアルUUID
-     * @param canvas    キャンバス
-     * @param position  座標
-     * @param dimension 表示領域
-     * @param priority 優先度
+     * @param canvas       キャンバス
+     * @param position     座標
+     * @param dimension    表示領域
+     * @param priority     優先度
      **/
-    public EditorImageObject(History history, String name,UUID uuid,UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension,int priority) {
-        super(name, uuid, materialUUID, canvas, position, dimension,priority);
+    public EditorImageObject(History history, String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension, int priority) {
+        super(name, uuid, materialUUID, canvas, position, dimension, priority);
         this.history = history;
     }
 
@@ -133,10 +134,11 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
-        DesignerObjectSerializer.serialize(this,result);
-        result.put(MATERIAL_UUID,getMaterialUUID());
+        DesignerObjectSerializer.serialize(this, result);
+        result.put(MATERIAL_UUID, getMaterialUUID());
         return result;
     }
+
     @Override
     public boolean saveHistory() {
         return saveHistory;
@@ -147,9 +149,9 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
         this.saveHistory = saveHistory;
     }
 
-    private static class SetMaterialUUID extends SimpleHistoryStaff<EditorImageObject,UUID> {
+    private static class SetMaterialUUID extends SimpleHistoryStaff<EditorImageObject, UUID> {
 
-        public SetMaterialUUID(UUID uuid,UUID oldValue, UUID newValue) {
+        public SetMaterialUUID(UUID uuid, UUID oldValue, UUID newValue) {
             super(uuid, oldValue, newValue);
         }
 

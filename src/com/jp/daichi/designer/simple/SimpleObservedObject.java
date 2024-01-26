@@ -19,11 +19,12 @@ public abstract class SimpleObservedObject implements ObservedObject {
 
     /**
      * UpdateObserverがnullでないならば、updateを呼び出す
+     *
      * @param action アクション
      */
     protected void sendUpdate(UpdateAction action) {
         if (observer != null) {
-            observer.update(this,action);
+            observer.update(this, action);
         }
     }
 }

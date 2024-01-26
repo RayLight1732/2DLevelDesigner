@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.util.UUID;
 
+import static com.jp.daichi.designer.ColorProfile.MATERIAL_ERROR_COLOR;
+
 /**
  * 基本的なイメージオブジェクトの実装
  */
@@ -41,10 +43,10 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
      * @param canvas       キャンバス
      * @param position     座標
      * @param dimension    表示領域
-     * @param priority 優先度
+     * @param priority     優先度
      **/
-    public SimpleImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension,int priority) {
-        super(name,uuid,DesignerObjectType.IMAGE,canvas,position,dimension,priority);
+    public SimpleImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension, int priority) {
+        super(name, uuid, DesignerObjectType.IMAGE, canvas, position, dimension, priority);
         this.materialUUID = materialUUID;
     }
 
@@ -75,7 +77,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
     }
 
     private void drawMissing(Graphics2D g, Rectangle rectangle) {
-        g.setColor(ViewUtil.MATERIAL_ERROR_COLOR);
+        g.setColor(MATERIAL_ERROR_COLOR);
         g.fill(rectangle);
     }
 

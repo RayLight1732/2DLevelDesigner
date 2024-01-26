@@ -8,6 +8,7 @@ import javax.swing.*;
 public interface InspectorManager {
     /**
      * 与えられたオブジェクトのInspector画面を作成する
+     *
      * @param object 対象のオブジェクト
      * @return Inspector画面 存在しない場合はnull
      */
@@ -15,6 +16,7 @@ public interface InspectorManager {
 
     /**
      * 対象のオブジェクトが現在インスペクターに表示されているかどうかを取得する
+     *
      * @param object 対象のオブジェクト
      * @return 対象のオブジェクトが現在インスペクターに表示されているかどうか
      */

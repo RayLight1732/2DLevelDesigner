@@ -19,12 +19,13 @@ public class SmoothJLabel extends JLabel {
     public SmoothJLabel() {
         super();
     }
+
     /**
      * Creates a <code>JLabel</code> instance with the specified text.
      * The label is aligned against the leading edge of its display area,
      * and centered vertically.
      *
-     * @param text  The text to be displayed by the label.
+     * @param text The text to be displayed by the label.
      */
     public SmoothJLabel(String text) {
         super(text);

@@ -18,6 +18,7 @@ public class SimpleInspectorManager implements InspectorManager {
 
     /**
      * 新しいインスペクターマネージャーのインスタンスを作成する
+     *
      * @param canvas キャンバス
      */
     public SimpleInspectorManager(EditorCanvas canvas) {
@@ -26,21 +27,23 @@ public class SimpleInspectorManager implements InspectorManager {
 
     /**
      * このインスタンスが参照するウィンドウマネージャーを設定する
+     *
      * @param windowManager ウィンドウマネージャー
      */
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
+
     @Override
     public JComponent createInspectorView(Object object) {
         if (object instanceof EditorMaterial material) {
-            return new MaterialInspectorView(material,windowManager,editorCanvas);
+            return new MaterialInspectorView(material, windowManager, editorCanvas);
         } else if (object instanceof ImageObject imageObject) {
             return new ImageObjectInspectorView(imageObject);
         } else if (object instanceof DesignerObject designerObject) {
             return new DesignerObjectInspectorView(designerObject);
         } else if (object instanceof EditorCanvas editorCanvas) {
-            return new CanvasInspectorView(editorCanvas,windowManager);
+            return new CanvasInspectorView(editorCanvas, windowManager);
         } else {
             return null;
         }
@@ -48,6 +51,7 @@ public class SimpleInspectorManager implements InspectorManager {
 
     /**
      * 対象のオブジェクトが現在インスペクターで表示されているか
+     *
      * @param object 対象のオブジェクト
      * @return 表示されているならtrue
      */

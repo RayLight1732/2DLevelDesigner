@@ -23,12 +23,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static com.jp.daichi.designer.ColorProfile.*;
+
 public class MaterialViewer extends JScrollPane {
 
     private final MaterialManager materialManager;
     private final MaterialListViewer materialListViewer;
     private final WindowManager windowManager;
-    public MaterialViewer(MaterialManager materialManager,WindowManager windowManager) {
+
+    public MaterialViewer(MaterialManager materialManager, WindowManager windowManager) {
         this.windowManager = windowManager;
         setBorder(null);
         this.materialManager = materialManager;
@@ -39,7 +42,7 @@ public class MaterialViewer extends JScrollPane {
             }
         });
         materialListViewer = new MaterialListViewer();
-        materialListViewer.setBackground(ViewUtil.BACKGROUND_COLOR);
+        materialListViewer.setBackground(BACKGROUND_COLOR);
         super.setViewportView(materialListViewer);
 
         super.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -50,9 +53,10 @@ public class MaterialViewer extends JScrollPane {
         private final JPopupMenu popup = new JPopupMenu();
         private int lastClickX;
         private int lastClickY;
+
         private MaterialListViewer() {
-            setLayout(new WrapLayout(FlowLayout.LEFT,5,5));
-            for (Material material: materialManager.getAllInstances().stream().sorted().toList()) {
+            setLayout(new WrapLayout(FlowLayout.LEFT, 5, 5));
+            for (Material material : materialManager.getAllInstances().stream().sorted().toList()) {
                 add(new MaterialPreviewPanel(material));
             }
             addMouseListener(new MouseAdapter() {
@@ -62,7 +66,7 @@ public class MaterialViewer extends JScrollPane {
                     if (SwingUtilities.isRightMouseButton(e)) {
                         lastClickX = e.getX();
                         lastClickY = e.getY();
-                        popup.show(e.getComponent(),e.getX(),e.getY());
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             });
@@ -74,9 +78,9 @@ public class MaterialViewer extends JScrollPane {
             item.addActionListener(e -> {
                 int index = 0;
                 double minDistance = Double.MAX_VALUE;
-                for (Component component:getComponents()) {
+                for (Component component : getComponents()) {
                     if (component instanceof MaterialPreviewPanel) {
-                        double distance = component.getLocation().distance(lastClickX,lastClickY);
+                        double distance = component.getLocation().distance(lastClickX, lastClickY);
                         if (distance < minDistance) {
                             index = getComponentZOrder(component);
                             minDistance = distance;
@@ -84,7 +88,7 @@ public class MaterialViewer extends JScrollPane {
                     }
                 }
                 NameEnterMaterialPreviewPanel nameEnterPanel = new NameEnterMaterialPreviewPanel();
-                add(nameEnterPanel,index);
+                add(nameEnterPanel, index);
                 nameEnterPanel.requestFocus();
                 revalidate();
             });
@@ -96,13 +100,13 @@ public class MaterialViewer extends JScrollPane {
             if (target instanceof MaterialManager) {
                 if (action == UpdateAction.ADD) {
                     List<Material> sorted = materialManager.getAllInstances().stream().sorted().toList();
-                    for (int i = 0;i < sorted.size();i++) {
+                    for (int i = 0; i < sorted.size(); i++) {
                         Material material = sorted.get(i);
                         Component component = getComponent(material);
                         if (component == null) {
                             add(new MaterialPreviewPanel(material), i);
                         } else {
-                            setComponentZOrder(component,i);
+                            setComponentZOrder(component, i);
                         }
                     }
                 } else if (action == UpdateAction.REMOVE) {
@@ -118,12 +122,12 @@ public class MaterialViewer extends JScrollPane {
                 }
             } else if (target instanceof Material) {
                 List<Material> sorted = materialManager.getAllInstances().stream().sorted().toList();
-                for (int i = 0;i < sorted.size();i++) {
+                for (int i = 0; i < sorted.size(); i++) {
                     Material material = sorted.get(i);
                     Component component = getComponent(material);
                     if (component instanceof MaterialPreviewPanel materialPreviewPanel && materialPreviewPanel.material == target) {
                         remove(materialPreviewPanel);
-                        add(new MaterialPreviewPanel(materialPreviewPanel.material),i);
+                        add(new MaterialPreviewPanel(materialPreviewPanel.material), i);
                     } else {
                         setComponentZOrder(component, i);
                     }
@@ -132,7 +136,7 @@ public class MaterialViewer extends JScrollPane {
         }
 
         private Component getComponent(Material material) {
-            for (Component component:getComponents()) {
+            for (Component component : getComponents()) {
                 if (component instanceof MaterialPreviewPanel materialPreviewPanel && materialPreviewPanel.material == material) {
                     return component;
                 }
@@ -141,10 +145,11 @@ public class MaterialViewer extends JScrollPane {
         }
     }
 
-    private static final Border defaultPreviewBorder = BorderFactory.createMatteBorder(1,1,1,1, ViewUtil.HIGHLIGHT_COLOR);
+    private static final Border defaultPreviewBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, HIGHLIGHT_COLOR);
 
-    private static final Dimension previewImageSize = new Dimension(70,50);
-    private static final Dimension previewSize = new Dimension(70,70);
+    private static final Dimension previewImageSize = new Dimension(70, 50);
+    private static final Dimension previewSize = new Dimension(70, 70);
+
     private class MaterialPreviewPanel extends JPanel {
         private final Material material;
         private final JPopupMenu popup = new JPopupMenu();
@@ -156,16 +161,16 @@ public class MaterialViewer extends JScrollPane {
             setMinimumSize(previewSize);
             setMaximumSize(previewSize);
             setOpaque(false);
-            setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             SmoothJLabel imageLabel = new SmoothJLabel();
             imageLabel.setPreferredSize(previewImageSize);
             imageLabel.setMinimumSize(previewImageSize);
             imageLabel.setMaximumSize(previewImageSize);
             imageLabel.setAlignmentX(0.5f);
             if (material.getImage() != null) {
-                imageLabel.setIcon(new ImageIcon(material.getImage().getScaledInstance(previewImageSize.width,previewImageSize.height,Image.SCALE_SMOOTH)));//TODO 中央に配置する
+                imageLabel.setIcon(new ImageIcon(material.getImage().getScaledInstance(previewImageSize.width, previewImageSize.height, Image.SCALE_SMOOTH)));//TODO 中央に配置する
             } else {
-                imageLabel.setBackground(ViewUtil.MATERIAL_ERROR_COLOR);
+                imageLabel.setBackground(MATERIAL_ERROR_COLOR);
             }
             SmoothJLabel nameLabel = new SmoothJLabel(material.getName());
             nameLabel.setAlignmentX(0.5f);
@@ -173,12 +178,13 @@ public class MaterialViewer extends JScrollPane {
             add(nameLabel);
             MouseAdapter mouseAdapter = new MouseAdapter() {
                 private JPopupMenu draggedMaterial;
+
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
                         windowManager.inspectorView().setView(windowManager.inspectorManager().createInspectorView(material));
                     } else if (SwingUtilities.isRightMouseButton(e)) {
-                        popup.show(e.getComponent(),e.getX(),e.getY());
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
 
@@ -190,25 +196,26 @@ public class MaterialViewer extends JScrollPane {
                             draggedMaterial.setBorder(BorderFactory.createEmptyBorder());
                         }
                         draggedMaterial.show(e.getComponent(), e.getX() - 1, e.getY() - 1);
-                        if (getPropertyAt(e.getComponent(),windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey,e.getPoint())==null) {
+                        if (getPropertyAt(e.getComponent(), windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey, e.getPoint()) == null) {
                             windowManager.frame().setCursor(ViewUtil.NO_DRAG);
                         } else {
                             windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         }
                     }
                 }
+
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (draggedMaterial != null) {
                         windowManager.frame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         draggedMaterial.setVisible(false);
                         draggedMaterial = null;
-                        Object property = getPropertyAt(e.getComponent(),windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey,e.getPoint());
+                        Object property = getPropertyAt(e.getComponent(), windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey, e.getPoint());
                         try {
                             if (property != null) {
                                 ((Consumer<UUID>) property).accept(material.getUUID());
                             }
-                        } catch (ClassCastException ignore){
+                        } catch (ClassCastException ignore) {
 
                         }
                     }
@@ -222,7 +229,7 @@ public class MaterialViewer extends JScrollPane {
 
         private void initPopupMenu() {
             JMenuItem item = new JMenuItem("Delete");
-            item.addActionListener(e-> {
+            item.addActionListener(e -> {
                 if (windowManager.inspectorManager().isShowed(material)) {
                     windowManager.inspectorView().setView(null);
                 }
@@ -231,15 +238,15 @@ public class MaterialViewer extends JScrollPane {
             popup.add(item);
         }
 
-        private Object getPropertyAt(Component source,Container container,Object key,Point point) {
-            for (Component component:container.getComponents()) {
+        private Object getPropertyAt(Component source, Container container, Object key, Point point) {
+            for (Component component : container.getComponents()) {
                 if (component instanceof JComponent jComponent) {
                     Object result = jComponent.getClientProperty(key);
-                    if (result != null && !jComponent.contains(SwingUtilities.convertPoint(source,point,jComponent))) {
+                    if (result != null && !jComponent.contains(SwingUtilities.convertPoint(source, point, jComponent))) {
                         result = null;
                     }
                     if (result == null) {
-                        result = getPropertyAt(source,jComponent,key,point);
+                        result = getPropertyAt(source, jComponent, key, point);
                     }
                     if (result != null) {
                         return result;
@@ -253,6 +260,7 @@ public class MaterialViewer extends JScrollPane {
     private class NameEnterMaterialPreviewPanel extends JPanel {
         private final JTextField textField;
         private boolean added = false;
+
         private NameEnterMaterialPreviewPanel() {
             setBorder(defaultPreviewBorder);
             setPreferredSize(previewSize);
@@ -273,7 +281,7 @@ public class MaterialViewer extends JScrollPane {
                     onEndEnteringName();
                 }
             });
-            textField.addActionListener(e->{
+            textField.addActionListener(e -> {
                 onEndEnteringName();
             });
         }
@@ -300,43 +308,35 @@ public class MaterialViewer extends JScrollPane {
 
     //参考:https://gist.github.com/jirkapenzes/4560255
     //TODO いつか見る:https://ateraimemo.com/Swing/ScrollableWrapLayout.html
-    public class WrapLayout extends FlowLayout
-    {
+    public class WrapLayout extends FlowLayout {
         private Dimension preferredLayoutSize;
 
-        public WrapLayout()
-        {
+        public WrapLayout() {
             super();
         }
 
-        public WrapLayout(int align)
-        {
+        public WrapLayout(int align) {
             super(align);
         }
 
-        public WrapLayout(int align, int hgap, int vgap)
-        {
+        public WrapLayout(int align, int hgap, int vgap) {
             super(align, hgap, vgap);
         }
 
         @Override
-        public Dimension preferredLayoutSize(Container target)
-        {
+        public Dimension preferredLayoutSize(Container target) {
             return layoutSize(target, true);
         }
 
         @Override
-        public Dimension minimumLayoutSize(Container target)
-        {
+        public Dimension minimumLayoutSize(Container target) {
             Dimension minimum = layoutSize(target, false);
             minimum.width -= (getHgap() + 1);
             return minimum;
         }
 
-        private Dimension layoutSize(Container target, boolean preferred)
-        {
-            synchronized (target.getTreeLock())
-            {
+        private Dimension layoutSize(Container target, boolean preferred) {
+            synchronized (target.getTreeLock()) {
                 int targetWidth = target.getSize().width;
 
                 if (targetWidth == 0)
@@ -354,23 +354,19 @@ public class MaterialViewer extends JScrollPane {
 
                 int nmembers = target.getComponentCount();
 
-                for (int i = 0; i < nmembers; i++)
-                {
+                for (int i = 0; i < nmembers; i++) {
                     Component m = target.getComponent(i);
 
-                    if (m.isVisible())
-                    {
+                    if (m.isVisible()) {
                         Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
 
-                        if (rowWidth + d.width > maxWidth)
-                        {
+                        if (rowWidth + d.width > maxWidth) {
                             addRow(dim, rowWidth, rowHeight);
                             rowWidth = 0;
                             rowHeight = 0;
                         }
 
-                        if (rowWidth != 0)
-                        {
+                        if (rowWidth != 0) {
                             rowWidth += hgap;
                         }
 
@@ -385,8 +381,7 @@ public class MaterialViewer extends JScrollPane {
                 dim.height += insets.top + insets.bottom + vgap * 2;
 
                 Container scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane.class, target);
-                if (scrollPane != null)
-                {
+                if (scrollPane != null) {
                     dim.width -= (hgap + 1);
                 }
 
@@ -394,12 +389,10 @@ public class MaterialViewer extends JScrollPane {
             }
         }
 
-        private void addRow(Dimension dim, int rowWidth, int rowHeight)
-        {
+        private void addRow(Dimension dim, int rowWidth, int rowHeight) {
             dim.width = Math.max(dim.width, rowWidth);
 
-            if (dim.height > 0)
-            {
+            if (dim.height > 0) {
                 dim.height += getVgap();
             }
 

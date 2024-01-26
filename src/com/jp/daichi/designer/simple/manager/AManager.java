@@ -12,6 +12,7 @@ import java.util.UUID;
 
 /**
  * マネージャーの基底クラス
+ *
  * @param <T> 管理対象の型
  */
 public abstract class AManager<T extends ObservedObject> extends SimpleObservedObject implements IManager<T> {
@@ -23,6 +24,7 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
 
     /**
      * インスタンスの追加を行うと同時に、このマネージャーに設定されているオブザーバーを対象のインスタンスに設定し、さらにオブザーバーに通知を行う
+     *
      * @param instance 追加するインスタンス
      */
     protected void addInstance(T instance) {
@@ -36,7 +38,7 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
         if (uuid == null) {
             return null;
         }
-        for (T instance:instances) {
+        for (T instance : instances) {
             if (getUUID(instance).compareTo(uuid) == 0) {
                 return instance;
             }
@@ -56,33 +58,34 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
     @Override
     public void setUpdateObserver(UpdateObserver observer) {
         super.setUpdateObserver(observer);
-        for (T instance:instances) {
+        for (T instance : instances) {
             instance.setUpdateObserver(observer);
         }
     }
 
     @Override
-    public String resolveName(UUID uuid,String name) {
+    public String resolveName(UUID uuid, String name) {
         if (name.isEmpty()) {
             name = getDefaultName();
         }
         int suffixNumber = 0;
-        while (isDuplicate(uuid,name,suffixNumber)) {
+        while (isDuplicate(uuid, name, suffixNumber)) {
             suffixNumber++;
         }
-        return createSuffixedName(name,suffixNumber);
+        return createSuffixedName(name, suffixNumber);
     }
 
     /**
      * 名前が重複しているかどうか
-     * @param uuid UUID
-     * @param name 名前
+     *
+     * @param uuid         UUID
+     * @param name         名前
      * @param suffixNumber 接尾子
      * @return 重複しているならtrue
      */
     protected boolean isDuplicate(UUID uuid, String name, int suffixNumber) {
-        String newName = createSuffixedName(name,suffixNumber);
-        for (T instance:instances) {
+        String newName = createSuffixedName(name, suffixNumber);
+        for (T instance : instances) {
             if (getName(instance).equals(newName)) {
                 if (uuid == null || getUUID(instance).compareTo(uuid) != 0) {
                     return true;
@@ -92,11 +95,11 @@ public abstract class AManager<T extends ObservedObject> extends SimpleObservedO
         return false;
     }
 
-    private String createSuffixedName(String name,int suffixNumber) {
+    private String createSuffixedName(String name, int suffixNumber) {
         if (suffixNumber == 0) {
             return name;
         } else {
-            return name+"("+suffixNumber+")";
+            return name + "(" + suffixNumber + ")";
         }
     }
 

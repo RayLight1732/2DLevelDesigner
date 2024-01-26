@@ -13,20 +13,22 @@ import java.awt.event.MouseAdapter;
 /**
  * 選択、移動を行うツール
  */
-public class SelectAndMoveTool extends SimpleObservedObject implements Tool  {
+public class SelectAndMoveTool extends SimpleObservedObject implements Tool {
 
-    private static final Color selectRectColor = new Color(65,105,255,100);
+    private static final Color selectRectColor = new Color(65, 105, 255, 100);
     private final MouseAdapter mouseAdapter;
     private final EditorCanvas canvas;
 
     /**
      * 新しいインスタンスを作成する
+     *
      * @param canvas キャンバス
      */
     public SelectAndMoveTool(EditorCanvas canvas) {
         this.canvas = canvas;
         this.mouseAdapter = new SelectToolMouseAdapter(this);
     }
+
     private Rectangle rectangle;
 
     @Override
@@ -48,10 +50,10 @@ public class SelectAndMoveTool extends SimpleObservedObject implements Tool  {
     }
 
     public void startDrag() {
-        canvas.getFrame().getSelected().forEach(designerObject ->( (EditorDesignerObject)designerObject).setSaveHistory(false));
+        canvas.getFrame().getSelected().forEach(designerObject -> ((EditorDesignerObject) designerObject).setSaveHistory(false));
     }
 
-    public void endDrag(Point startPoint,SignedDimension startDimension,boolean moveOnly) {
+    public void endDrag(Point startPoint, SignedDimension startDimension, boolean moveOnly) {
         if (moveOnly) {
             canvas.getFrame().setPosition(startPoint);
         } else {
