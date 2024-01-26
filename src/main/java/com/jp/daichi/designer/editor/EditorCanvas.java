@@ -128,6 +128,14 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         }
     }
 
+    @Override
+    public void setViewport(Rectangle rectangle) {
+        Rectangle oldValue = getViewport();
+        super.setViewport(rectangle);
+        if (saveHistory) {
+            history.add(new SetViewPort(null,oldValue,getViewport()));
+        }
+    }
 
     @Override
     public void setFogColor(Color color) {
@@ -264,6 +272,28 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         @Override
         public String description() {
             return "set fog strength:" + newValue;
+        }
+    }
+
+    private static class SetViewPort extends SimpleHistoryStaff<EditorCanvas,Rectangle> {
+
+        public SetViewPort(UUID uuid, Rectangle oldValue, Rectangle newValue) {
+            super(uuid, oldValue, newValue);
+        }
+
+        @Override
+        public void setValue(EditorCanvas target, Rectangle value) {
+            target.setViewport(value);
+        }
+
+        @Override
+        public EditorCanvas getTarget(Canvas canvas) {
+            return (EditorCanvas) canvas;
+        }
+
+        @Override
+        public String description() {
+            return "set view port";
         }
     }
 }

@@ -29,6 +29,8 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     private Color fogColor;
     private double fogStrength = 0;
 
+    private List<Renderer> renderers = new ArrayList<>();
+
     /**
      * 新しいキャンバスのインスタンスを作成する
      *
@@ -160,6 +162,9 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
         }
         drawLayer(g);
 
+        for (Renderer renderer:renderers) {
+            renderer.draw(g);
+        }
         g.setColor(BACKGROUND_COLOR);
         if (drawX == 0) {//上下に余白
             g.fillRect(0, 0, width, drawY);
@@ -168,6 +173,19 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
             g.fillRect(0, 0, drawX, height);
             g.fillRect(drawX + newWidth, 0, width - drawX - newHeight, height);
         }
+    }
+
+    @Override
+    public void addRenderer(Renderer renderer) {
+        renderers.add(renderer);
+        sendUpdate(UpdateAction.ADD_RENDERER);
+    }
+
+    @Override
+    public boolean removeRenderer(Renderer renderer) {
+        boolean result = renderers.remove(renderer);
+        sendUpdate(UpdateAction.REMOVE_RENDERER);
+        return result;
     }
 
     protected void drawLayer(Graphics2D g) {

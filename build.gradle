@@ -23,20 +23,25 @@ test {
 }
 
 task ingame_jar(type:Jar) {
-    from sourceSets.main.output - sourceSets.main.output.resourcesDir
-    archivesBaseName ="2DLevelDesignerLib"
-    exclude "com/jp/daichi/designer/editor"
-    exclude "com/jp/daichi/designer/interfaces/editor"
-    //manifest {
-    //    attributes 'Main-Class': 'com.jp.daichi.designer.InGameMain'
-    //}
+    doLast {
+        archivesBaseName = "2DLevelDesignerLib"
+        from sourceSets.main.output - sourceSets.main.output.resourcesDir
+        exclude "com/jp/daichi/designer/editor"
+        exclude "com/jp/daichi/designer/interfaces/editor"
+        manifest {
+            attributes 'Main-Class': 'com.jp.daichi.designer.InGameMain'
+        }
+    }
 }
 
+
 task editor_jar(type: Jar) {
-    from sourceSets.main.output
-    archivesBaseName ="2DLevelDesigner"
-    exclude "com/jp/daichi/designer/ingame"
-    manifest {
-        attributes 'Main-Class': 'com.jp.daichi.designer.editor.EditorMain'
+    doLast {
+        from sourceSets.main.output
+        archivesBaseName = "2DLevelDesigner"
+        exclude "com/jp/daichi/designer/ingame"
+        manifest {
+            attributes 'Main-Class': 'com.jp.daichi.designer.editor.EditorMain'
+        }
     }
 }

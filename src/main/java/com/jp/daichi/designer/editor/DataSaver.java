@@ -51,7 +51,6 @@ public class DataSaver {
         } else if (target instanceof Material) {
             save(target, Path.of(parentFolder.getAbsolutePath(), "materials", ((Material) target).getUUID().toString() + ".bin"));
         } else if (target instanceof EditorCanvas editorCanvas) {
-            System.out.println("save");
             save(target, Path.of(parentFolder.getAbsolutePath(), "canvas.bin"));
         }
     }

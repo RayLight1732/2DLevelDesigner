@@ -65,6 +65,19 @@ public interface Canvas extends ObservedObject {
     void draw(Graphics2D g, int width, int height);
 
     /**
+     * 背景の描画(デザイナーオブジェクト含む)が終わった後に呼ばれるレンダラーを追加する
+     * @param renderer レンダラー
+     */
+    void addRenderer(Renderer renderer);
+
+    /**
+     * 背景の描画(デザイナーオブジェクト含む)が終わった後に呼ばれるレンダラーを削除する
+     * @param renderer レンダラー
+     * @return 削除に成功したらtrue
+     */
+    boolean removeRenderer(Renderer renderer);
+
+    /**
      * オブザーバーを設定する
      *
      * @param updateObserver オブザーバー

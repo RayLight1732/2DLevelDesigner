@@ -18,7 +18,6 @@ public class InGameMain {
         MainPanel mainPanel = new MainPanel(canvas);
         frame.add(mainPanel);
         frame.setVisible(true);
-        System.out.println(canvas.getDesignerObjectManager().getAllInstances().size());
     }
 
     private static class MainPanel extends JPanel {

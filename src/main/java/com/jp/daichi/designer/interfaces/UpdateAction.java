@@ -19,6 +19,8 @@ public class UpdateAction {
     public static final UpdateAction CHANGE_FOG_STRENGTH = new UpdateAction("ChangeFogStrength");
     public static final UpdateAction CHANGE_VIEWPORT = new UpdateAction("ChangeViewport");
     public static final UpdateAction CHANGE_POV = new UpdateAction("ChangePov");
+    public static final UpdateAction ADD_RENDERER = new UpdateAction("AddRenderer");
+    public static final UpdateAction REMOVE_RENDERER = new UpdateAction("RemoveRenderer");
 
     private final String name;
 

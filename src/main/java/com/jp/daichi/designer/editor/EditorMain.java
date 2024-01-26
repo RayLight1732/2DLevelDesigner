@@ -94,8 +94,8 @@ public class EditorMain {
 
 
         Tool tool = new SelectAndMoveTool((EditorCanvas) canvas);
-
-        frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel jPanel = new MyJPanel(canvas, tool);
 
@@ -122,20 +122,17 @@ public class EditorMain {
         right.setUI(new CustomSplitPaneUI());
         right.setDividerSize(3);
         right.setResizeWeight(0.5);
-        right.setDividerLocation((int) (frame.getSize().height * 0.5));
         right.setBorder(null);
         JSplitPane left = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, jPanel, new MaterialViewer(canvas.getMaterialManager(), windowManager));
         left.setUI(new CustomSplitPaneUI());
         left.setDividerSize(3);
         left.setResizeWeight(0.5);
-        left.setDividerLocation((int) (frame.getSize().height * 0.7));
         left.setBorder(null);
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, left, right);
         split.setUI(new CustomSplitPaneUI());
         split.setDividerSize(3);
         split.setResizeWeight(0.5);
         split.setBorder(null);
-        split.setDividerLocation((int) (frame.getSize().width * 0.7));
 
         frame.add(split);
 
@@ -176,8 +173,9 @@ public class EditorMain {
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
-
-        canvas.setViewport(new Rectangle(0, 0, 300, 300));
+        right.setDividerLocation((int) (frame.getSize().height * 0.5));
+        left.setDividerLocation((int) (frame.getSize().height * 0.7));
+        split.setDividerLocation((int) (frame.getSize().width * 0.7));
 
         frame.addMouseWheelListener(e -> {
             canvas.getViewport().x += e.getPreciseWheelRotation() * 10;
@@ -189,7 +187,6 @@ public class EditorMain {
             canvas.getMaterialManager().createInstance("Material"+i);
         }
         */
-
         canvasManager.getDataSaver().saveAll(canvas);
     }
 

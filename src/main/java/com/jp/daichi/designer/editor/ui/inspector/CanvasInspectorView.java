@@ -4,6 +4,7 @@ import com.jp.daichi.designer.editor.*;
 import com.jp.daichi.designer.editor.ui.*;
 import com.jp.daichi.designer.interfaces.Material;
 import com.jp.daichi.designer.interfaces.ObservedObject;
+import com.jp.daichi.designer.interfaces.SignedDimension;
 import com.jp.daichi.designer.interfaces.UpdateAction;
 
 import javax.swing.*;
@@ -23,6 +24,8 @@ public class CanvasInspectorView extends ObserverJPanel {
 
     private JComponent povPanel;
     private JComponent materialPanel;
+    private JComponent viewPortCenterPanel;
+    private JComponent viewPortSizePanel;
 
     public CanvasInspectorView(EditorCanvas canvas, WindowManager windowManager) {
         this.canvas = canvas;
@@ -33,11 +36,17 @@ public class CanvasInspectorView extends ObserverJPanel {
     private void init() {
         materialPanel = createMaterialPanel();
         povPanel = createPovPanel();
+        viewPortCenterPanel = createViewPortCenterPanel();
+        viewPortSizePanel = createViewPortSizePanel();
         setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 4, 4));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(InspectorView.createTitlePanel("Canvas Information"));
         add(Box.createVerticalStrut(4));
         add(povPanel);
+        add(Box.createVerticalStrut(4));
+        add(viewPortCenterPanel);
+        add(Box.createVerticalStrut(4));
+        add(viewPortSizePanel);
         add(Box.createVerticalStrut(4));
         add(materialPanel);
     }
@@ -56,6 +65,15 @@ public class CanvasInspectorView extends ObserverJPanel {
                 remove(z);
                 materialPanel = createMaterialPanel();
                 add(materialPanel, z);
+            } else if (action == UpdateAction.CHANGE_VIEWPORT) {
+                int z = getComponentZOrder(viewPortCenterPanel);
+                remove(z);
+                viewPortCenterPanel = createViewPortCenterPanel();
+                add(viewPortCenterPanel,z);
+                z = getComponentZOrder(viewPortSizePanel);
+                remove(z);
+                viewPortSizePanel = createViewPortSizePanel();
+                add(viewPortSizePanel,z);
             }
         } else if (target instanceof Material material && material.getUUID().compareTo(canvas.getMaterialUUID()) == 0) {
             int z = getComponentZOrder(materialPanel);
@@ -78,6 +96,59 @@ public class CanvasInspectorView extends ObserverJPanel {
         textField.setColumns(20);
         panel.add(textField);
         return panel;
+    }
+
+    private JComponent createViewPortCenterPanel() {
+        JPanel parent = new JPanel();
+        parent.setLayout(new BoxLayout(parent, BoxLayout.X_AXIS));
+        parent.add(new SmoothJLabel("ViewPortCenter"));
+        parent.add(Box.createHorizontalStrut(labelHorizontalStruct));
+        parent.add(Box.createGlue());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(new SmoothJLabel("x"));
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(ViewUtil.createNumberTextField(canvas.getViewport().x+canvas.getViewport().width/2, new ViewUtil.SetterRunnable<>(value -> {
+            Rectangle rectangle = canvas.getViewport();
+            canvas.setViewport(new Rectangle(value.intValue()-canvas.getViewport().width/2, rectangle.y,rectangle.width,rectangle.height));
+        })),true);
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(new SmoothJLabel("y"));
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(ViewUtil.createNumberTextField(canvas.getViewport().y+canvas.getViewport().height/2, new ViewUtil.SetterRunnable<>(value -> {
+            Rectangle rectangle = canvas.getViewport();
+            canvas.setViewport(new Rectangle(rectangle.x,value.intValue()-canvas.getViewport().height/2,rectangle.width,rectangle.height));
+        })),true);parent.add(panel);
+        return parent;
+    }
+    private JComponent createViewPortSizePanel() {
+        JPanel parent = new JPanel();
+        parent.setLayout(new BoxLayout(parent, BoxLayout.X_AXIS));
+        parent.add(new SmoothJLabel("ViewPortSize"));
+        parent.add(Box.createHorizontalStrut(labelHorizontalStruct));
+        parent.add(Box.createGlue());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new CustomBoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(new SmoothJLabel("Width"));
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(ViewUtil.createNumberTextField(canvas.getViewport().width, new ViewUtil.SetterRunnable<>(value -> {
+            Rectangle rectangle = canvas.getViewport();
+            int centerX = rectangle.x+rectangle.width/2;
+            int centerY = rectangle.y+rectangle.height/2;
+            canvas.setViewport(new Rectangle(centerX-value.intValue()/2,centerY-rectangle.height/2,value.intValue(),rectangle.height));
+        })),true);
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(new SmoothJLabel("Height"));
+        panel.add(Box.createHorizontalStrut(4));
+        panel.add(ViewUtil.createNumberTextField(canvas.getViewport().height, new ViewUtil.SetterRunnable<>(value -> {
+            Rectangle rectangle = canvas.getViewport();
+            int centerX = rectangle.x+rectangle.width/2;
+            int centerY = rectangle.y+rectangle.height/2;
+            canvas.setViewport(new Rectangle(centerX-rectangle.width/2,centerY-value.intValue()/2,rectangle.width,value.intValue()));
+        })),true);parent.add(panel);
+        return parent;
     }
 
 
