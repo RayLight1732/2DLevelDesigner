@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.jp.daichi.designer'
+group 'com.jp.daichi'
 version '1.0'
 
 tasks.withType(JavaCompile) {
@@ -22,12 +22,21 @@ test {
     useJUnitPlatform()
 }
 
-jar {
-    exclude("com/jp/daichi/designer/editor")
-    exclude("com/jp/daichi/designer/interfaces/editor")
-    exclude("com/jp/daichi/designer/test")
-    manifest {
-        attributes 'Main-Class': 'com.jp.daichi.designer.InGameMain'
+task ingame_jar(type:Jar) {
+    from sourceSets.main.output - sourceSets.main.output.resourcesDir
+    archivesBaseName ="2DLevelDesignerLib"
+    exclude "com/jp/daichi/designer/editor"
+    exclude "com/jp/daichi/designer/interfaces/editor"
+    //manifest {
+    //    attributes 'Main-Class': 'com.jp.daichi.designer.InGameMain'
+    //}
+}
 
+task editor_jar(type: Jar) {
+    from sourceSets.main.output
+    archivesBaseName ="2DLevelDesigner"
+    exclude "com/jp/daichi/designer/ingame"
+    manifest {
+        attributes 'Main-Class': 'com.jp.daichi.designer.editor.EditorMain'
     }
 }

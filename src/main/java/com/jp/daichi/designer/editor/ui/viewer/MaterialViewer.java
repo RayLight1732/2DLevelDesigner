@@ -195,7 +195,7 @@ public class MaterialViewer extends JScrollPane {
                             draggedMaterial = new DragPopup(new MaterialPreviewPanel(material));
                             draggedMaterial.setBorder(BorderFactory.createEmptyBorder());
                         }
-                        draggedMaterial.show(e.getComponent(), e.getX() - 1, e.getY() - 1);
+                        draggedMaterial.show(e.getComponent(), e.getX() - 2, e.getY() - 2);
                         if (getPropertyAt(e.getComponent(), windowManager.inspectorView(), InspectorUtil.materialPanelClientPropertyKey, e.getPoint()) == null) {
                             windowManager.frame().setCursor(ViewUtil.NO_DRAG);
                         } else {
@@ -308,7 +308,7 @@ public class MaterialViewer extends JScrollPane {
 
     //参考:https://gist.github.com/jirkapenzes/4560255
     //TODO いつか見る:https://ateraimemo.com/Swing/ScrollableWrapLayout.html
-    public class WrapLayout extends FlowLayout {
+    public static class WrapLayout extends FlowLayout {
         private Dimension preferredLayoutSize;
 
         public WrapLayout() {

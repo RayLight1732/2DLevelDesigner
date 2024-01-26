@@ -17,8 +17,6 @@ public class ViewUtil {
 
     public static final int labelHorizontalStruct = 6;
 
-    public static final Cursor NO_DRAG = createNoDragCursor();
-
     public static final int LEFT_PADDING = 5;
 
     public static final int TEXT_FIELD_COLUMNS = 10;
@@ -78,9 +76,10 @@ public class ViewUtil {
         return setterRunnable;
     }
 
+    public static Cursor NO_DRAG = createNoDragCursor();
+
     private static Cursor createNoDragCursor() {
-        try (InputStream is = EditorMain.class.getResourceAsStream("\\NoDrag.png")) {
-            //TODO resourcesを使用するようにする
+        try (InputStream is = ViewUtil.class.getResourceAsStream("/NoDrag.png")) {
             if (is != null) {
                 BufferedImage bf = ImageIO.read(is);
                 return Toolkit.getDefaultToolkit().createCustomCursor(bf, new Point(0, 0), "NoDrag");
