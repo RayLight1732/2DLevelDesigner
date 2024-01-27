@@ -30,7 +30,7 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
      * @return デシリアライズされた結果
      */
     public static EditorCollisionObject deserialize(History history, Canvas canvas, DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> serialized) {
-        return new EditorCollisionObject(history, deserializedData.name(), deserializedData.uuid(), canvas, deserializedData.position(), deserializedData.dimension(), deserializedData.priority());
+        return new EditorCollisionObject(history, deserializedData.name(), deserializedData.uuid(), canvas, deserializedData.position(),deserializedData.z(), deserializedData.dimension(), deserializedData.priority());
 
     }
 
@@ -45,11 +45,12 @@ public class EditorCollisionObject extends SimpleCollisionObject implements Perm
      * @param uuid      UUID
      * @param canvas    キャンバス
      * @param position  座標
+     * @param z         z座標
      * @param dimension 表示領域
      * @param priority  優先度
      */
-    public EditorCollisionObject(History history, String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension, int priority) {
-        super(name, uuid, canvas, position, dimension, priority);
+    public EditorCollisionObject(History history, String name, UUID uuid, Canvas canvas, Point position,double z, SignedDimension dimension, int priority) {
+        super(name, uuid, canvas, position,z, dimension, priority);
         this.history = history;
     }
 

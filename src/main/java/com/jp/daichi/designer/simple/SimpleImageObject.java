@@ -42,11 +42,12 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
      * @param materialUUID マテリアルUUID
      * @param canvas       キャンバス
      * @param position     座標
+     * @param z            z座標
      * @param dimension    表示領域
      * @param priority     優先度
      **/
-    public SimpleImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension, int priority) {
-        super(name, uuid, DesignerObjectType.IMAGE, canvas, position, dimension, priority);
+    public SimpleImageObject(String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position,double z, SignedDimension dimension, int priority) {
+        super(name, uuid, DesignerObjectType.IMAGE, canvas, position,z, dimension, priority);
         this.materialUUID = materialUUID;
     }
 

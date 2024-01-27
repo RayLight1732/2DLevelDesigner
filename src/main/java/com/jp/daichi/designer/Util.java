@@ -5,6 +5,9 @@ import com.jp.daichi.designer.interfaces.Point;
 import com.jp.daichi.designer.interfaces.*;
 
 import java.awt.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 処理に役立つメソッドを集めたユーティリティクラス
@@ -40,4 +43,22 @@ public class Util {
         return imageObject.getCanvas().getMaterialManager().getInstance(imageObject.getMaterialUUID());
     }
 
+    /**
+     * 画面上にデザイナーオブジェクトが表示されているか
+     * @param designerObject デザイナーオブジェクト
+     * @return 表示されているならtrue
+     */
+    public static boolean isShown(DesignerObject designerObject) {
+        if (!designerObject.isVisible()) {
+            return false;
+        }
+        Canvas canvas = designerObject.getCanvas();
+        List<Layer> layers = canvas.getLayers().stream().map(uuid->canvas.getLayerManager().getInstance(uuid)).filter(Objects::nonNull).toList();
+        for (Layer layer:layers) {
+            if (layer.getObjects().contains(designerObject.getUUID())) {
+                return layer.isVisible();
+            }
+        }
+        return false;
+    }
 }

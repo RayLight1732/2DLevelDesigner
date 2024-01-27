@@ -22,6 +22,8 @@ public class UpdateAction {
     public static final UpdateAction ADD_RENDERER = new UpdateAction("AddRenderer");
     public static final UpdateAction REMOVE_RENDERER = new UpdateAction("RemoveRenderer");
 
+    public static final UpdateAction FIXED_Y = new UpdateAction("FixedY");
+
     private final String name;
 
     public UpdateAction(String name) {

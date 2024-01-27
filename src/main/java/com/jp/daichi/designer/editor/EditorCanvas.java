@@ -1,20 +1,21 @@
 package com.jp.daichi.designer.editor;
 
+import com.jp.daichi.designer.Util;
 import com.jp.daichi.designer.editor.history.SimpleHistoryStaff;
 import com.jp.daichi.designer.interfaces.Canvas;
+import com.jp.daichi.designer.interfaces.DesignerObject;
+import com.jp.daichi.designer.interfaces.Layer;
 import com.jp.daichi.designer.interfaces.UpdateObserver;
 import com.jp.daichi.designer.interfaces.editor.History;
 import com.jp.daichi.designer.interfaces.editor.PermanentObject;
 import com.jp.daichi.designer.interfaces.manager.DesignerObjectManager;
 import com.jp.daichi.designer.interfaces.manager.LayerManager;
 import com.jp.daichi.designer.interfaces.manager.MaterialManager;
+import com.jp.daichi.designer.simple.DeserializeUtil;
 import com.jp.daichi.designer.simple.SimpleCanvas;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.jp.daichi.designer.simple.DeserializeUtil.*;
 
@@ -37,21 +38,7 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         EditorCanvas canvas = new EditorCanvas(history, materialManager, layerManager, designerObjectManager);
         try {
             canvas.setSaveHistory(false);
-            Double pov = (Double) serialized.get(POV);
-            if (pov != null) {
-                canvas.setPov(pov);
-            }
-            Rectangle viewPort = (Rectangle) serialized.get(VIEWPORT);
-            Objects.requireNonNull(viewPort);
-            canvas.setViewport(viewPort);
-            Double fogStrength = (Double) serialized.get(FOG_STRENGTH);
-            if (fogStrength != null) {
-                canvas.setFogStrength(fogStrength);
-            }
-            Color color = (Color) serialized.get(FOG_COLOR);
-            canvas.setFogColor(color);
-            UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
-            canvas.setMaterialUUID(materialUUID);
+            DeserializeUtil.setCanvasProperties(canvas,serialized);
             canvas.setSaveHistory(true);
             return canvas;
         } catch (ClassCastException | NullPointerException e) {
@@ -64,7 +51,15 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
     private boolean saveHistory = true;
     private final Frame frame = new SimpleFrame(this);
 
-
+    private final UpdateObserver.ObserverRunnable runnable = (target, action) -> {
+        if (target instanceof Layer || target instanceof DesignerObject) {
+            for (DesignerObject designerObject:frame.getSelected()) {
+                if (!Util.isShown(designerObject)) {
+                    frame.removeSelectedObject(designerObject);
+                }
+            }
+        }
+    };
     /**
      * 新しいキャンバスのインスタンスを作成する
      *
@@ -86,13 +81,20 @@ public class EditorCanvas extends SimpleCanvas implements PermanentObject {
         result.put(FOG_STRENGTH, getFogStrength());
         result.put(FOG_COLOR, getFogColor());
         result.put(MATERIAL_UUID, getMaterialUUID());
+        result.put(FIXED_Y,useFixedY());
         return result;
     }
 
     @Override
     public void setUpdateObserver(UpdateObserver updateObserver) {
+        if (getUpdateObserver() != null) {
+            getUpdateObserver().removeRunnable(runnable);
+        }
         super.setUpdateObserver(updateObserver);
         frame.setUpdateObserver(updateObserver);
+        if (getUpdateObserver() != null) {
+            getUpdateObserver().addRunnable(runnable);
+        }
     }
 
     /**

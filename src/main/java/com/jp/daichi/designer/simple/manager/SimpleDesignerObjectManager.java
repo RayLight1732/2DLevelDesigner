@@ -52,8 +52,23 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
 
     @Override
     public DesignerObject deserializeManagedObject(Map<String, Object> map) {
+        return deserializeManagedObject(map,false);
+    }
+
+    @Override
+    public DesignerObject deserializeManagedObject(Map<String, Object> map, boolean resolveDuplication) {
         DesignerObjectSerializer.DeserializedData deserializedData = DesignerObjectSerializer.deserialize(map);
         if (deserializedData != null) {
+            if (resolveDuplication) {
+                deserializedData = new DesignerObjectSerializer.DeserializedData(deserializedData.type(),resolveName(null,deserializedData.name()),deserializedData.uuid(),deserializedData.position(),deserializedData.z(),deserializedData.dimension(),deserializedData.priority());
+            }
+            if (checkDuplicateUUID(deserializedData.uuid())) {
+                if (resolveDuplication) {
+                    deserializedData = new DesignerObjectSerializer.DeserializedData(deserializedData.type(),deserializedData.name(),UUID.randomUUID(),deserializedData.position(),deserializedData.z(),deserializedData.dimension(),deserializedData.priority());
+                } else {
+                    throw new IllegalArgumentException("duplicate UUID");
+                }
+            }
             DesignerObject designerObject = deserializeManagedObject(deserializedData, map);
             if (designerObject != null) {
                 addInstance(designerObject);
@@ -72,4 +87,13 @@ public abstract class SimpleDesignerObjectManager extends AManager<DesignerObjec
      * @return デシリアライズの結果
      */
     protected abstract DesignerObject deserializeManagedObject(DesignerObjectSerializer.DeserializedData deserializedData, Map<String, Object> map);
+
+    protected boolean checkDuplicateUUID(UUID uuid) {
+        for (DesignerObject designerObject: instances) {
+            if (uuid.compareTo(designerObject.getUUID()) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

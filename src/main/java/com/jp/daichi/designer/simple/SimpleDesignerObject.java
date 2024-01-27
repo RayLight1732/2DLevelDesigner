@@ -33,7 +33,7 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
      * @param dimension 表示領域
      */
     public SimpleDesignerObject(String name, UUID uuid, DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension) {
-        this(name, uuid, type, canvas, position, dimension, 0);
+        this(name, uuid, type, canvas, position,0, dimension, 0);
     }
 
     /**
@@ -44,10 +44,11 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
      * @param type      タイプ
      * @param canvas    キャンバス
      * @param position  座標
+     * @param z         z座標
      * @param dimension 表示領域
      * @param priority  優先度
      */
-    public SimpleDesignerObject(String name, UUID uuid, DesignerObjectType type, Canvas canvas, Point position, SignedDimension dimension, int priority) {
+    public SimpleDesignerObject(String name, UUID uuid, DesignerObjectType type, Canvas canvas, Point position,double z, SignedDimension dimension, int priority) {
         this.name = name;
         this.uuid = uuid;
         this.type = type;
@@ -55,6 +56,7 @@ public abstract class SimpleDesignerObject extends SimpleObservedObject implemen
         this.position = position;
         this.dimension = dimension;
         this.priority = priority;
+        this.z = z;
     }
 
     @Override

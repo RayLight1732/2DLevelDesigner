@@ -1,9 +1,8 @@
 package com.jp.daichi.designer.editor;
 
+import com.jp.daichi.designer.editor.ui.WindowManager;
+import com.jp.daichi.designer.interfaces.*;
 import com.jp.daichi.designer.interfaces.Point;
-import com.jp.daichi.designer.interfaces.SignedDimension;
-import com.jp.daichi.designer.interfaces.Tool;
-import com.jp.daichi.designer.interfaces.UpdateAction;
 import com.jp.daichi.designer.interfaces.editor.EditorDesignerObject;
 import com.jp.daichi.designer.simple.SimpleObservedObject;
 
@@ -19,14 +18,16 @@ public class SelectAndMoveTool extends SimpleObservedObject implements Tool {
     private final MouseAdapter mouseAdapter;
     private final EditorCanvas canvas;
 
+
+
     /**
      * 新しいインスタンスを作成する
      *
      * @param canvas キャンバス
      */
-    public SelectAndMoveTool(EditorCanvas canvas) {
+    public SelectAndMoveTool(EditorCanvas canvas, WindowManager windowManager) {
         this.canvas = canvas;
-        this.mouseAdapter = new SelectToolMouseAdapter(this);
+        this.mouseAdapter = new SelectToolMouseAdapter(this,windowManager);
     }
 
     private Rectangle rectangle;
@@ -70,4 +71,5 @@ public class SelectAndMoveTool extends SimpleObservedObject implements Tool {
     public EditorCanvas getCanvas() {
         return canvas;
     }
+
 }

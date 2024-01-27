@@ -12,7 +12,7 @@ public class ImageFileFilter extends FileFilter {
 
         String ext = getExtension(f);
         if (ext != null) {
-            return ext.equals("png");
+            return ext.equals("png") | ext.equals("jpg");
         }
 
         return false;

@@ -16,8 +16,7 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 
 import static com.jp.daichi.designer.ColorProfile.*;
@@ -93,16 +92,20 @@ public class EditorMain {
         //canvas.addLayer(layer.getUUID());//TODO canvasにcreateLayerを埋め込んでもいいかも
 
 
-        Tool tool = new SelectAndMoveTool((EditorCanvas) canvas);
+
+        frame.setSize(400,300);
         frame.setLocationRelativeTo(null);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel jPanel = new MyJPanel(canvas, tool);
 
 
         InspectorView inspectorView = new InspectorView();
         SimpleInspectorManager simpleInspectorManager = new SimpleInspectorManager((EditorCanvas) canvas);
         WindowManager windowManager = new WindowManager(frame, inspectorView, simpleInspectorManager);
+
+        Tool tool = new SelectAndMoveTool((EditorCanvas) canvas,windowManager);
+        JPanel jPanel = new MyJPanel(canvas, tool);
+        setUpKeyBindings(jPanel,(EditorCanvas) canvas);
 
         jPanel.addMouseListener(new MouseAdapter() {
             @Override
@@ -112,6 +115,8 @@ public class EditorMain {
                     if (view != null) {
                         windowManager.inspectorView().setView(view);
                     }
+                } else if (SwingUtilities.isLeftMouseButton(e)) {
+                    jPanel.requestFocus();
                 }
             }
         });
@@ -178,8 +183,10 @@ public class EditorMain {
         split.setDividerLocation((int) (frame.getSize().width * 0.7));
 
         frame.addMouseWheelListener(e -> {
+            ((EditorCanvas)canvas).setSaveHistory(false);
             canvas.getViewport().x += e.getPreciseWheelRotation() * 10;
             canvas.setViewport(canvas.getViewport());
+            ((EditorCanvas)canvas).setSaveHistory(true);
         });
 
         /*
@@ -215,6 +222,40 @@ public class EditorMain {
                 sendUpdateToChild(container2, target, action);
             }
         }
+    }
+
+    private static void setUpKeyBindings(JPanel panel,EditorCanvas canvas) {
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false),"ShiftPressed");
+        panel.getActionMap().put("ShiftPressed", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                KeyManager.onPressed(KeyEvent.VK_SHIFT);
+            }
+        });
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),"ShiftReleased");
+        panel.getActionMap().put("ShiftReleased", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                KeyManager.onReleased(KeyEvent.VK_SHIFT);
+            }
+        });
+
+        CopyPasteHandler handler = new CopyPasteHandler(canvas);
+        panel.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false),"Copy");
+        panel.getActionMap().put("Copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handler.onCopied();
+            }
+        });
+        panel.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, false),"Paste");
+        panel.getActionMap().put("Paste", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handler.onPasted();
+            }
+        });
+
     }
 
     private static class MyJPanel extends JPanel {

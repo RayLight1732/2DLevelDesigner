@@ -26,6 +26,7 @@ public class CanvasInspectorView extends ObserverJPanel {
     private JComponent materialPanel;
     private JComponent viewPortCenterPanel;
     private JComponent viewPortSizePanel;
+    private JComponent fixedYPanel;
 
     public CanvasInspectorView(EditorCanvas canvas, WindowManager windowManager) {
         this.canvas = canvas;
@@ -38,6 +39,7 @@ public class CanvasInspectorView extends ObserverJPanel {
         povPanel = createPovPanel();
         viewPortCenterPanel = createViewPortCenterPanel();
         viewPortSizePanel = createViewPortSizePanel();
+        fixedYPanel = createFixedYPanel();
         setBorder(BorderFactory.createEmptyBorder(10, ViewUtil.LEFT_PADDING, 4, 4));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(InspectorView.createTitlePanel("Canvas Information"));
@@ -49,6 +51,8 @@ public class CanvasInspectorView extends ObserverJPanel {
         add(viewPortSizePanel);
         add(Box.createVerticalStrut(4));
         add(materialPanel);
+        add(Box.createVerticalStrut(4));
+        add(fixedYPanel);
     }
 
 
@@ -74,6 +78,11 @@ public class CanvasInspectorView extends ObserverJPanel {
                 remove(z);
                 viewPortSizePanel = createViewPortSizePanel();
                 add(viewPortSizePanel,z);
+            } else if (action == UpdateAction.FIXED_Y) {
+                int z = getComponentZOrder(fixedYPanel);
+                remove(z);
+                fixedYPanel = createFixedYPanel();
+                add(fixedYPanel,z);
             }
         } else if (target instanceof Material material && material.getUUID().compareTo(canvas.getMaterialUUID()) == 0) {
             int z = getComponentZOrder(materialPanel);
@@ -148,6 +157,23 @@ public class CanvasInspectorView extends ObserverJPanel {
             int centerY = rectangle.y+rectangle.height/2;
             canvas.setViewport(new Rectangle(centerX-rectangle.width/2,centerY-value.intValue()/2,rectangle.width,value.intValue()));
         })),true);parent.add(panel);
+        return parent;
+    }
+
+    private JComponent createFixedYPanel() {
+        JPanel parent = new JPanel();
+        parent.setLayout(new BoxLayout(parent, BoxLayout.X_AXIS));
+        parent.add(new SmoothJLabel("FixedY"));
+        parent.add(Box.createHorizontalStrut(labelHorizontalStruct));
+        parent.add(Box.createGlue());
+
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setSelected(canvas.useFixedY());
+        checkBox.addActionListener(e->{
+            canvas.setFixedY(checkBox.isSelected());
+        });
+        checkBox.setOpaque(false);
+        parent.add(checkBox);
         return parent;
     }
 

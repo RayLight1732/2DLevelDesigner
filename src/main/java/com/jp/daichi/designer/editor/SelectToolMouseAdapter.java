@@ -1,7 +1,7 @@
 package com.jp.daichi.designer.editor;
 
-import com.jp.daichi.designer.KeyManager;
 import com.jp.daichi.designer.Util;
+import com.jp.daichi.designer.editor.ui.WindowManager;
 import com.jp.daichi.designer.interfaces.DesignerObject;
 import com.jp.daichi.designer.interfaces.Direction;
 import com.jp.daichi.designer.interfaces.Point;
@@ -19,9 +19,11 @@ import java.awt.event.MouseEvent;
 public class SelectToolMouseAdapter extends MouseAdapter {
 
     private final SelectAndMoveTool tool;
+    private final WindowManager windowManager;
 
-    public SelectToolMouseAdapter(SelectAndMoveTool tool) {
+    public SelectToolMouseAdapter(SelectAndMoveTool tool, WindowManager windowManager) {
         this.tool = tool;
+        this.windowManager = windowManager;
     }
 
     private Direction direction = Direction.NONE;
@@ -51,6 +53,15 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                 }
             } else {
                 selected = true;
+                if (direction == Direction.CENTER && e.getClickCount() >=2) {
+                    DesignerObject designerObject = canvas.getDesignerObject(Point.convert(e.getPoint()));
+                    if (designerObject != null) {
+                        JComponent view = windowManager.inspectorManager().createInspectorView(designerObject);
+                        if (view != null) {
+                            windowManager.inspectorView().setView(view);
+                        }
+                    }
+                }
             }
 
             if (selected) {
@@ -155,6 +166,7 @@ public class SelectToolMouseAdapter extends MouseAdapter {
                 tool.setRectangle(createRectangle(firstMousePosition, point));
             }
         }
+
     }
 
     private static final int limit = 3;

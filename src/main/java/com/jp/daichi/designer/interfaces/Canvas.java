@@ -211,4 +211,15 @@ public interface Canvas extends ObservedObject {
      * @param fogStrength 霧の強さ
      */
     void setFogStrength(double fogStrength);
+
+    /**
+     * y軸方向での奥行による移動距離の差を無効にするかどうか
+     * @param fixed 無効にするかどうか
+     */
+    void setFixedY(boolean fixed);
+    /**
+     * y軸方向での奥行による移動距離の差が無効にされているかどうか
+     * @return 無効にされているならtrue
+     */
+    boolean useFixedY();
 }

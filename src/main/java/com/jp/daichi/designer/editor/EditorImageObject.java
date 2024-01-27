@@ -33,7 +33,7 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
         try {
             if (deserializedData != null) {
                 UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
-                return new EditorImageObject(history, deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(), deserializedData.dimension(), deserializedData.priority());
+                return new EditorImageObject(history, deserializedData.name(), deserializedData.uuid(), materialUUID, canvas, deserializedData.position(),deserializedData.z(), deserializedData.dimension(), deserializedData.priority());
             } else {
                 return null;
             }
@@ -55,8 +55,9 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
      * @param canvas    キャンバス
      * @param position  座標
      * @param dimension 表示領域
+     *
      **/
-    public EditorImageObject(History history, String name, UUID uuid, Canvas canvas, Point position, SignedDimension dimension) {
+    public EditorImageObject(History history, String name, UUID uuid, Canvas canvas, Point position,SignedDimension dimension) {
         super(name, uuid, canvas, position, dimension);
         this.history = history;
     }
@@ -69,11 +70,12 @@ public class EditorImageObject extends SimpleImageObject implements PermanentObj
      * @param materialUUID マテリアルUUID
      * @param canvas       キャンバス
      * @param position     座標
+     * @param z            z座標
      * @param dimension    表示領域
      * @param priority     優先度
      **/
-    public EditorImageObject(History history, String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position, SignedDimension dimension, int priority) {
-        super(name, uuid, materialUUID, canvas, position, dimension, priority);
+    public EditorImageObject(History history, String name, UUID uuid, UUID materialUUID, Canvas canvas, Point position,double z, SignedDimension dimension, int priority) {
+        super(name, uuid, materialUUID, canvas, position,z, dimension, priority);
         this.history = history;
     }
 

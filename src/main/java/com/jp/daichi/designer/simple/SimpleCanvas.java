@@ -28,6 +28,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     private UUID backgroundMaterialUUID;
     private Color fogColor;
     private double fogStrength = 0;
+    private boolean fixedY = false;
 
     private List<Renderer> renderers = new ArrayList<>();
 
@@ -160,6 +161,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
                     drawX, drawY, drawX + newWidth, drawY + newHeight,
                     Util.round(uvX), Util.round(uvY), Util.round(uvX + uvWidth), Util.round(uvY + uvHeight), null);
         }
+
         drawLayer(g);
 
         for (Renderer renderer:renderers) {
@@ -236,7 +238,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
         double centerX = viewPort.x + viewPort.width / 2.0;
         double centerY = viewPort.y + viewPort.height / 2.0;
         double x = distance / (distance + z) * (point.x() - centerX) + viewPort.width / 2.0;
-        double y = distance / (distance + z) * (point.y() - centerY) + viewPort.height / 2.0;
+        double y = useFixedY() ? (point.y()-viewPort.y) : distance / (distance + z) * (point.y() - centerY) + viewPort.height / 2.0;
         try {
             //System.out.println(point+","+x+","+y+","+Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null)));
             return Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null));
@@ -256,7 +258,7 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
         double centerX = viewPort.x + viewPort.width / 2.0;
         double centerY = viewPort.y + viewPort.height / 2.0;
         double x = (distance + z) * (point.x() - viewPort.width / 2.0) / distance + centerX;
-        double y = (distance + z) * (point.y() - viewPort.height / 2.0) / distance + centerY;
+        double y = useFixedY() ? (viewPort.y+point.y()) : (distance + z) * (point.y() - viewPort.height / 2.0) / distance + centerY;
         if (inViewport) {
             return new Point(x, y);
         } else {
@@ -295,5 +297,16 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
     public void setFogStrength(double fogStrength) {
         this.fogStrength = fogStrength;
         sendUpdate(UpdateAction.CHANGE_FOG_STRENGTH);
+    }
+
+    @Override
+    public void setFixedY(boolean fixed) {
+        this.fixedY = fixed;
+        sendUpdate(UpdateAction.FIXED_Y);
+    }
+
+    @Override
+    public boolean useFixedY() {
+        return fixedY;
     }
 }

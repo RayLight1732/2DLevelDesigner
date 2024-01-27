@@ -17,6 +17,7 @@ public class DeserializeUtil {
     public static final String FOG_STRENGTH = "FogStrength";
     public static final String FOG_COLOR = "FogColor";
     public static final String MATERIAL_UUID = "MaterialUUID";
+    public static final String FIXED_Y = "FixedY";
 
     /**
      * シリアライズされたデータからプロパティを読み込み、キャンバスのインスタンスに設定する
@@ -40,6 +41,10 @@ public class DeserializeUtil {
         canvas.setFogColor(color);
         UUID materialUUID = (UUID) serialized.get(MATERIAL_UUID);
         canvas.setMaterialUUID(materialUUID);
+        Boolean fixedY = (Boolean) serialized.get(FIXED_Y);
+        if (fixedY != null) {
+            canvas.setFixedY(fixedY);
+        }
     }
 
 }
