@@ -149,6 +149,9 @@ public class EditorMain {
 
         //メニューバー
         JMenuBar menuBar = new JMenuBar();
+        JMenu file = new JMenu("File");
+        menuBar.add(file);
+
         JMenu edit = new JMenu("Edit");
         menuBar.add(edit);
         History history = ((EditorCanvas) canvas).getHistory();
