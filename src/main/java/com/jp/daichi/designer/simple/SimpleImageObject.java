@@ -8,6 +8,7 @@ import com.jp.daichi.designer.interfaces.*;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.geom.Rectangle2D;
 import java.util.UUID;
 
 import static com.jp.daichi.designer.ColorProfile.MATERIAL_ERROR_COLOR;
@@ -58,7 +59,10 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = Util.getRectangleOnScreen(getCanvas(), this);
+        Rectangle2D rectangle = Util.getRectangleOnScreen(getCanvas(), this);
+        if (getName().equals("tree(1)(1)(2)(1)") || getName().equals("tree(1)(2)(2)(1)")) {
+            System.out.println(rectangle);
+        }
         try {
             Material material = getCanvas().getMaterialManager().getInstance(getMaterialUUID());
             if (material == null || material.getImage() == null) {
@@ -69,7 +73,7 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
                 double uvWidth = material.getUVDimension().width();
                 double uvHeight = material.getUVDimension().height();
                 g.drawImage(material.getImage(),
-                        rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height,
+                        ceil(rectangle.getX()),ceil(rectangle.getY()),ceil(rectangle.getX() + rectangle.getWidth()),ceil(rectangle.getY() + rectangle.getHeight()),
                         Util.round(uvX), Util.round(uvY), Util.round(uvX + uvWidth), Util.round(uvY + uvHeight), null);
             }
         } catch (NullPointerException exception) {
@@ -77,7 +81,10 @@ public class SimpleImageObject extends SimpleDesignerObject implements ImageObje
         }
     }
 
-    private void drawMissing(Graphics2D g, Rectangle rectangle) {
+    private int ceil(double d) {
+        return (int) Math.ceil(d);
+    }
+    protected void drawMissing(Graphics2D g, Rectangle2D rectangle) {
         g.setColor(MATERIAL_ERROR_COLOR);
         g.fill(rectangle);
     }

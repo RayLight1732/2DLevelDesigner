@@ -8,6 +8,7 @@ import com.jp.daichi.designer.interfaces.SignedDimension;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.geom.Rectangle2D;
 import java.util.UUID;
 
 /**
@@ -56,7 +57,7 @@ public class SimpleCollisionObject extends SimpleDesignerObject {
 
     @Override
     public void draw(Graphics2D g) {
-        Rectangle rectangle = Util.getRectangleOnScreen(getCanvas(), this);
+        Rectangle2D rectangle = Util.getRectangleOnScreen(getCanvas(), this);
         g.setColor(color);
         g.fill(rectangle);
     }

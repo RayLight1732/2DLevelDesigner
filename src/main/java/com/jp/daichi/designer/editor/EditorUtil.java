@@ -7,6 +7,7 @@ import com.jp.daichi.designer.interfaces.Direction;
 import com.jp.daichi.designer.interfaces.Point;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 
 /**
@@ -103,7 +104,7 @@ public class EditorUtil {
         if (frame.getSelectedObjectCount() == 0) {
             return;
         }
-        Rectangle frameRectangle = Util.getRectangleOnScreen(frame.getCanvas(), frame);
+        Rectangle2D frameRectangle = Util.getRectangleOnScreen(frame.getCanvas(), frame);
 
         graphics2D.setColor(Color.BLACK);
         graphics2D.setStroke(dashStroke);

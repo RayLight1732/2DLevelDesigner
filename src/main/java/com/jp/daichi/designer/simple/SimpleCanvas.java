@@ -237,11 +237,15 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
         double distance = viewPort.width / 2.0 / Math.tan(pov / 2);//カメラからスクリーンまでの距離
         double centerX = viewPort.x + viewPort.width / 2.0;
         double centerY = viewPort.y + viewPort.height / 2.0;
-        double x = distance / (distance + z) * (point.x() - centerX) + viewPort.width / 2.0;
-        double y = useFixedY() ? (point.y()-viewPort.y) : distance / (distance + z) * (point.y() - centerY) + viewPort.height / 2.0;
         try {
-            //System.out.println(point+","+x+","+y+","+Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null)));
-            return Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null));
+            if (z == 0) {
+                return Point.convert(transform.inverseTransform(new Point2D.Double(point.x() - centerX + viewPort.width / 2.0, useFixedY() ? (point.y() - viewPort.y) : ((point.y() - centerY) + viewPort.height / 2.0)), null));
+            } else {
+                double x = distance / (distance + z) * (point.x() - centerX) + viewPort.width / 2.0;
+                double y = useFixedY() ? (point.y() - viewPort.y) : distance / (distance + z) * (point.y() - centerY) + viewPort.height / 2.0;
+                //System.out.println(point+","+x+","+y+","+Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null)));
+                return Point.convert(transform.inverseTransform(new Point2D.Double(x, y), null));
+            }
         } catch (NoninvertibleTransformException e) {
             return null;
         }
@@ -257,12 +261,20 @@ public class SimpleCanvas extends SimpleObservedObject implements Canvas {
         double distance = viewPort.width / 2.0 / Math.tan(pov / 2);//カメラからスクリーンまでの距離
         double centerX = viewPort.x + viewPort.width / 2.0;
         double centerY = viewPort.y + viewPort.height / 2.0;
-        double x = (distance + z) * (point.x() - viewPort.width / 2.0) / distance + centerX;
-        double y = useFixedY() ? (viewPort.y+point.y()) : (distance + z) * (point.y() - viewPort.height / 2.0) / distance + centerY;
-        if (inViewport) {
-            return new Point(x, y);
+        if (z == 0) {
+            if (inViewport) {
+                return new Point((point.x() - viewPort.width / 2.0) + centerX,useFixedY() ? (viewPort.y + point.y()) : ((point.y() - viewPort.height / 2.0) + centerY));
+            } else {
+                return Point.convert(transform.transform(new Point2D.Double((point.x() - viewPort.width / 2.0) + centerX,useFixedY() ? (viewPort.y + point.y()) : ((point.y() - viewPort.height / 2.0) + centerY)),null));
+            }
         } else {
-            return Point.convert(transform.transform(new Point2D.Double(x, y), null));
+            double x = (distance + z)/ distance * (point.x() - viewPort.width / 2.0) + centerX;
+            double y = useFixedY() ? (viewPort.y + point.y()) : (distance + z)/ distance * (point.y() - viewPort.height / 2.0) + centerY;
+            if (inViewport) {
+                return new Point(x, y);
+            } else {
+                return Point.convert(transform.transform(new Point2D.Double(x, y), null));
+            }
         }
     }
 

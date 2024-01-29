@@ -13,6 +13,7 @@ import com.jp.daichi.designer.interfaces.editor.History;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -79,9 +80,23 @@ public class EditorMain {
         //UIManager.put("TextField.font",defaultFont2);
         SwingUtilities.updateComponentTreeUI(frame);
 
-        EditorCanvasManager canvasManager = new EditorCanvasManager(new File("C:\\Development\\Test"));
+        frame.setSize(400,300);
+        frame.setLocationRelativeTo(null);
+
+        frame.setVisible(true);
+        File f = openFolder(frame,false);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUpJFrame(frame,f);
+        frame.setVisible(false);
+        frame.setVisible(true);
+    }
+
+    private static void setUpJFrame(JFrame frame,File file) {
+        EditorCanvasManager canvasManager = new EditorCanvasManager(file);
         Canvas canvas = canvasManager.getInstance();
 
+        //Add not existed layer
         for (DesignerObjectType type : DesignerObjectType.values()) {
             if (canvas.getLayerManager().getLayer(type) == null) {
                 Layer layer = canvas.getLayerManager().createInstance(type.getDisplayName() + "Layer", type);
@@ -92,11 +107,6 @@ public class EditorMain {
         //canvas.addLayer(layer.getUUID());//TODO canvasにcreateLayerを埋め込んでもいいかも
 
 
-
-        frame.setSize(400,300);
-        frame.setLocationRelativeTo(null);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
         InspectorView inspectorView = new InspectorView();
@@ -149,8 +159,26 @@ public class EditorMain {
 
         //メニューバー
         JMenuBar menuBar = new JMenuBar();
-        JMenu file = new JMenu("File");
-        menuBar.add(file);
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+        JMenuItem openNew = new JMenuItem("new");
+        openNew.addActionListener(e->{
+            File newFile = openFolder(frame,false);
+            frame.setVisible(false);
+            frame.getContentPane().removeAll();
+            setUpJFrame(frame,newFile);
+            frame.setVisible(true);
+        });
+        fileMenu.add(openNew);
+        JMenuItem openExisted = new JMenuItem("open");
+        openExisted.addActionListener(e->{
+            File newFile = openFolder(frame,true);
+            frame.setVisible(false);
+            frame.getContentPane().removeAll();
+            setUpJFrame(frame,newFile.getParentFile());
+            frame.setVisible(true);
+        });
+        fileMenu.add(openExisted);
 
         JMenu edit = new JMenu("Edit");
         menuBar.add(edit);
@@ -180,14 +208,13 @@ public class EditorMain {
         });
 
         frame.setJMenuBar(menuBar);
-        frame.setVisible(true);
         right.setDividerLocation((int) (frame.getSize().height * 0.5));
         left.setDividerLocation((int) (frame.getSize().height * 0.7));
         split.setDividerLocation((int) (frame.getSize().width * 0.7));
 
         frame.addMouseWheelListener(e -> {
             ((EditorCanvas)canvas).setSaveHistory(false);
-            canvas.getViewport().x += e.getPreciseWheelRotation() * 10;
+            canvas.getViewport().x += e.getPreciseWheelRotation()*10;
             canvas.setViewport(canvas.getViewport());
             ((EditorCanvas)canvas).setSaveHistory(true);
         });
@@ -198,6 +225,32 @@ public class EditorMain {
         }
         */
         canvasManager.getDataSaver().saveAll(canvas);
+    }
+
+    private static File openFolder(Component parent,boolean existedOnly) {
+        JFileChooser fileChooser = new JFileChooser();
+        if (existedOnly) {
+            fileChooser.addChoosableFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().equals("canvas.bin");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "open project";
+                }
+            });
+        } else {
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        }
+        int selected = fileChooser.showOpenDialog(parent);
+        if (selected == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        } else {
+            System.exit(0);
+            return null;
+        }
     }
 
     private static String getUndoText(History history) {
